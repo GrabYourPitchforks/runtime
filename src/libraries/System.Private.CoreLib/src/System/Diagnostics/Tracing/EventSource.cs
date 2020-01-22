@@ -686,7 +686,7 @@ namespace System.Diagnostics.Tracing
                     continue;
 
                 byte[]? metadata = EventPipeMetadataGenerator.Instance.GenerateEventMetadata(m_eventData[i]);
-                uint metadataLength = (metadata != null) ? (uint)metadata.Length : 0;
+                uint metadataLength = (uint)(metadata?.Length ?? 0);
 
                 string eventName = m_eventData[i].Name;
                 long keywords = m_eventData[i].Descriptor.Keywords;
@@ -1005,7 +1005,7 @@ namespace System.Diagnostics.Tracing
             if (m_eventSourceEnabled)
             {
                 EventSource.EventData* descrs = stackalloc EventSource.EventData[2];
-                if (arg1 == null || arg1.Length == 0)
+                if (Array.IsNullOrEmpty(arg1))
                 {
                     int blobSize = 0;
                     descrs[0].DataPointer = (IntPtr)(&blobSize);
@@ -1041,7 +1041,7 @@ namespace System.Diagnostics.Tracing
                 descrs[0].DataPointer = (IntPtr)(&arg1);
                 descrs[0].Size = 8;
                 descrs[0].Reserved = 0;
-                if (arg2 == null || arg2.Length == 0)
+                if (Array.IsNullOrEmpty(arg2))
                 {
                     int blobSize = 0;
                     descrs[1].DataPointer = (IntPtr)(&blobSize);

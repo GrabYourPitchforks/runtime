@@ -212,6 +212,16 @@ namespace System.Runtime.CompilerServices
             // See comment on RawArrayData for details
             ref Unsafe.AddByteOffset(ref Unsafe.As<RawData>(array).Data, (nuint)GetMethodTable(array)->BaseSize - (nuint)(2 * sizeof(IntPtr)));
 
+        // Emits the 'ldlen' IL opcode on the given object.
+        [Intrinsic]
+        internal static uint GetArrayLength(Array obj)
+        {
+            // The body of this function will be replaced by the EE with unsafe code
+            // See getILIntrinsicImplementationForRuntimeHelpers for how this happens.
+
+            return Unsafe.As<RawArrayData>(obj).Length;
+        }
+
         internal static unsafe ushort GetElementSize(this Array array)
         {
             Debug.Assert(ObjectHasComponentSize(array));

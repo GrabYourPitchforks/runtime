@@ -184,7 +184,7 @@ namespace System
 
         internal static IntPtr[]? CopyRuntimeTypeHandles(Type[]? inHandles, out int length)
         {
-            if (inHandles == null || inHandles.Length == 0)
+            if (Array.IsNullOrEmpty(inHandles))
             {
                 length = 0;
                 return null;

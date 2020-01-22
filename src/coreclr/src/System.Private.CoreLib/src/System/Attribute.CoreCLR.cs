@@ -508,7 +508,7 @@ namespace System
         {
             Attribute[] attrib = GetCustomAttributes(element, attributeType, inherit);
 
-            if (attrib == null || attrib.Length == 0)
+            if (Array.IsNullOrEmpty(attrib))
                 return null;
 
             if (attrib.Length == 1)
@@ -615,10 +615,7 @@ namespace System
             // throws an AmbiguousMatchException if there are more than one defined.
             Attribute[] attrib = GetCustomAttributes(element, attributeType, inherit);
 
-            if (attrib == null || attrib.Length == 0)
-                return null;
-
-            if (attrib.Length == 0)
+            if (Array.IsNullOrEmpty(attrib))
                 return null;
 
             if (attrib.Length == 1)
@@ -693,7 +690,7 @@ namespace System
             // throws an AmbiguousMatchException if there are more than one defined.
             Attribute[] attrib = GetCustomAttributes(element, attributeType, inherit);
 
-            if (attrib == null || attrib.Length == 0)
+            if (Array.IsNullOrEmpty(attrib))
                 return null;
 
             if (attrib.Length == 1)
@@ -768,7 +765,7 @@ namespace System
             // throws an AmbiguousMatchException if there are more than one defined.
             Attribute[] attrib = GetCustomAttributes(element, attributeType, inherit);
 
-            if (attrib == null || attrib.Length == 0)
+            if (Array.IsNullOrEmpty(attrib))
                 return null;
 
             if (attrib.Length == 1)

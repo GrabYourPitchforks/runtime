@@ -1055,7 +1055,7 @@ namespace System
 
         private AdjustmentRule? GetAdjustmentRuleForTime(DateTime dateTime, bool dateTimeisUtc, out int? ruleIndex)
         {
-            if (_adjustmentRules == null || _adjustmentRules.Length == 0)
+            if (Array.IsNullOrEmpty(_adjustmentRules))
             {
                 ruleIndex = null;
                 return null;
@@ -1945,7 +1945,7 @@ namespace System
             // are sorted in chronological order
             //
 
-            if (adjustmentRules != null && adjustmentRules.Length != 0)
+            if (!Array.IsNullOrEmpty(adjustmentRules))
             {
                 adjustmentRulesSupportDst = true;
                 AdjustmentRule? prev = null;

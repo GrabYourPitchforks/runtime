@@ -474,7 +474,7 @@ namespace System.Reflection.Emit
                 foreach (Type t in parameterTypes)
                     sig.AddArgument(t);
             }
-            if (optionalParameterTypes != null && optionalParameterTypes.Length != 0)
+            if (!Array.IsNullOrEmpty(optionalParameterTypes))
             {
                 // add the sentinel
                 sig.AddSentinel();

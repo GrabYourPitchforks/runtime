@@ -1256,7 +1256,7 @@ namespace System.Globalization
                     Debug.Assert(!GlobalizationMode.Invariant);
 
                     string[]? longTimes = GetTimeFormats();
-                    if (longTimes == null || longTimes.Length == 0)
+                    if (Array.IsNullOrEmpty(longTimes))
                     {
                         _saLongTimes = Invariant._saLongTimes!;
                     }
@@ -1284,7 +1284,7 @@ namespace System.Globalization
                     // Try to get the short times from the OS/culture.dll
                     string[]? shortTimes = GetShortTimeFormats();
 
-                    if (shortTimes == null || shortTimes.Length == 0)
+                    if (Array.IsNullOrEmpty(shortTimes))
                     {
                         //
                         // If we couldn't find short times, then compute them from long times

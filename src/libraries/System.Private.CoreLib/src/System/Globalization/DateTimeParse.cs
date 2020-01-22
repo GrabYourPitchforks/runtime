@@ -5155,7 +5155,7 @@ new DS[] { DS.ERROR,  DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR, 
         // return a string in the form: "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
         private static string Hex(string[] strs)
         {
-            if (strs == null || strs.Length == 0)
+            if (Array.IsNullOrEmpty(strs))
                 return string.Empty;
             if (strs.Length == 1)
                 return Hex(strs[0]);

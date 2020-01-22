@@ -25,7 +25,7 @@ namespace System
 
         public static Delegate? Combine(params Delegate?[]? delegates)
         {
-            if (delegates == null || delegates.Length == 0)
+            if (Array.IsNullOrEmpty(delegates))
                 return null;
 
             Delegate? d = delegates[0];

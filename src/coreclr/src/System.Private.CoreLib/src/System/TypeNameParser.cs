@@ -220,7 +220,7 @@ namespace System
 
         private static Type? ResolveType(Assembly? assembly, string[] names, Func<Assembly?, string, bool, Type?>? typeResolver, bool throwOnError, bool ignoreCase, ref StackCrawlMark stackMark)
         {
-            Debug.Assert(names != null && names.Length > 0);
+            Debug.Assert(!Array.IsNullOrEmpty(names));
 
             Type? type = null;
 

@@ -5,6 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using Internal.Runtime.CompilerServices;
@@ -425,9 +426,9 @@ namespace System
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern unsafe void InternalSetValue(void* target, object? value);
 
-        public int Length => checked((int)Unsafe.As<RawArrayData>(this).Length);
+        public int Length => checked((int)RuntimeHelpers.GetArrayLength(this));
 
-        public long LongLength => Unsafe.As<RawArrayData>(this).Length;
+        public long LongLength => RuntimeHelpers.GetArrayLength(this);
 
         public unsafe int Rank
         {
@@ -473,6 +474,12 @@ namespace System
                 throw new IndexOutOfRangeException(SR.IndexOutOfRange_ArrayRankIndex);
 
             return Unsafe.Add(ref RuntimeHelpers.GetMultiDimensionalArrayBounds(this), rank + dimension);
+        }
+
+        internal static bool IsNullOrEmpty([NotNullWhen(false)] Array? array)
+        {
+            // See string.IsNullOrEmpty for why the logic is written like this.
+            return (array is null || 0u >= RuntimeHelpers.GetArrayLength(array)) ? true : false;
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]

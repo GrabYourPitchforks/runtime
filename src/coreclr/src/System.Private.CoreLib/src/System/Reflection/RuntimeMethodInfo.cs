@@ -387,7 +387,7 @@ namespace System.Reflection
             object[]? arguments = InvokeArgumentsCheck(obj, invokeAttr, binder, parameters, culture);
 
             bool wrapExceptions = (invokeAttr & BindingFlags.DoNotWrapExceptions) == 0;
-            if (arguments == null || arguments.Length == 0)
+            if (Array.IsNullOrEmpty(arguments))
                 return RuntimeMethodHandle.InvokeMethod(obj, null, Signature, false, wrapExceptions);
             else
             {
@@ -409,7 +409,7 @@ namespace System.Reflection
 
             // get the signature
             int formalCount = sig.Arguments.Length;
-            int actualCount = (parameters != null) ? parameters.Length : 0;
+            int actualCount = parameters?.Length ?? 0;
 
             INVOCATION_FLAGS invocationFlags = InvocationFlags;
 

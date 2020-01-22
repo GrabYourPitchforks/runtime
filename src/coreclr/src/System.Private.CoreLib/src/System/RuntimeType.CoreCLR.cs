@@ -2716,7 +2716,7 @@ namespace System
             if (candidates.Count == 0)
                 return null;
 
-            if (types == null || types.Length == 0)
+            if (Array.IsNullOrEmpty(types))
             {
                 MethodInfo firstCandidate = candidates[0];
 
@@ -2758,7 +2758,7 @@ namespace System
                 ConstructorInfo firstCandidate = candidates[0];
 
                 ParameterInfo[] parameters = firstCandidate.GetParametersNoCopy();
-                if (parameters == null || parameters.Length == 0)
+                if (Array.IsNullOrEmpty(parameters))
                 {
                     return firstCandidate;
                 }
@@ -2781,7 +2781,7 @@ namespace System
             if (candidates.Count == 0)
                 return null;
 
-            if (types == null || types.Length == 0)
+            if (Array.IsNullOrEmpty(types))
             {
                 // no arguments
                 if (candidates.Count == 1)

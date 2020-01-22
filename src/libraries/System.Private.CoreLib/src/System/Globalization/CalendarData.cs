@@ -146,11 +146,11 @@ namespace System.Globalization
             }
 
             // Check for null genitive names (in case unmanaged side skips it for non-gregorian calendars, etc)
-            if (this.saMonthGenitiveNames == null || this.saMonthGenitiveNames.Length == 0 || string.IsNullOrEmpty(this.saMonthGenitiveNames[0]))
+            if (Array.IsNullOrEmpty(this.saMonthGenitiveNames) || string.IsNullOrEmpty(this.saMonthGenitiveNames[0]))
                 this.saMonthGenitiveNames = this.saMonthNames;              // Genitive month names (same as month names for invariant)
-            if (this.saAbbrevMonthGenitiveNames == null || this.saAbbrevMonthGenitiveNames.Length == 0 || string.IsNullOrEmpty(this.saAbbrevMonthGenitiveNames[0]))
+            if (Array.IsNullOrEmpty(this.saAbbrevMonthGenitiveNames) || string.IsNullOrEmpty(this.saAbbrevMonthGenitiveNames[0]))
                 this.saAbbrevMonthGenitiveNames = this.saAbbrevMonthNames;    // Abbreviated genitive month names (same as abbrev month names for invariant)
-            if (this.saLeapYearMonthNames == null || this.saLeapYearMonthNames.Length == 0 || string.IsNullOrEmpty(this.saLeapYearMonthNames[0]))
+            if (Array.IsNullOrEmpty(this.saLeapYearMonthNames) || string.IsNullOrEmpty(this.saLeapYearMonthNames[0]))
                 this.saLeapYearMonthNames = this.saMonthNames;
 
             InitializeEraNames(localeName, calendarId);
@@ -181,7 +181,7 @@ namespace System.Globalization
                 // For Localized Gregorian we really expect the data from the OS.
                 case CalendarId.GREGORIAN:
                     // Fallback for CoreCLR < Win7 or culture.dll missing
-                    if (this.saEraNames == null || this.saEraNames.Length == 0 || string.IsNullOrEmpty(this.saEraNames[0]))
+                    if (Array.IsNullOrEmpty(this.saEraNames) || string.IsNullOrEmpty(this.saEraNames[0]))
                     {
                         this.saEraNames = new string[] { "A.D." };
                     }
@@ -243,7 +243,7 @@ namespace System.Globalization
                     break;
 
                 case CalendarId.PERSIAN:
-                    if (this.saEraNames == null || this.saEraNames.Length == 0 || string.IsNullOrEmpty(this.saEraNames[0]))
+                    if (Array.IsNullOrEmpty(this.saEraNames) || string.IsNullOrEmpty(this.saEraNames[0]))
                     {
                         this.saEraNames = new string[] { "\x0647\x002e\x0634" };
                     }
@@ -264,7 +264,7 @@ namespace System.Globalization
                 // For Localized Gregorian we really expect the data from the OS.
                 case CalendarId.GREGORIAN:
                     // Fallback for CoreCLR < Win7 or culture.dll missing
-                    if (this.saAbbrevEraNames == null || this.saAbbrevEraNames.Length == 0 || string.IsNullOrEmpty(this.saAbbrevEraNames[0]))
+                    if (Array.IsNullOrEmpty(this.saAbbrevEraNames) || string.IsNullOrEmpty(this.saAbbrevEraNames[0]))
                     {
                         this.saAbbrevEraNames = new string[] { "AD" };
                     }
@@ -305,7 +305,7 @@ namespace System.Globalization
                     break;
 
                 case CalendarId.PERSIAN:
-                    if (this.saAbbrevEraNames == null || this.saAbbrevEraNames.Length == 0 || string.IsNullOrEmpty(this.saAbbrevEraNames[0]))
+                    if (Array.IsNullOrEmpty(this.saAbbrevEraNames) || string.IsNullOrEmpty(this.saAbbrevEraNames[0]))
                     {
                         this.saAbbrevEraNames = this.saEraNames;
                     }

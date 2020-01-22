@@ -32,7 +32,7 @@ namespace System
             BindingFlags bindingAttr, MethodBase[] match, ref object?[] args,
             ParameterModifier[]? modifiers, CultureInfo? cultureInfo, string[]? names, out object? state)
         {
-            if (match == null || match.Length == 0)
+            if (Array.IsNullOrEmpty(match))
                 throw new ArgumentException(SR.Arg_EmptyArray, nameof(match));
 
             MethodBase?[] candidates = (MethodBase[])match.Clone();
@@ -534,7 +534,7 @@ namespace System
             types = realTypes;
 
             // We don't automatically jump out on exact match.
-            if (match == null || match.Length == 0)
+            if (Array.IsNullOrEmpty(match))
                 throw new ArgumentException(SR.Arg_EmptyArray, nameof(match));
 
             MethodBase[] candidates = (MethodBase[])match.Clone();
@@ -625,7 +625,7 @@ namespace System
                 }
             }
 
-            if (match == null || match.Length == 0)
+            if (Array.IsNullOrEmpty(match))
                 throw new ArgumentException(SR.Arg_EmptyArray, nameof(match));
 
             PropertyInfo[] candidates = (PropertyInfo[])match.Clone();

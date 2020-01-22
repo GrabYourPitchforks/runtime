@@ -1684,7 +1684,7 @@ namespace System.Globalization
             // one of the formats.
             for (int i = 0; i < formats.Length; i++)
             {
-                if (formats[i] == null || formats[i].Length == 0)
+                if (string.IsNullOrEmpty(formats[i]))
                 {
                     return result.SetBadFormatSpecifierFailure();
                 }

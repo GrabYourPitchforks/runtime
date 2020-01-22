@@ -41,7 +41,7 @@ namespace System.Globalization
 
                     // Look up the values in our reg key
                     string[] valueNames = key.GetValueNames();
-                    if (valueNames != null && valueNames.Length > 0)
+                    if (!Array.IsNullOrEmpty(valueNames))
                     {
                         registryEraRanges = new EraInfo[valueNames.Length];
 

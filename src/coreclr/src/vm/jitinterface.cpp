@@ -7485,6 +7485,22 @@ bool getILIntrinsicImplementationForRuntimeHelpers(MethodDesc * ftn,
         return true;
     }
 
+    if (tk == MscorlibBinder::GetMethod(METHOD__RUNTIME_HELPERS__GET_ARRAY_LENGTH)->GetMemberDef())
+    {
+        // Emits the 'ldlen' opcode with the specified object as a receiver.
+
+        static BYTE ilcode[] = { CEE_LDARG_0, // stack contains [ O ] = <theObj> (expected to be an Array)
+                                 CEE_LDLEN,   // stack contains unsigned int
+                                 CEE_RET };
+
+        methInfo->ILCode = const_cast<BYTE*>(ilcode);
+        methInfo->ILCodeSize = sizeof(ilcode);
+        methInfo->maxStack = 1;
+        methInfo->EHcount = 0;
+        methInfo->options = (CorInfoOptions)0;
+        return true;
+    }
+
     if (tk == MscorlibBinder::GetMethod(METHOD__RUNTIME_HELPERS__ENUM_EQUALS)->GetMemberDef())
     {
         // Normally we would follow the above pattern and unconditionally replace the IL,

@@ -1325,7 +1325,7 @@ namespace System
 
             bool singleSeparator = separator != null;
 
-            if (!singleSeparator && (separators == null || separators.Length == 0))
+            if (!singleSeparator && Array.IsNullOrEmpty(separators))
             {
                 return SplitInternal(default(ReadOnlySpan<char>), count, options);
             }
@@ -1595,7 +1595,7 @@ namespace System
         /// <param name="lengthListBuilder"><see cref="ValueListBuilder{T}"/> for separator length values</param>
         private void MakeSeparatorList(string?[] separators, ref ValueListBuilder<int> sepListBuilder, ref ValueListBuilder<int> lengthListBuilder)
         {
-            Debug.Assert(separators != null && separators.Length > 0, "separators != null && separators.Length > 0");
+            Debug.Assert(!Array.IsNullOrEmpty(separators), "separators != null && separators.Length > 0");
 
             for (int i = 0; i < Length; i++)
             {
@@ -1719,7 +1719,7 @@ namespace System
         // Removes a set of characters from the beginning and end of this string.
         public unsafe string Trim(params char[]? trimChars)
         {
-            if (trimChars == null || trimChars.Length == 0)
+            if (Array.IsNullOrEmpty(trimChars))
             {
                 return TrimWhiteSpaceHelper(TrimType.Both);
             }
@@ -1738,7 +1738,7 @@ namespace System
         // Removes a set of characters from the beginning of this string.
         public unsafe string TrimStart(params char[]? trimChars)
         {
-            if (trimChars == null || trimChars.Length == 0)
+            if (Array.IsNullOrEmpty(trimChars))
             {
                 return TrimWhiteSpaceHelper(TrimType.Head);
             }
@@ -1757,7 +1757,7 @@ namespace System
         // Removes a set of characters from the end of this string.
         public unsafe string TrimEnd(params char[]? trimChars)
         {
-            if (trimChars == null || trimChars.Length == 0)
+            if (Array.IsNullOrEmpty(trimChars))
             {
                 return TrimWhiteSpaceHelper(TrimType.Tail);
             }

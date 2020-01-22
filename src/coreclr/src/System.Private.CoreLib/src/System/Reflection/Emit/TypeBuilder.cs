@@ -185,7 +185,7 @@ namespace System.Reflection.Emit
             }
 
             DefineCustomAttribute(new QCallModule(ref module), tkAssociate, tkConstructor,
-                localAttr, (localAttr != null) ? localAttr.Length : 0, toDisk, updateCompilerFlags);
+                localAttr, localAttr?.Length ?? 0, toDisk, updateCompilerFlags);
         }
 
         [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
@@ -1993,7 +1993,7 @@ namespace System.Reflection.Emit
                     if (body != null)
                         throw new InvalidOperationException(SR.Format(SR.InvalidOperation_BadMethodBody, meth.Name));
                 }
-                else if (body == null || body.Length == 0)
+                else if (Array.IsNullOrEmpty(body))
                 {
                     // If it's not an abstract or an interface, set the IL.
                     if (meth.m_ilGenerator != null)
@@ -2004,7 +2004,7 @@ namespace System.Reflection.Emit
 
                     body = meth.GetBody();
 
-                    if ((body == null || body.Length == 0) && !meth.m_canBeRuntimeImpl)
+                    if (Array.IsNullOrEmpty(body) && !meth.m_canBeRuntimeImpl)
                         throw new InvalidOperationException(
                             SR.Format(SR.InvalidOperation_BadEmptyMethodBody, meth.Name));
                 }
@@ -2015,10 +2015,10 @@ namespace System.Reflection.Emit
                 int[]? tokenFixups = meth.GetTokenFixups();
 
                 SetMethodIL(new QCallModule(ref module), meth.GetToken().Token, meth.InitLocals,
-                    body, (body != null) ? body.Length : 0,
+                    body, body?.Length ?? 0,
                     localSig, sigLength, maxStack,
-                    exceptions, (exceptions != null) ? exceptions.Length : 0,
-                    tokenFixups, (tokenFixups != null) ? tokenFixups.Length : 0);
+                    exceptions, exceptions?.Length ?? 0,
+                    tokenFixups, tokenFixups?.Length ?? 0);
 
                 if (m_module.ContainingAssemblyBuilder._assemblyData._access == AssemblyBuilderAccess.Run)
                 {
