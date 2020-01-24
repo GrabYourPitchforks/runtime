@@ -1435,15 +1435,7 @@ namespace System.Globalization
             throw NotImplemented.ByDesign;
         }
 
-        public SortKey GetSortKey(string source)
-        {
-            if (GlobalizationMode.Invariant)
-            {
-                return InvariantCreateSortKey(source, CompareOptions.None);
-            }
-
-            return CreateSortKey(source, CompareOptions.None);
-        }
+        public SortKey GetSortKey(string source) => GetSortKey(source, CompareOptions.None);
 
         public override bool Equals(object? value)
         {
