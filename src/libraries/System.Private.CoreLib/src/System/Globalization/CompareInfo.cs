@@ -301,10 +301,35 @@ namespace System.Globalization
 
         public int Compare(ReadOnlySpan<char> string1, ReadOnlySpan<char> string2, CompareOptions options = CompareOptions.None)
         {
-            // TODO: Open question - are the parameter names ok? They're copied from the (string, string) overload.
+            if (options == CompareOptions.OrdinalIgnoreCase)
+            {
+                return CompareOrdinalIgnoreCase(string1, string2);
+            }
 
-#error Not implemented
-            throw NotImplemented.ByDesign;
+            // Verify the options before we do any real comparison.
+            if ((options & CompareOptions.Ordinal) != 0)
+            {
+                if (options != CompareOptions.Ordinal)
+                {
+                    throw new ArgumentException(SR.Argument_CompareOptionOrdinal, nameof(options));
+                }
+
+                return string.CompareOrdinal(string1, string2);
+            }
+
+            if ((options & ValidCompareMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            if (GlobalizationMode.Invariant)
+            {
+                return (options & CompareOptions.IgnoreCase) != 0 ?
+                    CompareOrdinalIgnoreCase(string1, string2) :
+                    string.CompareOrdinal(string1, string2);
+            }
+
+            return CompareString(string1, string2, options);
         }
 
         // TODO https://github.com/dotnet/coreclr/issues/13827:
@@ -1427,9 +1452,16 @@ namespace System.Globalization
             return CreateSortKey(source, options);
         }
 
-        public SortKey GetSortKey(ReadOnlySpan<char> source, CompareOptions options = CompareOptions.None)
+        public int GetSortKeyLength(ReadOnlySpan<char> source, CompareOptions options = CompareOptions.None)
         {
-            // TODO: Do we really need this overload? We might have to hydrate a string from it, which is undesirable.
+#error Not implemented
+            throw NotImplemented.ByDesign;
+        }
+
+        // Use GetSortKeyLength to determine the size of the destination buffer that must be provided to GetSortKey.
+        public int GetSortKey(ReadOnlySpan<char> source, Span<byte> sortKey, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: Do we really need this overload?
 
 #error Not implemented
             throw NotImplemented.ByDesign;
