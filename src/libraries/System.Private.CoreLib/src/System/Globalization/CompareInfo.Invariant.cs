@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Globalization
 {
-    public partial class CompareInfo
+    public sealed partial class CompareInfo
     {
         internal static unsafe int InvariantIndexOf(string source, string value, int startIndex, int count, bool ignoreCase)
         {
