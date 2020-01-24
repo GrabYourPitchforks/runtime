@@ -144,14 +144,19 @@ namespace System.Globalization
             return IsSortable(pChar, 1);
         }
 
-        public static unsafe bool IsSortable(string text)
+        public static bool IsSortable(string text)
         {
-            if (text == null)
+            if (text is null)
             {
                 throw new ArgumentNullException(nameof(text));
             }
 
-            if (text.Length == 0)
+            return IsSortable(text.AsSpan());
+        }
+
+        public static unsafe bool IsSortable(ReadOnlySpan<char> text)
+        {
+            if (text.IsEmpty)
             {
                 return false;
             }
@@ -292,6 +297,14 @@ namespace System.Globalization
             }
 
             return CompareString(string1.AsSpan(), string2.AsSpan(), options);
+        }
+
+        public int Compare(ReadOnlySpan<char> string1, ReadOnlySpan<char> string2, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: Open question - are the parameter names ok? They're copied from the (string, string) overload.
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
         }
 
         // TODO https://github.com/dotnet/coreclr/issues/13827:
@@ -727,6 +740,14 @@ namespace System.Globalization
             return StartsWith(source, prefix, options);
         }
 
+        public bool IsPrefix_New(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: Rename me once callers have been fixed up
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
+        }
+
         internal bool IsPrefix(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
         {
             Debug.Assert(prefix.Length != 0);
@@ -788,6 +809,14 @@ namespace System.Globalization
             }
 
             return EndsWith(source, suffix, options);
+        }
+
+        public bool IsSuffix_New(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: Rename me once callers have been fixed up
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
         }
 
         internal bool IsSuffix(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
@@ -930,6 +959,14 @@ namespace System.Globalization
             return IndexOf(source, char.ToString(value), startIndex, count, options, null);
         }
 
+        public int IndexOf(ReadOnlySpan<char> source, char value, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: This really should be a 'TryFind' method.
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
+        }
+
         public unsafe int IndexOf(string source, string value, int startIndex, int count, CompareOptions options)
         {
             if (source == null)
@@ -974,6 +1011,14 @@ namespace System.Globalization
             }
 
             return IndexOf(source, value, startIndex, count, options, null);
+        }
+
+        public int IndexOf_New(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: This really should be a 'TryFind' method.
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
         }
 
         internal int IndexOfOrdinalIgnoreCase(ReadOnlySpan<char> source, ReadOnlySpan<char> value)
@@ -1280,6 +1325,14 @@ namespace System.Globalization
             return LastIndexOfCore(source, value.ToString(), startIndex, count, options);
         }
 
+        public int LastIndexOf(ReadOnlySpan<char> source, char value, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: This really should be a 'TryFind' method.
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
+        }
+
         public int LastIndexOf(string source, string value, int startIndex, int count, CompareOptions options)
         {
             if (source == null)
@@ -1343,6 +1396,14 @@ namespace System.Globalization
             return LastIndexOfCore(source, value, startIndex, count, options);
         }
 
+        public int LastIndexOf_New(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: This really should be a 'TryFind' method.
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
+        }
+
         internal static int LastIndexOfOrdinal(string source, string value, int startIndex, int count, bool ignoreCase)
         {
             if (GlobalizationMode.Invariant)
@@ -1364,6 +1425,14 @@ namespace System.Globalization
             }
 
             return CreateSortKey(source, options);
+        }
+
+        public SortKey GetSortKey(ReadOnlySpan<char> source, CompareOptions options = CompareOptions.None)
+        {
+            // TODO: Do we really need this overload? We might have to hydrate a string from it, which is undesirable.
+
+#error Not implemented
+            throw NotImplemented.ByDesign;
         }
 
         public SortKey GetSortKey(string source)
