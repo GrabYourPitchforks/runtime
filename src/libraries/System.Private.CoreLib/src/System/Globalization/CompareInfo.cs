@@ -742,27 +742,7 @@ namespace System.Globalization
                 return false;
             }
 
-            if (options == CompareOptions.OrdinalIgnoreCase)
-            {
-                return source.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
-            }
-
-            if (options == CompareOptions.Ordinal)
-            {
-                return source.StartsWith(prefix, StringComparison.Ordinal);
-            }
-
-            if ((options & ValidIndexMaskOffFlags) != 0)
-            {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
-
-            if (GlobalizationMode.Invariant)
-            {
-                return source.StartsWith(prefix, (options & CompareOptions.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
-            }
-
-            return StartsWithInternal(source, prefix, options);
+            return IsPrefix(source.AsSpan(), prefix.AsSpan(), options);
         }
 
         public bool IsPrefix(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
@@ -824,27 +804,7 @@ namespace System.Globalization
                 return false;
             }
 
-            if (options == CompareOptions.OrdinalIgnoreCase)
-            {
-                return source.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
-            }
-
-            if (options == CompareOptions.Ordinal)
-            {
-                return source.EndsWith(suffix, StringComparison.Ordinal);
-            }
-
-            if ((options & ValidIndexMaskOffFlags) != 0)
-            {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
-
-            if (GlobalizationMode.Invariant)
-            {
-                return source.EndsWith(suffix, (options & CompareOptions.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
-            }
-
-            return EndsWithInternal(source, suffix, options);
+            return IsSuffix(source.AsSpan(), suffix.AsSpan(), options);
         }
 
         public bool IsSuffix(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options = CompareOptions.None)
