@@ -762,7 +762,7 @@ namespace System.Globalization
                 return source.StartsWith(prefix, (options & CompareOptions.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
             }
 
-            return StartsWith(source, prefix, options);
+            return StartsWithInternal(source, prefix, options);
         }
 
         public bool IsPrefix(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
@@ -844,26 +844,37 @@ namespace System.Globalization
                 return source.EndsWith(suffix, (options & CompareOptions.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
             }
 
-            return EndsWith(source, suffix, options);
+            return EndsWithInternal(source, suffix, options);
         }
 
-        public bool IsSuffix_New(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
+        public bool IsSuffix(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options = CompareOptions.None)
         {
-            // TODO: Rename me once callers have been fixed up
+            if ((options & ValidIndexMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
 
-#error Not implemented
-            throw NotImplemented.ByDesign;
-        }
+            if (suffix.IsEmpty)
+            {
+                return true; // the empty string is trivially a suffix of every other string
+            }
 
-        internal bool IsSuffix(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
-        {
-            Debug.Assert(suffix.Length != 0);
-            Debug.Assert(source.Length != 0);
-            Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
-            Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
+            if (options == CompareOptions.Ordinal)
+            {
+                return source.EndsWith(suffix);
+            }
 
-            return EndsWith(source, suffix, options);
+            if (options == CompareOptions.OrdinalIgnoreCase)
+            {
+                return source.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (GlobalizationMode.Invariant)
+            {
+                return source.EndsWith(suffix, ((options & CompareOptions.IgnoreCase) != 0) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+            }
+
+            return EndsWithInternal(source, suffix, options);
         }
 
         public bool IsSuffix(string source, string suffix)

@@ -420,18 +420,6 @@ namespace System.Globalization
             return -1;
         }
 
-        private unsafe bool StartsWith(string source, string prefix, CompareOptions options)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(!string.IsNullOrEmpty(source));
-            Debug.Assert(!string.IsNullOrEmpty(prefix));
-            Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
-
-            return FindString(FIND_STARTSWITH | (uint)GetNativeCompareFlags(options), source, 0, source.Length,
-                                                   prefix, 0, prefix.Length, null) >= 0;
-        }
-
         // Internal method which skips all parameter checks, for Framework use only
         internal unsafe bool StartsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
         {
@@ -443,24 +431,12 @@ namespace System.Globalization
             return FindString(FIND_STARTSWITH | (uint)GetNativeCompareFlags(options), source, prefix, null) >= 0;
         }
 
-        private unsafe bool EndsWith(string source, string suffix, CompareOptions options)
+        // Internal method which skips all parameter checks, for Framework use only
+        internal unsafe bool EndsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(!string.IsNullOrEmpty(source));
-            Debug.Assert(!string.IsNullOrEmpty(suffix));
-            Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
-
-            return FindString(FIND_ENDSWITH | (uint)GetNativeCompareFlags(options), source, 0, source.Length,
-                                                   suffix, 0, suffix.Length, null) >= 0;
-        }
-
-        private unsafe bool EndsWith(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-
             Debug.Assert(!source.IsEmpty);
-            Debug.Assert(!suffix.IsEmpty);
+            Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 
             return FindString(FIND_ENDSWITH | (uint)GetNativeCompareFlags(options), source, suffix, null) >= 0;

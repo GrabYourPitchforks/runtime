@@ -354,8 +354,8 @@ namespace System
             }
 
             return (comparisonType >= StringComparison.InvariantCulture) ?
-                CompareInfo.Invariant.IsSuffix(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType)) :
-                    CultureInfo.CurrentCulture.CompareInfo.IsSuffix(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                CompareInfo.Invariant.EndsWithInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType)) :
+                    CultureInfo.CurrentCulture.CompareInfo.EndsWithInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
         }
 
         /// <summary>
