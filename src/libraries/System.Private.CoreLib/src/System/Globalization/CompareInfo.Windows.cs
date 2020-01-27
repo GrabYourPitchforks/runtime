@@ -499,6 +499,107 @@ namespace System.Globalization
             return retValue;
         }
 
+        private unsafe int GetSortKeyLength_Windows(ReadOnlySpan<char> source, CompareOptions options)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+
+            if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            uint flags = LCMAP_SORTKEY | (uint)GetNativeCompareFlags(options);
+
+            // LCMapStringEx doesn't support passing cchSrc = 0, so if given an empty string
+            // we'll instead pass -1 to indicate a null-terminated empty string.
+
+            int sourceLength = source.Length;
+            if (sourceLength == 0)
+            {
+                source = string.Empty;
+                sourceLength = -1;
+            }
+
+            fixed (char* pSource = &MemoryMarshal.GetReference(source))
+            {
+                Debug.Assert(pSource != null && sourceLength != 0);
+
+                int sortKeyLength = Interop.Kernel32.LCMapStringEx(_sortHandle != IntPtr.Zero ? null : _sortName,
+                                        flags,
+                                        pSource, sourceLength,
+                                        null, 0,
+                                        null, null, _sortHandle);
+
+                Debug.Assert(sortKeyLength >= 0);
+
+                if (sortKeyLength <= 0)
+                {
+                    throw new ArgumentException(SR.Arg_ExternalException);
+                }
+
+                return sortKeyLength;
+            }
+        }
+
+        private unsafe int GetSortKey_Windows(ReadOnlySpan<char> source, Span<byte> sortKey, CompareOptions options)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+
+            if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            if (sortKey.IsEmpty)
+            {
+                goto DestinationTooSmall;
+            }
+
+            uint flags = LCMAP_SORTKEY | (uint)GetNativeCompareFlags(options);
+
+            // LCMapStringEx doesn't support passing cchSrc = 0, so if given an empty string
+            // we'll instead pass -1 to indicate a null-terminated empty string.
+
+            int sourceLength = source.Length;
+            if (sourceLength == 0)
+            {
+                source = string.Empty;
+                sourceLength = -1;
+            }
+
+            fixed (char* pSource = &MemoryMarshal.GetReference(source))
+            fixed (byte* pSortKey = &MemoryMarshal.GetReference(sortKey))
+            {
+                Debug.Assert(pSource != null && sourceLength != 0);
+
+                int bytesWrittenCount = Interop.Kernel32.LCMapStringEx(_sortHandle != IntPtr.Zero ? null : _sortName,
+                                            flags,
+                                            pSource, sourceLength,
+                                            pSortKey, sortKey.Length,
+                                            null, null, _sortHandle);
+
+                Debug.Assert(bytesWrittenCount >= 0);
+
+                if (bytesWrittenCount <= 0)
+                {
+                    if (Marshal.GetLastWin32Error() == Interop.Errors.ERROR_INSUFFICIENT_BUFFER)
+                    {
+                        goto DestinationTooSmall;
+                    }
+                    else
+                    {
+                        throw new ArgumentException(SR.Arg_ExternalException);
+                    }
+                }
+
+                return bytesWrittenCount;
+            }
+
+        DestinationTooSmall:
+
+            throw new ArgumentException(SR.Argument_DestinationTooShort, nameof(sortKey));
+        }
+
         private unsafe SortKey CreateSortKey(string source, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);

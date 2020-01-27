@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Internal.Runtime.CompilerServices;
 
 namespace System.Globalization
 {
@@ -206,6 +207,47 @@ namespace System.Globalization
         private static char InvariantToUpper(char c)
         {
             return (uint)(c - 'a') <= (uint)('z' - 'a') ? (char)(c - 0x20) : c;
+        }
+
+        private static int InvariantGetSortKeyLength(ReadOnlySpan<char> source, CompareOptions options)
+        {
+            if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            return checked(source.Length * sizeof(char));
+        }
+
+        private static int InvariantGetSortKey(ReadOnlySpan<char> source, Span<byte> sortKey, CompareOptions options)
+        {
+            if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            if ((uint)sortKey.Length < (uint)source.Length * sizeof(char))
+            {
+                throw new ArgumentException(SR.Argument_DestinationTooShort, nameof(sortKey));
+            }
+
+            if ((options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0)
+            {
+                ref byte rSortKey = ref MemoryMarshal.GetReference(sortKey);
+                for (int i = 0; i < source.Length; i++)
+                {
+                    Unsafe.WriteUnaligned<char>(ref Unsafe.Add(ref rSortKey, i * sizeof(char)), InvariantToUpper(source[i]));
+                }
+            }
+            else
+            {
+                // Ordinal sort key - it's just a straight memcpy.
+                // Line below will always succeed because we already performed length checks earlier.
+
+                MemoryMarshal.AsBytes(source).CopyTo(sortKey);
+            }
+
+            return source.Length * sizeof(char);
         }
 
         private unsafe SortKey InvariantCreateSortKey(string source, CompareOptions options)
