@@ -4324,18 +4324,18 @@ namespace System.Globalization
         public override System.DateTime MinSupportedDateTime { get { throw null; } }
         public override int GetEra(System.DateTime time) { throw null; }
     }
-    public partial class CompareInfo : System.Runtime.Serialization.IDeserializationCallback
+    public sealed partial class CompareInfo : System.Runtime.Serialization.IDeserializationCallback
     {
         internal CompareInfo() { }
         public int LCID { get { throw null; } }
-        public virtual string Name { get { throw null; } }
+        public string Name { get { throw null; } }
         public System.Globalization.SortVersion Version { get { throw null; } }
-        public virtual int Compare(string? string1, int offset1, int length1, string? string2, int offset2, int length2) { throw null; }
-        public virtual int Compare(string? string1, int offset1, int length1, string? string2, int offset2, int length2, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int Compare(string? string1, int offset1, string? string2, int offset2) { throw null; }
-        public virtual int Compare(string? string1, int offset1, string? string2, int offset2, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int Compare(string? string1, string? string2) { throw null; }
-        public virtual int Compare(string? string1, string? string2, System.Globalization.CompareOptions options) { throw null; }
+        public int Compare(string? string1, int offset1, int length1, string? string2, int offset2, int length2) { throw null; }
+        public int Compare(string? string1, int offset1, int length1, string? string2, int offset2, int length2, System.Globalization.CompareOptions options) { throw null; }
+        public int Compare(string? string1, int offset1, string? string2, int offset2) { throw null; }
+        public int Compare(string? string1, int offset1, string? string2, int offset2, System.Globalization.CompareOptions options) { throw null; }
+        public int Compare(string? string1, string? string2) { throw null; }
+        public int Compare(string? string1, string? string2, System.Globalization.CompareOptions options) { throw null; }
         public override bool Equals(object? value) { throw null; }
         public static System.Globalization.CompareInfo GetCompareInfo(int culture) { throw null; }
         public static System.Globalization.CompareInfo GetCompareInfo(int culture, System.Reflection.Assembly assembly) { throw null; }
@@ -4343,39 +4343,39 @@ namespace System.Globalization
         public static System.Globalization.CompareInfo GetCompareInfo(string name, System.Reflection.Assembly assembly) { throw null; }
         public override int GetHashCode() { throw null; }
         public int GetHashCode(System.ReadOnlySpan<char> source, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int GetHashCode(string source, System.Globalization.CompareOptions options) { throw null; }
-        public virtual System.Globalization.SortKey GetSortKey(string source) { throw null; }
-        public virtual System.Globalization.SortKey GetSortKey(string source, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int IndexOf(string source, char value) { throw null; }
-        public virtual int IndexOf(string source, char value, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int IndexOf(string source, char value, int startIndex) { throw null; }
-        public virtual int IndexOf(string source, char value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int IndexOf(string source, char value, int startIndex, int count) { throw null; }
-        public virtual int IndexOf(string source, char value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int IndexOf(string source, string value) { throw null; }
-        public virtual int IndexOf(string source, string value, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int IndexOf(string source, string value, int startIndex) { throw null; }
-        public virtual int IndexOf(string source, string value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int IndexOf(string source, string value, int startIndex, int count) { throw null; }
-        public virtual int IndexOf(string source, string value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
-        public virtual bool IsPrefix(string source, string prefix) { throw null; }
-        public virtual bool IsPrefix(string source, string prefix, System.Globalization.CompareOptions options) { throw null; }
+        public int GetHashCode(string source, System.Globalization.CompareOptions options) { throw null; }
+        public System.Globalization.SortKey GetSortKey(string source) { throw null; }
+        public System.Globalization.SortKey GetSortKey(string source, System.Globalization.CompareOptions options) { throw null; }
+        public int IndexOf(string source, char value) { throw null; }
+        public int IndexOf(string source, char value, System.Globalization.CompareOptions options) { throw null; }
+        public int IndexOf(string source, char value, int startIndex) { throw null; }
+        public int IndexOf(string source, char value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
+        public int IndexOf(string source, char value, int startIndex, int count) { throw null; }
+        public int IndexOf(string source, char value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
+        public int IndexOf(string source, string value) { throw null; }
+        public int IndexOf(string source, string value, System.Globalization.CompareOptions options) { throw null; }
+        public int IndexOf(string source, string value, int startIndex) { throw null; }
+        public int IndexOf(string source, string value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
+        public int IndexOf(string source, string value, int startIndex, int count) { throw null; }
+        public int IndexOf(string source, string value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
+        public bool IsPrefix(string source, string prefix) { throw null; }
+        public bool IsPrefix(string source, string prefix, System.Globalization.CompareOptions options) { throw null; }
         public static bool IsSortable(char ch) { throw null; }
         public static bool IsSortable(string text) { throw null; }
-        public virtual bool IsSuffix(string source, string suffix) { throw null; }
-        public virtual bool IsSuffix(string source, string suffix, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int LastIndexOf(string source, char value) { throw null; }
-        public virtual int LastIndexOf(string source, char value, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int LastIndexOf(string source, char value, int startIndex) { throw null; }
-        public virtual int LastIndexOf(string source, char value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int LastIndexOf(string source, char value, int startIndex, int count) { throw null; }
-        public virtual int LastIndexOf(string source, char value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int LastIndexOf(string source, string value) { throw null; }
-        public virtual int LastIndexOf(string source, string value, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int LastIndexOf(string source, string value, int startIndex) { throw null; }
-        public virtual int LastIndexOf(string source, string value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
-        public virtual int LastIndexOf(string source, string value, int startIndex, int count) { throw null; }
-        public virtual int LastIndexOf(string source, string value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
+        public bool IsSuffix(string source, string suffix) { throw null; }
+        public bool IsSuffix(string source, string suffix, System.Globalization.CompareOptions options) { throw null; }
+        public int LastIndexOf(string source, char value) { throw null; }
+        public int LastIndexOf(string source, char value, System.Globalization.CompareOptions options) { throw null; }
+        public int LastIndexOf(string source, char value, int startIndex) { throw null; }
+        public int LastIndexOf(string source, char value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
+        public int LastIndexOf(string source, char value, int startIndex, int count) { throw null; }
+        public int LastIndexOf(string source, char value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
+        public int LastIndexOf(string source, string value) { throw null; }
+        public int LastIndexOf(string source, string value, System.Globalization.CompareOptions options) { throw null; }
+        public int LastIndexOf(string source, string value, int startIndex) { throw null; }
+        public int LastIndexOf(string source, string value, int startIndex, System.Globalization.CompareOptions options) { throw null; }
+        public int LastIndexOf(string source, string value, int startIndex, int count) { throw null; }
+        public int LastIndexOf(string source, string value, int startIndex, int count, System.Globalization.CompareOptions options) { throw null; }
         void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object sender) { }
         public override string ToString() { throw null; }
     }
