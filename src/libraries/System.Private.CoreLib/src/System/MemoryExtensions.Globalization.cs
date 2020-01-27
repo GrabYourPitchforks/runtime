@@ -387,8 +387,8 @@ namespace System
             }
 
             return (comparisonType >= StringComparison.InvariantCulture) ?
-                CompareInfo.Invariant.IsPrefix(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType)) :
-                    CultureInfo.CurrentCulture.CompareInfo.IsPrefix(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                CompareInfo.Invariant.StartsWithInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType)) :
+                    CultureInfo.CurrentCulture.CompareInfo.StartsWithInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
         }
 
         /// <summary>

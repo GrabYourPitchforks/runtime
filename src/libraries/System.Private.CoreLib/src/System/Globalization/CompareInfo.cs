@@ -765,23 +765,34 @@ namespace System.Globalization
             return StartsWith(source, prefix, options);
         }
 
-        public bool IsPrefix_New(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
+        public bool IsPrefix(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
         {
-            // TODO: Rename me once callers have been fixed up
+            if ((options & ValidIndexMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
 
-#error Not implemented
-            throw NotImplemented.ByDesign;
-        }
+            if (prefix.IsEmpty)
+            {
+                return true; // the empty string is trivially a prefix of every other string
+            }
 
-        internal bool IsPrefix(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
-        {
-            Debug.Assert(prefix.Length != 0);
-            Debug.Assert(source.Length != 0);
-            Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
-            Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
+            if (options == CompareOptions.Ordinal)
+            {
+                return source.StartsWith(prefix);
+            }
 
-            return StartsWith(source, prefix, options);
+            if (options == CompareOptions.OrdinalIgnoreCase)
+            {
+                return source.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (GlobalizationMode.Invariant)
+            {
+                return source.StartsWith(prefix, ((options & CompareOptions.IgnoreCase) != 0) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+            }
+
+            return StartsWithInternal(source, prefix, options);
         }
 
         public bool IsPrefix(string source, string prefix)

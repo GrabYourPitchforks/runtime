@@ -52,7 +52,7 @@ internal static partial class Interop
                     void* lpReserved,
                     IntPtr sortHandle);
 
-        [DllImport("kernel32.dll", EntryPoint = "FindNLSStringEx")]
+        [DllImport("kernel32.dll", EntryPoint = "FindNLSStringEx", SetLastError = true)]
         internal static extern int FindNLSStringEx(
                     char* lpLocaleName,
                     uint dwFindNLSStringFlags,

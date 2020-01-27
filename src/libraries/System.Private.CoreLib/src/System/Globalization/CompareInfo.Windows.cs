@@ -278,26 +278,48 @@ namespace System.Globalization
                     int* pcchFound)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(!lpStringSource.IsEmpty);
             Debug.Assert(!lpStringValue.IsEmpty);
 
             string? localeName = _sortHandle != IntPtr.Zero ? null : _sortName;
+
+            // FindNLSStringEx disallows passing an explicit 0 for cchSource or cchValue.
+            // The caller should've already checked that 'lpStringValue' isn't empty,
+            // but it's possible for 'lpStringSource' to be empty. In this case we'll
+            // substitute an empty null-terminated string and pass -1 so that the NLS
+            // function uses the implicit string length.
+
+            int lpStringSourceLength = lpStringSource.Length;
+            if (lpStringSourceLength == 0)
+            {
+                lpStringSource = string.Empty;
+                lpStringSourceLength = -1;
+            }
 
             fixed (char* pLocaleName = localeName)
             fixed (char* pSource = &MemoryMarshal.GetReference(lpStringSource))
             fixed (char* pValue = &MemoryMarshal.GetReference(lpStringValue))
             {
-                return Interop.Kernel32.FindNLSStringEx(
+                Debug.Assert(pSource != null && pValue != null);
+
+                int retVal = Interop.Kernel32.FindNLSStringEx(
                                     pLocaleName,
                                     dwFindNLSStringFlags,
                                     pSource,
-                                    lpStringSource.Length,
+                                    lpStringSourceLength,
                                     pValue,
                                     lpStringValue.Length,
                                     pcchFound,
                                     null,
                                     null,
                                     _sortHandle);
+
+                Debug.Assert(retVal >= -1 && retVal <= lpStringSource.Length);
+                if (retVal < 0 && Marshal.GetLastWin32Error() != Interop.Errors.ERROR_SUCCESS)
+                {
+                    throw new ArgumentException(SR.Arg_ExternalException);
+                }
+
+                return retVal;
             }
         }
 
@@ -410,12 +432,12 @@ namespace System.Globalization
                                                    prefix, 0, prefix.Length, null) >= 0;
         }
 
-        private unsafe bool StartsWith(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
+        // Internal method which skips all parameter checks, for Framework use only
+        internal unsafe bool StartsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-
             Debug.Assert(!source.IsEmpty);
-            Debug.Assert(!prefix.IsEmpty);
+            Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 
             return FindString(FIND_STARTSWITH | (uint)GetNativeCompareFlags(options), source, prefix, null) >= 0;
