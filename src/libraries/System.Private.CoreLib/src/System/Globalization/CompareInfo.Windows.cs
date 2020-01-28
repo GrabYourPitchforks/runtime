@@ -44,33 +44,6 @@ namespace System.Globalization
 
         private static unsafe int FindStringOrdinal(
             uint dwFindStringOrdinalFlags,
-            string stringSource,
-            int offset,
-            int cchSource,
-            string value,
-            int cchValue,
-            bool bIgnoreCase)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(stringSource != null);
-            Debug.Assert(value != null);
-
-            fixed (char* pSource = stringSource)
-            fixed (char* pValue = value)
-            {
-                int ret = Interop.Kernel32.FindStringOrdinal(
-                            dwFindStringOrdinalFlags,
-                            pSource + offset,
-                            cchSource,
-                            pValue,
-                            cchValue,
-                            bIgnoreCase ? 1 : 0);
-                return ret < 0 ? ret : ret + offset;
-            }
-        }
-
-        private static unsafe int FindStringOrdinal(
-            uint dwFindStringOrdinalFlags,
             ReadOnlySpan<char> source,
             ReadOnlySpan<char> value,
             bool bIgnoreCase)
@@ -100,7 +73,13 @@ namespace System.Globalization
             Debug.Assert(source != null);
             Debug.Assert(value != null);
 
-            return FindStringOrdinal(FIND_FROMSTART, source, startIndex, count, value, value.Length, ignoreCase);
+            int retVal = FindStringOrdinal(FIND_FROMSTART, source.AsSpan(startIndex, count), value.AsSpan(), ignoreCase);
+            if (retVal >= 0)
+            {
+                retVal += startIndex;
+            }
+
+            return retVal;
         }
 
         internal static int IndexOfOrdinalCore(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase, bool fromBeginning)
@@ -128,7 +107,14 @@ namespace System.Globalization
             Debug.Assert(source != null);
             Debug.Assert(value != null);
 
-            return FindStringOrdinal(FIND_FROMEND, source, startIndex - count + 1, count, value, value.Length, ignoreCase);
+            int offset = startIndex - count + 1;
+            int retVal = FindStringOrdinal(FIND_FROMEND, source.AsSpan(offset, count), value.AsSpan(), ignoreCase);
+            if (retVal >= 0)
+            {
+                retVal += offset;
+            }
+
+            return retVal;
         }
 
         private unsafe int GetHashCodeOfStringCore(ReadOnlySpan<char> source, CompareOptions options)
