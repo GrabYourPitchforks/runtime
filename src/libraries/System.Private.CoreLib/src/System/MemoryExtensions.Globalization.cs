@@ -168,11 +168,11 @@ namespace System
             {
                 case StringComparison.CurrentCulture:
                 case StringComparison.CurrentCultureIgnoreCase:
-                    return CultureInfo.CurrentCulture.CompareInfo.IndexOf(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                    return CultureInfo.CurrentCulture.CompareInfo.IndexOfCore(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
 
                 case StringComparison.InvariantCulture:
                 case StringComparison.InvariantCultureIgnoreCase:
-                    return CompareInfo.Invariant.IndexOf(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                    return CompareInfo.Invariant.IndexOfCore(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
 
                 default:
                     Debug.Assert(comparisonType == StringComparison.OrdinalIgnoreCase);

@@ -968,10 +968,7 @@ namespace System.Globalization
 
         public int IndexOf(ReadOnlySpan<char> source, char value, CompareOptions options = CompareOptions.None)
         {
-            // TODO: This really should be a 'TryFind' method.
-
-#error Not implemented
-            throw NotImplemented.ByDesign;
+            return IndexOf(source, MemoryMarshal.CreateReadOnlySpan(ref value, 1), options);
         }
 
         public unsafe int IndexOf(string source, string value, int startIndex, int count, CompareOptions options)
@@ -1020,18 +1017,45 @@ namespace System.Globalization
             return IndexOf(source, value, startIndex, count, options, null);
         }
 
-        public int IndexOf_New(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
+        public unsafe int IndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
         {
-            // TODO: This really should be a 'TryFind' method.
+            // Validate CompareOptions
+            // Ordinal can't be selected with other flags
 
-#error Not implemented
-            throw NotImplemented.ByDesign;
+            if ((options & ValidIndexMaskOffFlags) != 0 && options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            if (value.IsEmpty)
+            {
+                return 0; // The empty substring trivially occurs at every index (including the beginning) of the search space
+            }
+
+            if (GlobalizationMode.Invariant)
+            {
+                // Normalize any *IgnoreCase flags -> OrdinalIgnoreCase; everything else to Ordinal
+                options = ((options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0) ? CompareOptions.OrdinalIgnoreCase : CompareOptions.Ordinal;
+            }
+
+            if (options == CompareOptions.Ordinal)
+            {
+                return source.IndexOf(value);
+            }
+
+            if (options == CompareOptions.OrdinalIgnoreCase)
+            {
+                return (GlobalizationMode.Invariant)
+                    ? InvariantIndexOf(source, value, ignoreCase: true, fromBeginning: true)
+                    : Invariant.IndexOfOrdinalIgnoreCase(source, value);
+            }
+
+            return IndexOfInternal(source, value, options, fromBeginning: true);
         }
 
         internal int IndexOfOrdinalIgnoreCase(ReadOnlySpan<char> source, ReadOnlySpan<char> value)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!value.IsEmpty);
 
             return IndexOfOrdinalCore(source, value, ignoreCase: true, fromBeginning: true);
@@ -1045,10 +1069,10 @@ namespace System.Globalization
             return IndexOfOrdinalCore(source, value, ignoreCase, fromBeginning: false);
         }
 
-        internal unsafe int IndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options)
+        // Internal method which skips all parameter checks, for Framework use only
+        internal unsafe int IndexOfCore(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!value.IsEmpty);
             return IndexOfCore(source, value, options, null, fromBeginning: true);
         }
@@ -1334,10 +1358,7 @@ namespace System.Globalization
 
         public int LastIndexOf(ReadOnlySpan<char> source, char value, CompareOptions options = CompareOptions.None)
         {
-            // TODO: This really should be a 'TryFind' method.
-
-#error Not implemented
-            throw NotImplemented.ByDesign;
+            return LastIndexOf(source, MemoryMarshal.CreateReadOnlySpan(ref value, 1), options);
         }
 
         public int LastIndexOf(string source, string value, int startIndex, int count, CompareOptions options)
@@ -1405,10 +1426,38 @@ namespace System.Globalization
 
         public int LastIndexOf_New(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
         {
-            // TODO: This really should be a 'TryFind' method.
+            // Validate CompareOptions
+            // Ordinal can't be selected with other flags
 
-#error Not implemented
-            throw NotImplemented.ByDesign;
+            if ((options & ValidIndexMaskOffFlags) != 0 && options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            if (value.IsEmpty)
+            {
+                return source.Length; // The empty substring trivially occurs at every index (including the end) of the search space
+            }
+
+            if (GlobalizationMode.Invariant)
+            {
+                // Normalize any *IgnoreCase flags -> OrdinalIgnoreCase; everything else to Ordinal
+                options = ((options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0) ? CompareOptions.OrdinalIgnoreCase : CompareOptions.Ordinal;
+            }
+
+            if (options == CompareOptions.Ordinal)
+            {
+                return source.LastIndexOf(value);
+            }
+
+            if (options == CompareOptions.OrdinalIgnoreCase)
+            {
+                return (GlobalizationMode.Invariant)
+                    ? InvariantIndexOf(source, value, ignoreCase: true, fromBeginning: false)
+                    : Invariant.LastIndexOfOrdinal(source, value, ignoreCase: true);
+            }
+
+            return IndexOfInternal(source, value, options, fromBeginning: false);
         }
 
         internal static int LastIndexOfOrdinal(string source, string value, int startIndex, int count, bool ignoreCase)

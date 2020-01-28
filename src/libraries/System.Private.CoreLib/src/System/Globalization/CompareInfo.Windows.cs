@@ -106,9 +106,16 @@ namespace System.Globalization
         internal static int IndexOfOrdinalCore(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase, bool fromBeginning)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(source.Length != 0);
             Debug.Assert(value.Length != 0);
+
+            // Ordinal (non-linguistic) comparisons require the length of the target string to be no greater
+            // than the length of the search space. Since our caller already checked for empty target strings,
+            // the below check also handles the case of empty search space strings.
+
+            if (value.Length > source.Length)
+            {
+                return -1;
+            }
 
             uint positionFlag = fromBeginning ? (uint)FIND_FROMSTART : FIND_FROMEND;
             return FindStringOrdinal(positionFlag, source, value, ignoreCase);
@@ -383,12 +390,22 @@ namespace System.Globalization
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
-            Debug.Assert(source.Length != 0);
             Debug.Assert(target.Length != 0);
-            Debug.Assert(options == CompareOptions.None || options == CompareOptions.IgnoreCase);
+            Debug.Assert(options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase);
 
             uint positionFlag = fromBeginning ? (uint)FIND_FROMSTART : FIND_FROMEND;
             return FindString(positionFlag | (uint)GetNativeCompareFlags(options), source, target, matchLengthPtr);
+        }
+
+        // Internal method which skips all parameter checks, for Framework use only
+        internal unsafe int IndexOfInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, bool fromBeginning)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+            Debug.Assert(!target.IsEmpty);
+            Debug.Assert((options & ValidIndexMaskOffFlags) != 0);
+
+            uint positionFlag = fromBeginning ? (uint)FIND_FROMSTART : FIND_FROMEND;
+            return FindString(positionFlag | (uint)GetNativeCompareFlags(options), source, target, null);
         }
 
         private unsafe int LastIndexOfCore(string source, string target, int startIndex, int count, CompareOptions options)

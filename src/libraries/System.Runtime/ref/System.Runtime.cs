@@ -4346,6 +4346,8 @@ namespace System.Globalization
         public int GetHashCode(string source, System.Globalization.CompareOptions options) { throw null; }
         public System.Globalization.SortKey GetSortKey(string source) { throw null; }
         public System.Globalization.SortKey GetSortKey(string source, System.Globalization.CompareOptions options) { throw null; }
+        public int IndexOf(System.ReadOnlySpan<char> source, char value, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
+        public int IndexOf(System.ReadOnlySpan<char> source, System.ReadOnlySpan<char> value, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public int IndexOf(string source, char value) { throw null; }
         public int IndexOf(string source, char value, System.Globalization.CompareOptions options) { throw null; }
         public int IndexOf(string source, char value, int startIndex) { throw null; }
@@ -4366,6 +4368,8 @@ namespace System.Globalization
         public bool IsSuffix(System.ReadOnlySpan<char> source, System.ReadOnlySpan<char> suffix, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public bool IsSuffix(string source, string suffix) { throw null; }
         public bool IsSuffix(string source, string suffix, System.Globalization.CompareOptions options) { throw null; }
+        public int LastIndexOf(System.ReadOnlySpan<char> source, char value, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
+        public int LastIndexOf(System.ReadOnlySpan<char> source, System.ReadOnlySpan<char> value, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public int LastIndexOf(string source, char value) { throw null; }
         public int LastIndexOf(string source, char value, System.Globalization.CompareOptions options) { throw null; }
         public int LastIndexOf(string source, char value, int startIndex) { throw null; }
