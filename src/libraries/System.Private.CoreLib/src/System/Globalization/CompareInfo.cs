@@ -1417,7 +1417,7 @@ namespace System.Globalization
                 return InvariantGetSortKey(source, sortKey, options);
             }
 
-            return GetSortKey_Windows(source, sortKey, options);
+            return CreateSortKey(source, sortKey, options);
         }
 
         public SortKey GetSortKey(string source) => GetSortKey(source, CompareOptions.None);

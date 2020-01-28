@@ -430,7 +430,7 @@ namespace System.Globalization
             }
         }
 
-        private unsafe int GetSortKey_Windows(ReadOnlySpan<char> source, Span<byte> sortKey, CompareOptions options)
+        private unsafe int CreateSortKey(ReadOnlySpan<char> source, Span<byte> sortKey, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
@@ -441,7 +441,7 @@ namespace System.Globalization
 
             if (sortKey.IsEmpty)
             {
-                goto DestinationTooSmall;
+                goto DestinationTooSmall; // NLS will always return a non-empty sort key
             }
 
             uint flags = LCMAP_SORTKEY | (uint)GetNativeCompareFlags(options);
