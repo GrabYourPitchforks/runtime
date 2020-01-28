@@ -10,29 +10,8 @@ namespace System.Globalization
 {
     public sealed partial class CompareInfo
     {
-        internal static unsafe int InvariantIndexOf(string source, string value, int startIndex, int count, bool ignoreCase)
-        {
-            Debug.Assert(source != null);
-            Debug.Assert(value != null);
-            Debug.Assert(startIndex >= 0 && startIndex < source.Length);
-
-            fixed (char* pSource = source) fixed (char* pValue = value)
-            {
-                char* pSrc = &pSource[startIndex];
-                int index = InvariantFindString(pSrc, count, pValue, value.Length, ignoreCase, fromBeginning: true);
-                if (index >= 0)
-                {
-                    return index + startIndex;
-                }
-                return -1;
-            }
-        }
-
         internal static unsafe int InvariantIndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase, bool fromBeginning = true)
         {
-            Debug.Assert(source.Length != 0);
-            Debug.Assert(value.Length != 0);
-
             fixed (char* pSource = &MemoryMarshal.GetReference(source))
             fixed (char* pValue = &MemoryMarshal.GetReference(value))
             {
@@ -66,8 +45,6 @@ namespace System.Globalization
             char valueChar;     // Character for case lookup in value
             int lastSourceStart;
 
-            Debug.Assert(source != null);
-            Debug.Assert(value != null);
             Debug.Assert(sourceCount >= 0);
             Debug.Assert(valueCount >= 0);
 

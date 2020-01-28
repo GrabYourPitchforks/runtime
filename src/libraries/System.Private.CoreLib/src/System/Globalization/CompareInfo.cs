@@ -1152,23 +1152,29 @@ namespace System.Globalization
 
         internal static int IndexOfOrdinal(string source, string value, int startIndex, int count, bool ignoreCase)
         {
+            int result;
+
             if (!ignoreCase)
             {
-                int result = SpanHelpers.IndexOf(
+                result = SpanHelpers.IndexOf(
                     ref Unsafe.Add(ref source.GetRawStringData(), startIndex),
                     count,
                     ref value.GetRawStringData(),
                     value.Length);
-
-                return (result >= 0 ? startIndex : 0) + result;
             }
-
-            if (GlobalizationMode.Invariant)
+            else
             {
-                return InvariantIndexOf(source, value, startIndex, count, ignoreCase);
+                result = (GlobalizationMode.Invariant)
+                    ? InvariantIndexOf(source.AsSpan(startIndex, count), value, ignoreCase: true)
+                    : IndexOfOrdinalCore(source.AsSpan(startIndex, count), value, ignoreCase: true, fromBeginning: true);
             }
 
-            return IndexOfOrdinalCore(source, value, startIndex, count, ignoreCase);
+            if (result >= 0)
+            {
+                result += startIndex;
+            }
+
+            return result;
         }
 
         /// <summary>

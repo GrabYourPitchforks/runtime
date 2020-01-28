@@ -66,26 +66,10 @@ namespace System.Globalization
             }
         }
 
-        internal static int IndexOfOrdinalCore(string source, string value, int startIndex, int count, bool ignoreCase)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(source != null);
-            Debug.Assert(value != null);
-
-            int retVal = FindStringOrdinal(FIND_FROMSTART, source.AsSpan(startIndex, count), value.AsSpan(), ignoreCase);
-            if (retVal >= 0)
-            {
-                retVal += startIndex;
-            }
-
-            return retVal;
-        }
-
         internal static int IndexOfOrdinalCore(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase, bool fromBeginning)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(value.Length != 0);
+            Debug.Assert(!value.IsEmpty);
 
             // Ordinal (non-linguistic) comparisons require the length of the target string to be no greater
             // than the length of the search space. Since our caller already checked for empty target strings,
@@ -184,6 +168,8 @@ namespace System.Globalization
         private static unsafe int CompareStringOrdinalIgnoreCase(ref char string1, int count1, ref char string2, int count2)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
+            Debug.Assert(count1 > 0);
+            Debug.Assert(count2 > 0);
 
             fixed (char* char1 = &string1)
             fixed (char* char2 = &string2)
