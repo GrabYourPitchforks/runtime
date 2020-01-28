@@ -805,22 +805,10 @@ namespace System.Globalization
         /// Throws ArgumentException if value is null.
         /// </summary>
         public int IndexOf(string source, char value)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            return IndexOf(source, value, 0, source.Length, CompareOptions.None);
-        }
+            => IndexOf(source, value, CompareOptions.None);
 
         public int IndexOf(string source, string value)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            return IndexOf(source, value, 0, source.Length, CompareOptions.None);
-        }
+            => IndexOf(source, value, CompareOptions.None);
 
         public int IndexOf(string source, char value, CompareOptions options)
         {
@@ -829,7 +817,7 @@ namespace System.Globalization
                 throw new ArgumentNullException(nameof(source));
             }
 
-            return IndexOf(source, value, 0, source.Length, options);
+            return IndexOf(source.AsSpan(), value, options);
         }
 
         public int IndexOf(string source, string value, CompareOptions options)
@@ -839,7 +827,12 @@ namespace System.Globalization
                 throw new ArgumentNullException(nameof(source));
             }
 
-            return IndexOf(source, value, 0, source.Length, options);
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            return IndexOf(source.AsSpan(), value.AsSpan(), options);
         }
 
         public int IndexOf(string source, char value, int startIndex)
@@ -890,7 +883,7 @@ namespace System.Globalization
             return IndexOf(source, value, startIndex, count, CompareOptions.None);
         }
 
-        public unsafe int IndexOf(string source, char value, int startIndex, int count, CompareOptions options)
+        public int IndexOf(string source, char value, int startIndex, int count, CompareOptions options)
         {
             if (source == null)
             {
@@ -905,19 +898,13 @@ namespace System.Globalization
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
             }
 
-            if (source.Length == 0)
+            int retVal = IndexOf(source.AsSpan(startIndex, count), value, options);
+            if (retVal >= 0)
             {
-                return -1;
+                retVal += startIndex;
             }
 
-            // Validate CompareOptions
-            // Ordinal can't be selected with other flags
-            if ((options & ValidIndexMaskOffFlags) != 0 && (options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase))
-            {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
-
-            return IndexOf(source, char.ToString(value), startIndex, count, options, null);
+            return retVal;
         }
 
         public int IndexOf(ReadOnlySpan<char> source, char value, CompareOptions options = CompareOptions.None)
@@ -925,7 +912,7 @@ namespace System.Globalization
             return IndexOf(source, MemoryMarshal.CreateReadOnlySpan(ref value, 1), options);
         }
 
-        public unsafe int IndexOf(string source, string value, int startIndex, int count, CompareOptions options)
+        public int IndexOf(string source, string value, int startIndex, int count, CompareOptions options)
         {
             if (source == null)
             {
@@ -935,43 +922,25 @@ namespace System.Globalization
             {
                 throw new ArgumentNullException(nameof(value));
             }
-            if (startIndex > source.Length)
+            if (startIndex < 0 || startIndex > source.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
             }
-
-            // In Everett we used to return -1 for empty string even if startIndex is negative number so we keeping same behavior here.
-            // We return 0 if both source and value are empty strings for Everett compatibility too.
-            if (source.Length == 0)
-            {
-                if (value.Length == 0)
-                {
-                    return 0;
-                }
-                return -1;
-            }
-
-            if (startIndex < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
-            }
-
             if (count < 0 || startIndex > source.Length - count)
             {
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
             }
 
-            // Validate CompareOptions
-            // Ordinal can't be selected with other flags
-            if ((options & ValidIndexMaskOffFlags) != 0 && (options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase))
+            int retVal = IndexOf(source.AsSpan(startIndex, count), value, options);
+            if (retVal >= 0)
             {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+                retVal += startIndex;
             }
 
-            return IndexOf(source, value, startIndex, count, options, null);
+            return retVal;
         }
 
-        public unsafe int IndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
+        public int IndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
         {
             // Validate CompareOptions
             // Ordinal can't be selected with other flags
