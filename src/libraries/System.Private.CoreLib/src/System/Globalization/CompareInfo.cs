@@ -824,12 +824,12 @@ namespace System.Globalization
         {
             if (source == null)
             {
-                throw new ArgumentNullException(nameof(source));
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.source);
             }
 
             if (value == null)
             {
-                throw new ArgumentNullException(nameof(value));
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.value);
             }
 
             return IndexOf(source.AsSpan(), value.AsSpan(), options);

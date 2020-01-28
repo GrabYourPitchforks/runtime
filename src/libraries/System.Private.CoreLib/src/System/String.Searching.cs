@@ -219,10 +219,10 @@ namespace System
             charMap[value & PROBABILISTICMAP_BLOCK_INDEX_MASK] |= 1u << (value >> PROBABILISTICMAP_BLOCK_INDEX_SHIFT);
         }
 
+        // This API is called frequently, so we short-circuit much of the logic and pass
+        // the inputs directly to the CompareInfo worker methods.
         public int IndexOf(string value)
-        {
-            return IndexOf(value, StringComparison.CurrentCulture);
-        }
+            => CultureInfo.CurrentCulture.CompareInfo.IndexOf(this, value, CompareOptions.None);
 
         public int IndexOf(string value, int startIndex)
         {
