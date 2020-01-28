@@ -285,30 +285,28 @@ namespace System.Globalization
         private unsafe int LastIndexOfCore(string source, string target, int startIndex, int count, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(!string.IsNullOrEmpty(source));
-            Debug.Assert(target != null);
+            Debug.Assert(source != null);
+            Debug.Assert(!string.IsNullOrEmpty(target));
             Debug.Assert((options & CompareOptions.OrdinalIgnoreCase) == 0);
 
-            if (target.Length == 0)
-                return startIndex;
+            // Reminder: The search space is the substring ending just before position (startIndex + 1).
+            int adjustedStartIndex = startIndex - count + 1;
 
+            ReadOnlySpan<char> sourceSpan = source.AsSpan(adjustedStartIndex, count);
+            ReadOnlySpan<char> targetSpan = target.AsSpan();
+
+            int retValue;
             if ((options & CompareOptions.Ordinal) != 0)
             {
-                return FastLastIndexOfString(source, target, startIndex, count, target.Length);
+                retValue = sourceSpan.LastIndexOf(targetSpan);
             }
             else
             {
-                int retValue = FindString(FIND_FROMEND | (uint)GetNativeCompareFlags(options), source.AsSpan(startIndex - count + 1, count),
-                                                               target.AsSpan(), null);
-
-                if (retValue >= 0)
-                {
-                    return retValue + startIndex - (count - 1);
-                }
+                retValue = FindString(FIND_FROMEND | (uint)GetNativeCompareFlags(options), source.AsSpan(startIndex - count + 1, count),
+                                                           target, null);
             }
 
-            return -1;
+            return (retValue >= 0) ? retValue + adjustedStartIndex : -1;
         }
 
         // Internal method which skips all parameter checks, for Framework use only
@@ -343,50 +341,6 @@ namespace System.Globalization
         private const int FIND_ENDSWITH = 0x00200000;
         private const int FIND_FROMSTART = 0x00400000;
         private const int FIND_FROMEND = 0x00800000;
-
-        // TODO: Instead of this method could we just have upstack code call LastIndexOfOrdinal with ignoreCase = false?
-        private static unsafe int FastLastIndexOfString(string source, string target, int startIndex, int sourceCount, int targetCount)
-        {
-            int retValue = -1;
-
-            int sourceStartIndex = startIndex - sourceCount + 1;
-
-            fixed (char* pSource = source, spTarget = target)
-            {
-                char* spSubSource = pSource + sourceStartIndex;
-
-                int endPattern = sourceCount - targetCount;
-                if (endPattern < 0)
-                    return -1;
-
-                Debug.Assert(target.Length >= 1);
-                char patternChar0 = spTarget[0];
-                for (int ctrSrc = endPattern; ctrSrc >= 0; ctrSrc--)
-                {
-                    if (spSubSource[ctrSrc] != patternChar0)
-                        continue;
-
-                    int ctrPat;
-                    for (ctrPat = 1; ctrPat < targetCount; ctrPat++)
-                    {
-                        if (spSubSource[ctrSrc + ctrPat] != spTarget[ctrPat])
-                            break;
-                    }
-                    if (ctrPat == targetCount)
-                    {
-                        retValue = ctrSrc;
-                        break;
-                    }
-                }
-
-                if (retValue >= 0)
-                {
-                    retValue += startIndex - sourceCount + 1;
-                }
-            }
-
-            return retValue;
-        }
 
         private unsafe int GetSortKeyLength_Windows(ReadOnlySpan<char> source, CompareOptions options)
         {

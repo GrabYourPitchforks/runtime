@@ -12,28 +12,10 @@ namespace System.Globalization
     {
         internal static unsafe int InvariantIndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase, bool fromBeginning = true)
         {
-            fixed (char* pSource = &MemoryMarshal.GetReference(source))
-            fixed (char* pValue = &MemoryMarshal.GetReference(value))
+            fixed (char* pSource = &MemoryMarshal.GetReference(source)) // could be null
+            fixed (char* pValue = &MemoryMarshal.GetReference(value)) // could be null
             {
                 return InvariantFindString(pSource, source.Length, pValue, value.Length, ignoreCase, fromBeginning);
-            }
-        }
-
-        internal static unsafe int InvariantLastIndexOf(string source, string value, int startIndex, int count, bool ignoreCase)
-        {
-            Debug.Assert(source != null);
-            Debug.Assert(value != null);
-            Debug.Assert(startIndex >= 0 && startIndex < source.Length);
-
-            fixed (char* pSource = source) fixed (char* pValue = value)
-            {
-                char* pSrc = &pSource[startIndex - count + 1];
-                int index = InvariantFindString(pSrc, count, pValue, value.Length, ignoreCase, fromBeginning: false);
-                if (index >= 0)
-                {
-                    return index + startIndex - count + 1;
-                }
-                return -1;
             }
         }
 
@@ -45,18 +27,22 @@ namespace System.Globalization
             char valueChar;     // Character for case lookup in value
             int lastSourceStart;
 
+            Debug.Assert(source != null || sourceCount == 0, "Source count must be 0 if source pointer is null.");
+            Debug.Assert(value != null || valueCount == 0, "Value count must be 0 if value pointer is null.");
             Debug.Assert(sourceCount >= 0);
             Debug.Assert(valueCount >= 0);
 
             if (valueCount == 0)
             {
-                return fromBeginning ? 0 : sourceCount - 1;
+                return fromBeginning ? 0 : sourceCount;
             }
 
             if (sourceCount < valueCount)
             {
                 return -1;
             }
+
+            Debug.Assert(sourceCount > 0);
 
             if (fromBeginning)
             {

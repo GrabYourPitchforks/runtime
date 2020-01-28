@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Diagnostics.Tracing;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -922,13 +923,35 @@ namespace System.Globalization
             {
                 throw new ArgumentNullException(nameof(value));
             }
-            if (startIndex < 0 || startIndex > source.Length)
+
+            // Previous Framework versions short-circuited this method for empty 'source' strings without performing
+            // additional parameter checks. We can't follow that exact logic because 'value' may contain zero-weight
+            // sort characters that would need to go through a linguistic sort. But what we can do to maintain
+            // maximum compatibility is to short-circuit the operation when we know we're going through an ordinal
+            // (non-linguistic) sort. We can also ignore 'startIndex' and 'count' when 'source' is empty.
+
+            if (source.Length == 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
+                if (options == CompareOptions.Ordinal || options == CompareOptions.OrdinalIgnoreCase)
+                {
+                    return (value.Length == 0) ? 0 : -1;
+                }
+                else
+                {
+                    startIndex = 0;
+                    count = 0;
+                }
             }
-            if (count < 0 || startIndex > source.Length - count)
+            else
             {
-                throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
+                if (startIndex < 0 || startIndex > source.Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
+                }
+                if (count < 0 || startIndex > source.Length - count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
+                }
             }
 
             int retVal = IndexOf(source.AsSpan(startIndex, count), value, options);
@@ -1007,14 +1030,12 @@ namespace System.Globalization
                 *matchLengthPtr = 0;
             }
 
+            // All strings trivially begin or end with the empty string.
+            // We'll handle empty-equivalent (zero collation weight) strings later.
+
             if (value.Length == 0)
             {
-                return startIndex;
-            }
-
-            if (startIndex >= source.Length)
-            {
-                return -1;
+                return (fromBeginning) ? startIndex : startIndex + count;
             }
 
             if (options == CompareOptions.OrdinalIgnoreCase)
@@ -1137,27 +1158,10 @@ namespace System.Globalization
         /// Throws ArgumentException if value is null.
         /// </summary>
         public int LastIndexOf(string source, char value)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            // Can't start at negative index, so make sure we check for the length == 0 case.
-            return LastIndexOf(source, value, source.Length - 1, source.Length, CompareOptions.None);
-        }
+            => LastIndexOf(source, value, CompareOptions.None);
 
         public int LastIndexOf(string source, string value)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            // Can't start at negative index, so make sure we check for the length == 0 case.
-            return LastIndexOf(source, value, source.Length - 1,
-                source.Length, CompareOptions.None);
-        }
+            => LastIndexOf(source, value, CompareOptions.None);
 
         public int LastIndexOf(string source, char value, CompareOptions options)
         {
@@ -1166,8 +1170,7 @@ namespace System.Globalization
                 throw new ArgumentNullException(nameof(source));
             }
 
-            // Can't start at negative index, so make sure we check for the length == 0 case.
-            return LastIndexOf(source, value, source.Length - 1, source.Length, options);
+            return LastIndexOf(source.AsSpan(), value, options);
         }
 
         public int LastIndexOf(string source, string value, CompareOptions options)
@@ -1177,39 +1180,31 @@ namespace System.Globalization
                 throw new ArgumentNullException(nameof(source));
             }
 
-            // Can't start at negative index, so make sure we check for the length == 0 case.
-            return LastIndexOf(source, value, source.Length - 1, source.Length, options);
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            return LastIndexOf(source.AsSpan(), value.AsSpan(), options);
         }
 
         public int LastIndexOf(string source, char value, int startIndex)
-        {
-            return LastIndexOf(source, value, startIndex, startIndex + 1, CompareOptions.None);
-        }
+            => LastIndexOf(source, value, startIndex, CompareOptions.None);
 
         public int LastIndexOf(string source, string value, int startIndex)
-        {
-            return LastIndexOf(source, value, startIndex, startIndex + 1, CompareOptions.None);
-        }
+            => LastIndexOf(source, value, startIndex, CompareOptions.None);
 
         public int LastIndexOf(string source, char value, int startIndex, CompareOptions options)
-        {
-            return LastIndexOf(source, value, startIndex, startIndex + 1, options);
-        }
+            => LastIndexOf(source, value, startIndex, startIndex + 1, options);
 
         public int LastIndexOf(string source, string value, int startIndex, CompareOptions options)
-        {
-            return LastIndexOf(source, value, startIndex, startIndex + 1, options);
-        }
+            => LastIndexOf(source, value, startIndex, startIndex + 1, options);
 
         public int LastIndexOf(string source, char value, int startIndex, int count)
-        {
-            return LastIndexOf(source, value, startIndex, count, CompareOptions.None);
-        }
+            => LastIndexOf(source, value, startIndex, count, CompareOptions.None);
 
         public int LastIndexOf(string source, string value, int startIndex, int count)
-        {
-            return LastIndexOf(source, value, startIndex, count, CompareOptions.None);
-        }
+            => LastIndexOf(source, value, startIndex, count, CompareOptions.None);
 
         public int LastIndexOf(string source, char value, int startIndex, int count, CompareOptions options)
         {
@@ -1217,54 +1212,8 @@ namespace System.Globalization
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            // Validate CompareOptions
-            // Ordinal can't be selected with other flags
-            if ((options & ValidIndexMaskOffFlags) != 0 &&
-                (options != CompareOptions.Ordinal) &&
-                (options != CompareOptions.OrdinalIgnoreCase))
-            {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
 
-            // Special case for 0 length input strings
-            if (source.Length == 0 && (startIndex == -1 || startIndex == 0))
-            {
-                return -1;
-            }
-
-            // Make sure we're not out of range
-            if (startIndex < 0 || startIndex > source.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
-            }
-
-            // Make sure that we allow startIndex == source.Length
-            if (startIndex == source.Length)
-            {
-                startIndex--;
-                if (count > 0)
-                {
-                    count--;
-                }
-            }
-
-            // 2nd have of this also catches when startIndex == MAXINT, so MAXINT - 0 + 1 == -1, which is < 0.
-            if (count < 0 || startIndex - count + 1 < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
-            }
-
-            if (options == CompareOptions.OrdinalIgnoreCase)
-            {
-                return source.LastIndexOf(value.ToString(), startIndex, count, StringComparison.OrdinalIgnoreCase);
-            }
-
-            if (GlobalizationMode.Invariant)
-            {
-                return InvariantLastIndexOf(source, char.ToString(value), startIndex, count, (options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0);
-            }
-
-            return LastIndexOfCore(source, value.ToString(), startIndex, count, options);
+            return LastIndexOf(source, MemoryMarshal.CreateReadOnlySpan(ref value, 1), startIndex, count, options);
         }
 
         public int LastIndexOf(ReadOnlySpan<char> source, char value, CompareOptions options = CompareOptions.None)
@@ -1283,56 +1232,62 @@ namespace System.Globalization
                 throw new ArgumentNullException(nameof(value));
             }
 
-            // Validate CompareOptions
-            // Ordinal can't be selected with other flags
-            if ((options & ValidIndexMaskOffFlags) != 0 &&
-                (options != CompareOptions.Ordinal) &&
-                (options != CompareOptions.OrdinalIgnoreCase))
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            return LastIndexOf(source, value.AsSpan(), startIndex, count, options);
+        }
 
-            // Special case for 0 length input strings
-            if (source.Length == 0 && (startIndex == -1 || startIndex == 0))
-            {
-                return (value.Length == 0) ? 0 : -1;
-            }
+        internal int LastIndexOf(string source, ReadOnlySpan<char> value, int startIndex, int count, CompareOptions options)
+        {
+            Debug.Assert(source != null);
 
-            // Make sure we're not out of range
-            if (startIndex < 0 || startIndex > source.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
-            }
+        TryAgain:
 
-            // Make sure that we allow startIndex == source.Length
-            if (startIndex == source.Length)
+            // Previous versions of the Framework special-cased empty 'source' to allow startIndex = -1 or startIndex = 0,
+            // ignoring 'count' and short-circuiting the entire operation. This optimization is only valid for ordinal
+            // (non-linguistic) sorts. So we'll preserve compat as much as we can by special-casing an ordinal sort and
+            // performing this check.
+            //
+            // See the comments just before string.IndexOf(string) for more information on how these computations are
+            // performed.
+
+            if ((uint)startIndex >= (uint)source.Length)
             {
-                startIndex--;
-                if (count > 0)
+                if (startIndex == -1 && source.Length == 0)
                 {
-                    count--;
+                    count = 0; // normalize
                 }
-
-                // If we are looking for nothing, just return 0
-                if (value.Length == 0 && count >= 0 && startIndex - count + 1 >= 0)
+                else if (startIndex == source.Length)
                 {
-                    return startIndex;
+                    // The caller likely had an off-by-one error when invoking the API. The Framework has historically
+                    // allowed for this and tried to fix up the parameters, so we'll continue to do so for compat.
+
+                    startIndex--;
+                    if (count > 0)
+                    {
+                        count--;
+                    }
+
+                    goto TryAgain; // guaranteed never to loop more than once
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_Index);
                 }
             }
 
-            // 2nd half of this also catches when startIndex == MAXINT, so MAXINT - 0 + 1 == -1, which is < 0.
-            if (count < 0 || startIndex - count + 1 < 0)
+            startIndex = startIndex + 1 - count;
+
+            if ((uint)startIndex > (uint)source.Length || (uint)count > (uint)(source.Length - startIndex))
             {
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_Count);
             }
 
-            if (options == CompareOptions.OrdinalIgnoreCase)
+            int retVal = LastIndexOf(source.AsSpan(startIndex, count), value, options);
+            if (retVal >= 0)
             {
-                return LastIndexOfOrdinal(source, value, startIndex, count, ignoreCase: true);
+                retVal += startIndex;
             }
 
-            if (GlobalizationMode.Invariant)
-                return InvariantLastIndexOf(source, value, startIndex, count, (options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0);
-
-            return LastIndexOfCore(source, value, startIndex, count, options);
+            return retVal;
         }
 
         public int LastIndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
@@ -1375,7 +1330,7 @@ namespace System.Globalization
         {
             if (GlobalizationMode.Invariant)
             {
-                return InvariantLastIndexOf(source, value, startIndex, count, ignoreCase);
+                return InvariantIndexOf(source.AsSpan(startIndex, count), value, ignoreCase, fromBeginning: false);
             }
 
             return LastIndexOfOrdinalCore(source, value, startIndex, count, ignoreCase);

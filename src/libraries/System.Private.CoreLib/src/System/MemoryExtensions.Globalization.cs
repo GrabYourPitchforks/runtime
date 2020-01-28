@@ -327,7 +327,7 @@ namespace System
 
             if (value.Length == 0)
             {
-                return true;
+                return true; // the empty string is trivially a suffix of every other string
             }
 
             if (comparisonType >= StringComparison.Ordinal || GlobalizationMode.Invariant)
@@ -355,7 +355,7 @@ namespace System
 
             if (value.Length == 0)
             {
-                return true;
+                return true; // the empty string is trivially a prefix of every other string
             }
 
             if (comparisonType >= StringComparison.Ordinal || GlobalizationMode.Invariant)
