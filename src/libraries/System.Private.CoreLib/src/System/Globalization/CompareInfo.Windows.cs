@@ -281,45 +281,19 @@ namespace System.Globalization
             }
         }
 
-        internal unsafe int IndexOfCore(string source, string target, int startIndex, int count, CompareOptions options, int* matchLengthPtr)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(source != null);
-            Debug.Assert(target != null);
-            Debug.Assert((options & CompareOptions.OrdinalIgnoreCase) == 0);
-            Debug.Assert((options & CompareOptions.Ordinal) == 0);
-
-            int retValue = FindString(FIND_FROMSTART | (uint)GetNativeCompareFlags(options), source.AsSpan(startIndex, count),
-                                                            target.AsSpan(), matchLengthPtr);
-            if (retValue >= 0)
-            {
-                return retValue + startIndex;
-            }
-
-            return -1;
-        }
-
-        internal unsafe int IndexOfCore(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, int* matchLengthPtr, bool fromBeginning)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(target.Length != 0);
-            Debug.Assert(options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase);
-
-            uint positionFlag = fromBeginning ? (uint)FIND_FROMSTART : FIND_FROMEND;
-            return FindString(positionFlag | (uint)GetNativeCompareFlags(options), source, target, matchLengthPtr);
-        }
-
         // Internal method which skips all parameter checks, for Framework use only
         internal unsafe int IndexOfInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, bool fromBeginning)
+            => IndexOfInternal(source, target, options, fromBeginning, matchLengthPtr: null);
+
+        // Internal method which skips all parameter checks, for Framework use only
+        internal unsafe int IndexOfInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, bool fromBeginning, int* matchLengthPtr)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert(!target.IsEmpty);
             Debug.Assert((options & ValidIndexMaskOffFlags) != 0);
 
             uint positionFlag = fromBeginning ? (uint)FIND_FROMSTART : FIND_FROMEND;
-            return FindString(positionFlag | (uint)GetNativeCompareFlags(options), source, target, null);
+            return FindString(positionFlag | (uint)GetNativeCompareFlags(options), source, target, matchLengthPtr);
         }
 
         private unsafe int LastIndexOfCore(string source, string target, int startIndex, int count, CompareOptions options)

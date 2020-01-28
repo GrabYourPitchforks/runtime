@@ -1134,15 +1134,13 @@ namespace System.Globalization
             }
             else
             {
-                if (fromBeginning)
+                int retValue = IndexOfInternal(source.AsSpan(startIndex, count), value, options, fromBeginning, matchLengthPtr);
+                if (retValue >= 0)
                 {
-                    // Call the string-based overload, as it special-cases IsFastSort as a perf optimization.
-                    return IndexOfCore(source, value, startIndex, count, options, matchLengthPtr);
+                    retValue += startIndex;
                 }
-                else
-                {
-                    return IndexOfCore(source.AsSpan(startIndex, count), value, options, matchLengthPtr, fromBeginning: false);
-                }
+
+                return retValue;
             }
         }
 
