@@ -366,7 +366,7 @@ namespace System.Globalization
         internal unsafe bool EndsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(!source.IsEmpty);
+            Debug.Assert(!suffix.IsEmpty);
             Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 
