@@ -342,28 +342,34 @@ namespace System.Globalization
 
         internal int CompareOptionNone(ReadOnlySpan<char> string1, ReadOnlySpan<char> string2)
         {
-            // Check for empty span or span from a null string
-            if (string1.Length == 0 || string2.Length == 0)
-            {
-                return string1.Length - string2.Length;
-            }
+            // Can only perform empty string optimizations for ordinal (non-linguistic) comparisons.
 
-            return GlobalizationMode.Invariant ?
-                string.CompareOrdinal(string1, string2) :
-                CompareString(string1, string2, CompareOptions.None);
+            if (GlobalizationMode.Invariant)
+            {
+                return (string1.Length == 0 || string2.Length == 0)
+                    ? string1.Length - string2.Length
+                    : string.CompareOrdinal(string1, string2);
+            }
+            else
+            {
+                return CompareString(string1, string2, CompareOptions.None);
+            }
         }
 
         internal int CompareOptionIgnoreCase(ReadOnlySpan<char> string1, ReadOnlySpan<char> string2)
         {
-            // Check for empty span or span from a null string
-            if (string1.Length == 0 || string2.Length == 0)
-            {
-                return string1.Length - string2.Length;
-            }
+            // Can only perform empty string optimizations for ordinal (non-linguistic) comparisons.
 
-            return GlobalizationMode.Invariant ?
-                CompareOrdinalIgnoreCase(string1, string2) :
-                CompareString(string1, string2, CompareOptions.IgnoreCase);
+            if (GlobalizationMode.Invariant)
+            {
+                return (string1.Length == 0 || string2.Length == 0)
+                    ? string1.Length - string2.Length
+                    : CompareOrdinalIgnoreCase(string1, string2);
+            }
+            else
+            {
+                return CompareString(string1, string2, CompareOptions.IgnoreCase);
+            }
         }
 
         /// <summary>
