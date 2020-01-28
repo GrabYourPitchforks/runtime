@@ -330,43 +330,6 @@ namespace System.Globalization
             }
         }
 
-        private unsafe int FindString(
-            uint dwFindNLSStringFlags,
-            string lpStringSource,
-            int startSource,
-            int cchSource,
-            string lpStringValue,
-            int startValue,
-            int cchValue,
-            int* pcchFound)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(lpStringSource != null);
-            Debug.Assert(lpStringValue != null);
-
-            string? localeName = _sortHandle != IntPtr.Zero ? null : _sortName;
-
-            fixed (char* pLocaleName = localeName)
-            fixed (char* pSource = lpStringSource)
-            fixed (char* pValue = lpStringValue)
-            {
-                char* pS = pSource + startSource;
-                char* pV = pValue + startValue;
-
-                return Interop.Kernel32.FindNLSStringEx(
-                                    pLocaleName,
-                                    dwFindNLSStringFlags,
-                                    pS,
-                                    cchSource,
-                                    pV,
-                                    cchValue,
-                                    pcchFound,
-                                    null,
-                                    null,
-                                    _sortHandle);
-            }
-        }
-
         internal unsafe int IndexOfCore(string source, string target, int startIndex, int count, CompareOptions options, int* matchLengthPtr)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
@@ -376,8 +339,8 @@ namespace System.Globalization
             Debug.Assert((options & CompareOptions.OrdinalIgnoreCase) == 0);
             Debug.Assert((options & CompareOptions.Ordinal) == 0);
 
-            int retValue = FindString(FIND_FROMSTART | (uint)GetNativeCompareFlags(options), source, startIndex, count,
-                                                            target, 0, target.Length, matchLengthPtr);
+            int retValue = FindString(FIND_FROMSTART | (uint)GetNativeCompareFlags(options), source.AsSpan(startIndex, count),
+                                                            target.AsSpan(), matchLengthPtr);
             if (retValue >= 0)
             {
                 return retValue + startIndex;
@@ -425,8 +388,8 @@ namespace System.Globalization
             }
             else
             {
-                int retValue = FindString(FIND_FROMEND | (uint)GetNativeCompareFlags(options), source, startIndex - count + 1,
-                                                               count, target, 0, target.Length, null);
+                int retValue = FindString(FIND_FROMEND | (uint)GetNativeCompareFlags(options), source.AsSpan(startIndex - count + 1, count),
+                                                               target.AsSpan(), null);
 
                 if (retValue >= 0)
                 {
