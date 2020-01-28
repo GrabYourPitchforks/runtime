@@ -1480,31 +1480,18 @@ namespace System.Globalization
         public override int GetHashCode() => Name.GetHashCode();
 
         /// <summary>
-        /// This internal method allows a method that allows the equivalent of creating a Sortkey for a
-        /// string from CompareInfo, and generate a hashcode value from it.  It is not very convenient
-        /// to use this method as is and it creates an unnecessary Sortkey object that will be GC'ed.
-        ///
         /// The hash code is guaranteed to be the same for string A and B where A.Equals(B) is true and both
         /// the CompareInfo and the CompareOptions are the same. If two different CompareInfo objects
         /// treat the string the same way, this implementation will treat them differently (the same way that
         /// Sortkey does at the moment).
-        ///
-        /// This method will never be made public itself, but public consumers of it could be created, e.g.:
-        ///
-        ///     string.GetHashCode(CultureInfo)
-        ///     string.GetHashCode(CompareInfo)
-        ///     string.GetHashCode(CultureInfo, CompareOptions)
-        ///     string.GetHashCode(CompareInfo, CompareOptions)
-        ///     etc.
-        ///
-        /// (the methods above that take a CultureInfo would use CultureInfo.CompareInfo)
         /// </summary>
-        internal int GetHashCodeOfString(string source, CompareOptions options)
+        public int GetHashCode(string source, CompareOptions options)
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
+
             if ((options & ValidHashCodeOfStringMaskOffFlags) == 0)
             {
                 // No unsupported flags are set - continue on with the regular logic
@@ -1530,11 +1517,6 @@ namespace System.Globalization
                 // Unsupported combination of flags specified
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
             }
-        }
-
-        public int GetHashCode(string source, CompareOptions options)
-        {
-            return GetHashCodeOfString(source, options);
         }
 
         public int GetHashCode(ReadOnlySpan<char> source, CompareOptions options)
