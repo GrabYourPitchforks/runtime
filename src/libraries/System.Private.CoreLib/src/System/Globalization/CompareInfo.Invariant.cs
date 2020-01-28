@@ -186,7 +186,7 @@ namespace System.Globalization
             return (uint)(c - 'a') <= (uint)('z' - 'a') ? (char)(c - 0x20) : c;
         }
 
-        private static int InvariantGetSortKeyLength(ReadOnlySpan<char> source, CompareOptions options)
+        private int InvariantGetSortKeyLength(ReadOnlySpan<char> source, CompareOptions options)
         {
             if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
             {
@@ -227,41 +227,28 @@ namespace System.Globalization
             return source.Length * sizeof(char);
         }
 
-        private unsafe SortKey InvariantCreateSortKey(string source, CompareOptions options)
+        private SortKey InvariantCreateSortKey(string source, CompareOptions options)
         {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
-
-            if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
-            {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
 
             byte[] keyData;
             if (source.Length == 0)
             {
+                if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
+                {
+                    throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+                }
+
                 keyData = Array.Empty<byte>();
             }
             else
             {
                 // In the invariant mode, all string comparisons are done as ordinal so when generating the sort keys we generate it according to this fact
                 keyData = new byte[source.Length * sizeof(char)];
-
-                fixed (char* pChar = source) fixed (byte* pByte = keyData)
-                {
-                    if ((options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0)
-                    {
-                        short* pShort = (short*)pByte;
-                        for (int i = 0; i < source.Length; i++)
-                        {
-                            pShort[i] = (short)InvariantToUpper(source[i]);
-                        }
-                    }
-                    else
-                    {
-                        Buffer.MemoryCopy(pChar, pByte, keyData.Length, keyData.Length);
-                    }
-                }
+                int bytesWritten = InvariantGetSortKey(source, keyData, options);
+                Debug.Assert(bytesWritten == keyData.Length);
             }
+
             return new SortKey(Name, source, options, keyData);
         }
     }
