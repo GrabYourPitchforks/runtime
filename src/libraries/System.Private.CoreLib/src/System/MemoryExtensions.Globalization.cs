@@ -348,11 +348,6 @@ namespace System
                 return (span.Length >= value.Length) ? (CompareInfo.CompareOrdinalIgnoreCase(span.Slice(span.Length - value.Length), value) == 0) : false;
             }
 
-            if (span.Length == 0)
-            {
-                return false;
-            }
-
             return (comparisonType >= StringComparison.InvariantCulture) ?
                 CompareInfo.Invariant.EndsWithInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType)) :
                     CultureInfo.CurrentCulture.CompareInfo.EndsWithInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
@@ -379,11 +374,6 @@ namespace System
                     return span.StartsWith(value);
 
                 return (span.Length >= value.Length) ? (CompareInfo.CompareOrdinalIgnoreCase(span.Slice(0, value.Length), value) == 0) : false;
-            }
-
-            if (span.Length == 0)
-            {
-                return false;
             }
 
             return (comparisonType >= StringComparison.InvariantCulture) ?

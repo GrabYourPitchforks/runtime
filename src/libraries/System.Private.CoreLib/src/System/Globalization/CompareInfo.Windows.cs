@@ -315,7 +315,7 @@ namespace System.Globalization
         internal unsafe bool StartsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(!source.IsEmpty);
+            Debug.Assert(!prefix.IsEmpty);
             Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 

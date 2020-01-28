@@ -705,15 +705,6 @@ namespace System.Globalization
                 throw new ArgumentNullException(nameof(prefix));
             }
 
-            if (prefix.Length == 0)
-            {
-                return true;
-            }
-            if (source.Length == 0)
-            {
-                return false;
-            }
-
             return IsPrefix(source.AsSpan(), prefix.AsSpan(), options);
         }
 
@@ -765,15 +756,6 @@ namespace System.Globalization
             if (suffix == null)
             {
                 throw new ArgumentNullException(nameof(suffix));
-            }
-
-            if (suffix.Length == 0)
-            {
-                return true;
-            }
-            if (source.Length == 0)
-            {
-                return false;
             }
 
             return IsSuffix(source.AsSpan(), suffix.AsSpan(), options);
