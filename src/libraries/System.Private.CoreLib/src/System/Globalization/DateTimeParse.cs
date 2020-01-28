@@ -410,7 +410,7 @@ new DS[] { DS.ERROR,  DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR, 
                 return false;
             }
 
-            if (str.CompareInfo.Compare(str.Value.Slice(str.Index, target.Length), target, CompareOptions.IgnoreCase) != 0)
+            if (str.CompareInfo.EqualsIgnoreCase(str.Value.Slice(str.Index, target.Length), target))
             {
                 return false;
             }
@@ -5445,7 +5445,7 @@ new DS[] { DS.ERROR,  DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR, 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal bool MatchSpecifiedWord(string target) =>
             Index + target.Length <= Length &&
-            m_info.Compare(Value.Slice(Index, target.Length), target, CompareOptions.IgnoreCase) == 0;
+            m_info.EqualsIgnoreCase(Value.Slice(Index, target.Length), target);
 
         private static readonly char[] WhiteSpaceChecks = new char[] { ' ', '\u00A0' };
 
@@ -5454,7 +5454,7 @@ new DS[] { DS.ERROR,  DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR, 
             int valueRemaining = Value.Length - Index;
             matchLength = target.Length;
 
-            if (matchLength > valueRemaining || m_info.Compare(Value.Slice(Index, matchLength), target, CompareOptions.IgnoreCase) != 0)
+            if (matchLength > valueRemaining || m_info.EqualsIgnoreCase(Value.Slice(Index, matchLength), target))
             {
                 // Check word by word
                 int targetPosition = 0;                 // Where we are in the target string
@@ -5548,7 +5548,7 @@ new DS[] { DS.ERROR,  DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR, 
                 return false;
             }
 
-            if (m_info.Compare(Value.Slice(Index, str.Length), str, CompareOptions.Ordinal) == 0)
+            if (Value.Slice(Index, str.Length).SequenceEqual(str)) // test for ordinal equality
             {
                 // Update the Index to the end of the matching string.
                 // So the following GetNext()/Match() opeartion will get

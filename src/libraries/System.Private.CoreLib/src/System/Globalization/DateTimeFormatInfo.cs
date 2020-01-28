@@ -2432,7 +2432,7 @@ namespace System.Globalization
 
                     if (compareStrings &&
                         ((value.tokenString.Length == 1 && str.Value[str.Index] == value.tokenString[0]) ||
-                         Culture.CompareInfo.Compare(str.Value.Slice(str.Index, value.tokenString.Length), value.tokenString, CompareOptions.IgnoreCase) == 0))
+                         Culture.CompareInfo.EqualsIgnoreCase(str.Value.Slice(str.Index, value.tokenString.Length), value.tokenString)))
                     {
                         tokenType = value.tokenType & TokenMask;
                         tokenValue = value.tokenValue;
