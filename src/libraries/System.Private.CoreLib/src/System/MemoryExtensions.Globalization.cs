@@ -142,12 +142,7 @@ namespace System
 
             if (value.Length == 0)
             {
-                return 0;
-            }
-
-            if (span.Length == 0)
-            {
-                return -1;
+                return 0; // empty substring trivially occurs at every index (including start) of search space
             }
 
             if (comparisonType == StringComparison.Ordinal)
@@ -192,12 +187,7 @@ namespace System
 
             if (value.Length == 0)
             {
-                return span.Length > 0 ? span.Length - 1 : 0;
-            }
-
-            if (span.Length == 0)
-            {
-                return -1;
+                return span.Length; // empty substring trivially occurs at every index (including the end) of the search space
             }
 
             if (GlobalizationMode.Invariant)
