@@ -168,11 +168,11 @@ namespace System
             {
                 case StringComparison.CurrentCulture:
                 case StringComparison.CurrentCultureIgnoreCase:
-                    return CultureInfo.CurrentCulture.CompareInfo.IndexOfCore(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                    return CultureInfo.CurrentCulture.CompareInfo.IndexOfInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType), fromBeginning: true);
 
                 case StringComparison.InvariantCulture:
                 case StringComparison.InvariantCultureIgnoreCase:
-                    return CompareInfo.Invariant.IndexOfCore(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                    return CompareInfo.Invariant.IndexOfInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType), fromBeginning: true);
 
                 default:
                     Debug.Assert(comparisonType == StringComparison.OrdinalIgnoreCase);
@@ -209,11 +209,11 @@ namespace System
             {
                 case StringComparison.CurrentCulture:
                 case StringComparison.CurrentCultureIgnoreCase:
-                    return CultureInfo.CurrentCulture.CompareInfo.LastIndexOf(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                    return CultureInfo.CurrentCulture.CompareInfo.IndexOfInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType), fromBeginning: false);
 
                 case StringComparison.InvariantCulture:
                 case StringComparison.InvariantCultureIgnoreCase:
-                    return CompareInfo.Invariant.LastIndexOf(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType));
+                    return CompareInfo.Invariant.IndexOfInternal(span, value, string.GetCaseCompareOfComparisonCulture(comparisonType), fromBeginning: false);
 
                 default:
                     Debug.Assert(comparisonType == StringComparison.Ordinal || comparisonType == StringComparison.OrdinalIgnoreCase);

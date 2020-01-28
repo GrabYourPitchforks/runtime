@@ -1035,22 +1035,6 @@ namespace System.Globalization
             return IndexOfOrdinalCore(source, value, ignoreCase, fromBeginning: false);
         }
 
-        // Internal method which skips all parameter checks, for Framework use only
-        internal unsafe int IndexOfCore(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(!value.IsEmpty);
-            return IndexOfCore(source, value, options, null, fromBeginning: true);
-        }
-
-        internal unsafe int LastIndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(!source.IsEmpty);
-            Debug.Assert(!value.IsEmpty);
-            return IndexOfCore(source, value, options, null, fromBeginning: false);
-        }
-
         /// <summary>
         /// The following IndexOf overload is mainly used by String.Replace. This overload assumes the parameters are already validated
         /// and the caller is passing a valid matchLengthPtr pointer.
@@ -1390,7 +1374,7 @@ namespace System.Globalization
             return LastIndexOfCore(source, value, startIndex, count, options);
         }
 
-        public int LastIndexOf_New(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
+        public int LastIndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
         {
             // Validate CompareOptions
             // Ordinal can't be selected with other flags
