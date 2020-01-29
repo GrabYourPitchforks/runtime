@@ -302,11 +302,15 @@ namespace System.Globalization
             }
             else
             {
-                retValue = FindString(FIND_FROMEND | (uint)GetNativeCompareFlags(options), source.AsSpan(startIndex - count + 1, count),
-                                                           target, null);
+                retValue = FindString(FIND_FROMEND | (uint)GetNativeCompareFlags(options), sourceSpan, targetSpan, null);
             }
 
-            return (retValue >= 0) ? retValue + adjustedStartIndex : -1;
+            if (retValue >= 0)
+            {
+                retValue += adjustedStartIndex;
+            }
+
+            return retValue;
         }
 
         // Internal method which skips all parameter checks, for Framework use only
