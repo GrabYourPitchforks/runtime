@@ -4330,6 +4330,7 @@ namespace System.Globalization
         public int LCID { get { throw null; } }
         public string Name { get { throw null; } }
         public System.Globalization.SortVersion Version { get { throw null; } }
+        public int Compare(System.ReadOnlySpan<char> string1, System.ReadOnlySpan<char> string2, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public int Compare(string? string1, int offset1, int length1, string? string2, int offset2, int length2) { throw null; }
         public int Compare(string? string1, int offset1, int length1, string? string2, int offset2, int length2, System.Globalization.CompareOptions options) { throw null; }
         public int Compare(string? string1, int offset1, string? string2, int offset2) { throw null; }
@@ -4344,8 +4345,10 @@ namespace System.Globalization
         public override int GetHashCode() { throw null; }
         public int GetHashCode(System.ReadOnlySpan<char> source, System.Globalization.CompareOptions options) { throw null; }
         public int GetHashCode(string source, System.Globalization.CompareOptions options) { throw null; }
+        public int GetSortKey(System.ReadOnlySpan<char> source, System.Span<byte> sortKey, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public System.Globalization.SortKey GetSortKey(string source) { throw null; }
         public System.Globalization.SortKey GetSortKey(string source, System.Globalization.CompareOptions options) { throw null; }
+        public int GetSortKeyLength(System.ReadOnlySpan<char> source, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public int IndexOf(System.ReadOnlySpan<char> source, char value, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public int IndexOf(System.ReadOnlySpan<char> source, System.ReadOnlySpan<char> value, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public int IndexOf(string source, char value) { throw null; }
@@ -4364,6 +4367,7 @@ namespace System.Globalization
         public bool IsPrefix(string source, string prefix) { throw null; }
         public bool IsPrefix(string source, string prefix, System.Globalization.CompareOptions options) { throw null; }
         public static bool IsSortable(char ch) { throw null; }
+        public static bool IsSortable(System.ReadOnlySpan<char> text) { throw null; }
         public static bool IsSortable(string text) { throw null; }
         public bool IsSuffix(System.ReadOnlySpan<char> source, System.ReadOnlySpan<char> suffix, System.Globalization.CompareOptions options = System.Globalization.CompareOptions.None) { throw null; }
         public bool IsSuffix(string source, string suffix) { throw null; }
