@@ -104,6 +104,7 @@ namespace System.Globalization.Tests
         // sort before the corresponding characters that are in the block U+FF00-U+FFEF
         private static int s_expectedHalfToFullFormsComparison = PlatformDetection.IsWindows ? -1 : 1;
 
+        private static CompareInfo s_hungarianCompare = new CultureInfo("hu-HU").CompareInfo;
         private static CompareInfo s_invariantCompare = CultureInfo.InvariantCulture.CompareInfo;
         private static CompareInfo s_turkishCompare = new CultureInfo("tr-TR").CompareInfo;
 
@@ -318,7 +319,51 @@ namespace System.Globalization.Tests
             yield return new object[] { "", false, false };
             yield return new object[] { "abcdefg",  false, true };
             yield return new object[] { "\uD800\uDC00", true,  true };
-            yield return new object[] { "\uD800\uD800", true,  false };
+
+            // VS test runner for xunit doesn't handle ill-formed UTF-16 strings properly.
+            // We'll send this one through as an array to avoid U+FFFD substitution.
+
+            yield return new object[] { new char[] { '\uD800', '\uD800' }, true,  false };
+        }
+
+        public static IEnumerable<object[]> IsPrefix_TestData()
+        {
+            // Empty value comparisons
+
+            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.None, true };
+            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.IgnoreCase, true };
+            yield return new object[] { s_invariantCompare, "hello", "", (CompareOptions)(-1), true }; // should short-circuit before checking 'CompareOptions' legality
+
+            // Culture-aware comparisons
+            // Per https://www.unicode.org/cldr/charts/latest/summary/hu.html, {d}, {dz}, and {ddz} are different characters.
+
+            yield return new object[] { s_hungarianCompare, "ddz", "d", CompareOptions.None, false };
+            yield return new object[] { s_hungarianCompare, "dddz", "D", CompareOptions.IgnoreCase, true };
+
+            // Weightless comparisons
+
+            yield return new object[] { s_invariantCompare, "", "\u200d", CompareOptions.None, true };
+        }
+
+        public static IEnumerable<object[]> IsSuffix_TestData()
+        {
+            // Empty value comparisons
+
+            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.None, true };
+            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.IgnoreCase, true };
+            yield return new object[] { s_invariantCompare, "hello", "", (CompareOptions)(-1), true }; // should short-circuit before checking 'CompareOptions' legality
+
+            // Culture-aware comparisons
+            // Per https://www.unicode.org/cldr/charts/latest/summary/hu.html, {d}, {dz}, and {ddz} are different characters.
+
+            yield return new object[] { s_hungarianCompare, "dddz", "z", CompareOptions.None, false };
+            yield return new object[] { s_hungarianCompare, "dddz", "dz", CompareOptions.None, false };
+            yield return new object[] { s_hungarianCompare, "dddz", "ddz", CompareOptions.None, true };
+            yield return new object[] { s_hungarianCompare, "dddz", "DDZ", CompareOptions.IgnoreCase, true };
+
+            // Weightless comparisons
+
+            yield return new object[] { s_invariantCompare, "", "\u200d", CompareOptions.None, true };
         }
 
         [Theory]
@@ -357,6 +402,18 @@ namespace System.Globalization.Tests
             Assert.Equal(expected, SortKey.Compare(sk1, sk2));
             Assert.Equal(string1, sk1.OriginalString);
             Assert.Equal(string2, sk2.OriginalString);
+
+            // Now try the span-based versions
+
+            byte[] spanSortKey1 = new byte[sk1.KeyData.Length];
+            Assert.Equal(spanSortKey1.Length, compareInfo.GetSortKeyLength(string1, options));
+            Assert.Equal(spanSortKey1.Length, compareInfo.GetSortKey(string1, spanSortKey1, options));
+            Assert.Equal(sk1.KeyData, spanSortKey1);
+
+            byte[] spanSortKey2 = new byte[sk2.KeyData.Length];
+            Assert.Equal(spanSortKey2.Length, compareInfo.GetSortKeyLength(string2, options));
+            Assert.Equal(spanSortKey2.Length, compareInfo.GetSortKey(string2, spanSortKey2, options));
+            Assert.Equal(sk2.KeyData, spanSortKey2);
         }
 
         [Fact]
@@ -412,13 +469,61 @@ namespace System.Globalization.Tests
 
         [Theory]
         [MemberData(nameof(IsSortable_TestData))]
-        public void IsSortableTest(string source, bool hasSurrogate, bool expected)
+        public void IsSortableTest(object sourceObj, bool hasSurrogate, bool expected)
         {
+            string source = sourceObj as string ?? new string((char[])sourceObj);
+
             Assert.Equal(expected, CompareInfo.IsSortable(source));
 
             bool charExpectedResults = hasSurrogate ? false : expected;
             foreach (char c in source)
                 Assert.Equal(charExpectedResults, CompareInfo.IsSortable(c));
+        }
+
+        [Theory]
+        [MemberData(nameof(IsPrefix_TestData))]
+        public void IsPrefixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool expectedIsPrefix)
+        {
+            if (options == CompareOptions.None)
+            {
+                Assert.Equal(expectedIsPrefix, compareInfo.IsPrefix(source, value));
+            }
+
+            Assert.Equal(expectedIsPrefix, compareInfo.IsPrefix(source, value, options));
+            Assert.Equal(expectedIsPrefix, compareInfo.IsPrefix(source.AsSpan(), value.AsSpan(), options));
+
+            // For 'value' to be a prefix of 'source' implies that 'value' first occurs at index 0 in 'source'.
+
+            int indexWhereSourceFound = compareInfo.IndexOf(source, value, options);
+            Assert.Equal(expectedIsPrefix, indexWhereSourceFound == 0);
+        }
+
+        [Theory]
+        [MemberData(nameof(IsSuffix_TestData))]
+        public void IsSuffixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool expectedIsSuffix)
+        {
+            if (options == CompareOptions.None)
+            {
+                Assert.Equal(expectedIsSuffix, compareInfo.IsSuffix(source, value));
+            }
+
+            Assert.Equal(expectedIsSuffix, compareInfo.IsSuffix(source, value, options));
+            Assert.Equal(expectedIsSuffix, compareInfo.IsSuffix(source.AsSpan(), value.AsSpan(), options));
+
+            // For 'value' to be a suffix of 'source' implies that given the index where 'value' last occurs
+            // in 'source', the source string sliced beginning with that index is equivalent to 'value'.
+
+            int lastIndexWhereSourceFound = compareInfo.LastIndexOf(source, value, options);
+
+            if (lastIndexWhereSourceFound < 0)
+            {
+                Assert.False(expectedIsSuffix);
+            }
+            else
+            {
+                string sourceSubstr = source.Substring(lastIndexWhereSourceFound);
+                Assert.Equal(0, compareInfo.Compare(sourceSubstr, value, options));
+            }
         }
 
         [Fact]

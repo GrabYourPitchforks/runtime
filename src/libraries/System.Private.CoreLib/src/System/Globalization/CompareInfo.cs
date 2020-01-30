@@ -134,16 +134,8 @@ namespace System.Globalization
             return CultureInfo.GetCultureInfo(name).CompareInfo;
         }
 
-        public static unsafe bool IsSortable(char ch)
-        {
-            if (GlobalizationMode.Invariant)
-            {
-                return true;
-            }
-
-            char* pChar = &ch;
-            return IsSortable(pChar, 1);
-        }
+        public static bool IsSortable(char ch)
+            => IsSortable(MemoryMarshal.CreateReadOnlySpan(ref ch, 1));
 
         public static bool IsSortable(string text)
         {
@@ -971,17 +963,20 @@ namespace System.Globalization
 
         public int IndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
         {
+            // For compatibility with previous versions of the Framework, we early-exit when given a zero-length
+            // value before checking that 'options' contains a legal value.
+
+            if (value.IsEmpty)
+            {
+                return 0; // The empty substring trivially occurs at every index (including the beginning) of the search space
+            }
+
             // Validate CompareOptions
             // Ordinal can't be selected with other flags
 
             if ((options & ValidIndexMaskOffFlags) != 0 && options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase)
             {
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
-
-            if (value.IsEmpty)
-            {
-                return 0; // The empty substring trivially occurs at every index (including the beginning) of the search space
             }
 
             if (GlobalizationMode.Invariant)
@@ -1298,17 +1293,20 @@ namespace System.Globalization
 
         public int LastIndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options = CompareOptions.None)
         {
+            // For compatibility with previous versions of the Framework, we early-exit when given a zero-length
+            // value before checking that 'options' contains a legal value.
+
+            if (value.IsEmpty)
+            {
+                return source.Length; // The empty substring trivially occurs at every index (including the end) of the search space
+            }
+
             // Validate CompareOptions
             // Ordinal can't be selected with other flags
 
             if ((options & ValidIndexMaskOffFlags) != 0 && options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase)
             {
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
-
-            if (value.IsEmpty)
-            {
-                return source.Length; // The empty substring trivially occurs at every index (including the end) of the search space
             }
 
             if (GlobalizationMode.Invariant)
