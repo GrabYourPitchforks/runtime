@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
@@ -316,14 +317,14 @@ namespace System.Globalization.Tests
 
         public static IEnumerable<object[]> IsSortable_TestData()
         {
-            yield return new object[] { "", false, false };
-            yield return new object[] { "abcdefg",  false, true };
-            yield return new object[] { "\uD800\uDC00", true,  true };
+            yield return new object[] { "", false };
+            yield return new object[] { "abcdefg", true };
+            yield return new object[] { "\uD800\uDC00", true };
 
             // VS test runner for xunit doesn't handle ill-formed UTF-16 strings properly.
             // We'll send this one through as an array to avoid U+FFFD substitution.
 
-            yield return new object[] { new char[] { '\uD800', '\uD800' }, true,  false };
+            yield return new object[] { new char[] { '\uD800', '\uD800' }, false };
         }
 
         public static IEnumerable<object[]> IsPrefix_TestData()
@@ -403,17 +404,32 @@ namespace System.Globalization.Tests
             Assert.Equal(string1, sk1.OriginalString);
             Assert.Equal(string2, sk2.OriginalString);
 
-            // Now try the span-based versions
+            // Now try the span-based versions - use BoundedMemory to detect buffer overruns
 
-            byte[] spanSortKey1 = new byte[sk1.KeyData.Length];
-            Assert.Equal(spanSortKey1.Length, compareInfo.GetSortKeyLength(string1, options));
-            Assert.Equal(spanSortKey1.Length, compareInfo.GetSortKey(string1, spanSortKey1, options));
-            Assert.Equal(sk1.KeyData, spanSortKey1);
+            RunSpanSortKeyTest(compareInfo, string1, options, sk1.KeyData);
+            RunSpanSortKeyTest(compareInfo, string2, options, sk2.KeyData);
 
-            byte[] spanSortKey2 = new byte[sk2.KeyData.Length];
-            Assert.Equal(spanSortKey2.Length, compareInfo.GetSortKeyLength(string2, options));
-            Assert.Equal(spanSortKey2.Length, compareInfo.GetSortKey(string2, spanSortKey2, options));
-            Assert.Equal(sk2.KeyData, spanSortKey2);
+            unsafe static void RunSpanSortKeyTest(CompareInfo compareInfo, ReadOnlySpan<char> source, CompareOptions options, byte[] expectedSortKey)
+            {
+                using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData(source);
+                sourceBoundedMemory.MakeReadonly();
+
+                Assert.Equal(expectedSortKey.Length, compareInfo.GetSortKeyLength(sourceBoundedMemory.Span, options));
+
+                using BoundedMemory<byte> sortKeyBoundedMemory = BoundedMemory.Allocate<byte>(expectedSortKey.Length);
+
+                // First try with a destination which is too small - should result in an error
+
+                Assert.Throws<ArgumentException>("sortKey", () => compareInfo.GetSortKey(sourceBoundedMemory.Span, sortKeyBoundedMemory.Span.Slice(1), options));
+
+                // Next, try with a destination which is perfectly sized - should succeed
+
+                Span<byte> sortKeyBoundedSpan = sortKeyBoundedMemory.Span;
+                sortKeyBoundedSpan.Clear();
+
+                Assert.Equal(expectedSortKey.Length, compareInfo.GetSortKey(sourceBoundedMemory.Span, sortKeyBoundedSpan, options));
+                Assert.Equal(expectedSortKey, sortKeyBoundedSpan[0..expectedSortKey.Length].ToArray());
+            }
         }
 
         [Fact]
@@ -469,15 +485,22 @@ namespace System.Globalization.Tests
 
         [Theory]
         [MemberData(nameof(IsSortable_TestData))]
-        public void IsSortableTest(object sourceObj, bool hasSurrogate, bool expected)
+        public void IsSortableTest(object sourceObj, bool expected)
         {
             string source = sourceObj as string ?? new string((char[])sourceObj);
-
             Assert.Equal(expected, CompareInfo.IsSortable(source));
 
-            bool charExpectedResults = hasSurrogate ? false : expected;
+            // Now test the span version - use BoundedMemory to detect buffer overruns
+
+            using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
+            sourceBoundedMemory.MakeReadonly();
+            Assert.Equal(expected, CompareInfo.IsSortable(sourceBoundedMemory.Span));
+
+            // If the string as a whole is sortable, then all chars which aren't standalone
+            // surrogate halves must also be sortable.
+
             foreach (char c in source)
-                Assert.Equal(charExpectedResults, CompareInfo.IsSortable(c));
+                Assert.Equal(expected && !char.IsSurrogate(c), CompareInfo.IsSortable(c));
         }
 
         [Theory]
@@ -490,7 +513,16 @@ namespace System.Globalization.Tests
             }
 
             Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(source, value, options));
-            Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(source.AsSpan(), value.AsSpan(), options));
+
+            // Now test the span version - use BoundedMemory to detect buffer overruns
+
+            using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
+            sourceBoundedMemory.MakeReadonly();
+
+            using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(value);
+            valueBoundedMemory.MakeReadonly();
+
+            Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
 
             // For 'value' to be a prefix of 'source' implies that 'value' first occurs at index 0 in 'source'.
 
@@ -508,7 +540,16 @@ namespace System.Globalization.Tests
             }
 
             Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(source, value, options));
-            Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(source.AsSpan(), value.AsSpan(), options));
+
+            // Now test the span version - use BoundedMemory to detect buffer overruns
+
+            using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
+            sourceBoundedMemory.MakeReadonly();
+
+            using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(value);
+            valueBoundedMemory.MakeReadonly();
+
+            Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
 
             // For 'value' to be a suffix of 'source' implies that given the index where 'value' last occurs
             // in 'source', the source string sliced beginning with that index is equivalent to 'value'.
