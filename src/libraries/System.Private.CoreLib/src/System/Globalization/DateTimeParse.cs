@@ -410,7 +410,7 @@ new DS[] { DS.ERROR,  DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR, 
                 return false;
             }
 
-            if (str.CompareInfo.EqualsIgnoreCase(str.Value.Slice(str.Index, target.Length), target))
+            if (!str.CompareInfo.EqualsIgnoreCase(str.Value.Slice(str.Index, target.Length), target))
             {
                 return false;
             }
@@ -5454,7 +5454,7 @@ new DS[] { DS.ERROR,  DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR, 
             int valueRemaining = Value.Length - Index;
             matchLength = target.Length;
 
-            if (matchLength > valueRemaining || m_info.EqualsIgnoreCase(Value.Slice(Index, matchLength), target))
+            if (matchLength > valueRemaining || !m_info.EqualsIgnoreCase(Value.Slice(Index, matchLength), target))
             {
                 // Check word by word
                 int targetPosition = 0;                 // Where we are in the target string

@@ -186,14 +186,27 @@ namespace System.Globalization
 
             string? localeName = _sortHandle != IntPtr.Zero ? null : _sortName;
 
-            // It's ok to pass a zero-length string to CompareStringEx, but we can't pass a null string pointer.
+            // CompareStringEx may try to dereference the first character of its input, even if an explicit
+            // length of 0 is specified. To work around potential AVs we'll always ensure zero-length inputs
+            // are normalized to a null-terminated empty string.
+
+            if (string1.IsEmpty)
+            {
+                string1 = string.Empty;
+            }
+
+            if (string2.IsEmpty)
+            {
+                string2 = string.Empty;
+            }
 
             fixed (char* pLocaleName = localeName)
-            fixed (char* pString1 = &MemoryMarshal.GetNonNullPinnableReference(string1))
-            fixed (char* pString2 = &MemoryMarshal.GetNonNullPinnableReference(string2))
+            fixed (char* pString1 = &MemoryMarshal.GetReference(string1))
+            fixed (char* pString2 = &MemoryMarshal.GetReference(string2))
             {
-                Debug.Assert(pString1 != null);
-                Debug.Assert(pString2 != null);
+                Debug.Assert(*pString1 >= 0); // assert that we can always dereference this
+                Debug.Assert(*pString2 >= 0); // assert that we can always dereference this
+
                 int result = Interop.Kernel32.CompareStringEx(
                                     pLocaleName,
                                     (uint)GetNativeCompareFlags(options),

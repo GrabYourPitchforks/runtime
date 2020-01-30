@@ -730,6 +730,13 @@ namespace System.Tests
             AssertExtensions.Throws<ArgumentException>("oldValue", () => "abc".Replace("", "def", true, CultureInfo.CurrentCulture));
         }
 
+        [Fact]
+        public void Replace_StringComparison_WeightlessOldValue_ThrowsArgumentException()
+        {
+            AssertExtensions.Throws<ArgumentException>("oldValue", () => "abc".Replace("\u200d", "def", StringComparison.CurrentCulture));
+            AssertExtensions.Throws<ArgumentException>("oldValue", () => "abc".Replace("\u200d", "def", true, CultureInfo.CurrentCulture));
+        }
+
         [Theory]
         [InlineData(StringComparison.CurrentCulture - 1)]
         [InlineData(StringComparison.OrdinalIgnoreCase + 1)]
