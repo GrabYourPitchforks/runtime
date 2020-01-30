@@ -798,7 +798,19 @@ namespace System.Globalization.Tests
             {
                 Assert.Equal(result, CultureInfo.GetCultureInfo(cul).CompareInfo.IsPrefix(source, value, options));
                 Assert.Equal(result, source.StartsWith(value, GetStringComparison(options)));
-                Assert.Equal(result, source.AsSpan().StartsWith(value.AsSpan(), GetStringComparison(options)));
+
+                // Span versions - using BoundedMemory to check for buffer overruns
+
+                using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
+                sourceBoundedMemory.MakeReadonly();
+                ReadOnlySpan<char> sourceBoundedSpan = sourceBoundedMemory.Span;
+
+                using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(value);
+                valueBoundedMemory.MakeReadonly();
+                ReadOnlySpan<char> valueBoundedSpan = valueBoundedMemory.Span;
+
+                Assert.Equal(result, CultureInfo.GetCultureInfo(cul).CompareInfo.IsPrefix(sourceBoundedSpan, valueBoundedSpan, options));
+                Assert.Equal(result, sourceBoundedSpan.StartsWith(valueBoundedSpan, GetStringComparison(options)));
             }
         }
 
@@ -810,10 +822,38 @@ namespace System.Globalization.Tests
             {
                 Assert.Equal(result, CultureInfo.GetCultureInfo(cul).CompareInfo.IsSuffix(source, value, options));
                 Assert.Equal(result, source.EndsWith(value, GetStringComparison(options)));
-                Assert.Equal(result, source.AsSpan().EndsWith(value.AsSpan(), GetStringComparison(options)));
+
+                // Span versions - using BoundedMemory to check for buffer overruns
+
+                using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
+                sourceBoundedMemory.MakeReadonly();
+                ReadOnlySpan<char> sourceBoundedSpan = sourceBoundedMemory.Span;
+
+                using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(value);
+                valueBoundedMemory.MakeReadonly();
+                ReadOnlySpan<char> valueBoundedSpan = valueBoundedMemory.Span;
+
+                Assert.Equal(result, CultureInfo.GetCultureInfo(cul).CompareInfo.IsSuffix(sourceBoundedSpan, valueBoundedSpan, options));
+                Assert.Equal(result, sourceBoundedSpan.EndsWith(valueBoundedSpan, GetStringComparison(options)));
             }
         }
 
+        [Theory]
+        [InlineData("", false)]
+        [InlineData('x', true)]
+        [InlineData('\ud800', true)] // standalone high surrogate
+        [InlineData("hello", true)]
+        public void TestIsSortable(object sourceObj, bool expectedResult)
+        {
+            if (sourceObj is string s)
+            {
+                Assert.Equal(expectedResult, CompareInfo.IsSortable(s));
+            }
+            else
+            {
+                Assert.Equal(expectedResult, CompareInfo.IsSortable((char)sourceObj));
+            }
+        }
 
         [Theory]
         [MemberData(nameof(Compare_TestData))]
@@ -822,16 +862,28 @@ namespace System.Globalization.Tests
             foreach (string cul in s_cultureNames)
             {
                 int res = CultureInfo.GetCultureInfo(cul).CompareInfo.Compare(source, value, options);
-                if (res < 0) res = -1;
-                if (res > 0) res = 1;
-                Assert.Equal(result, res);
+                Assert.Equal(result, Math.Sign(res));
+
                 res = string.Compare(source, value, GetStringComparison(options));
-                if (res < 0) res = -1;
-                if (res > 0) res = 1;
-                Assert.Equal(result, res);
+                Assert.Equal(result, Math.Sign(res));
+
+                // Span versions - using BoundedMemory to check for buffer overruns
+
+                using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
+                sourceBoundedMemory.MakeReadonly();
+                ReadOnlySpan<char> sourceBoundedSpan = sourceBoundedMemory.Span;
+
+                using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(value);
+                valueBoundedMemory.MakeReadonly();
+                ReadOnlySpan<char> valueBoundedSpan = valueBoundedMemory.Span;
+
+                res = CultureInfo.GetCultureInfo(cul).CompareInfo.Compare(sourceBoundedSpan, valueBoundedSpan, options);
+                Assert.Equal(result, Math.Sign(res));
+
+                res = sourceBoundedSpan.CompareTo(valueBoundedSpan, GetStringComparison(options));
+                Assert.Equal(result, Math.Sign(res));
             }
         }
-
 
         [Theory]
         [MemberData(nameof(ToLower_TestData))]
