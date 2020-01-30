@@ -327,46 +327,6 @@ namespace System.Globalization.Tests
             yield return new object[] { new char[] { '\uD800', '\uD800' }, false };
         }
 
-        public static IEnumerable<object[]> IsPrefix_TestData()
-        {
-            // Empty value comparisons
-
-            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.None, true };
-            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.IgnoreCase, true };
-            yield return new object[] { s_invariantCompare, "hello", "", (CompareOptions)(-1), true }; // should short-circuit before checking 'CompareOptions' legality
-
-            // Culture-aware comparisons
-            // Per https://www.unicode.org/cldr/charts/latest/summary/hu.html, {d}, {dz}, and {ddz} are different characters.
-
-            yield return new object[] { s_hungarianCompare, "ddz", "d", CompareOptions.None, false };
-            yield return new object[] { s_hungarianCompare, "dddz", "D", CompareOptions.IgnoreCase, true };
-
-            // Weightless comparisons
-
-            yield return new object[] { s_invariantCompare, "", "\u200d", CompareOptions.None, true };
-        }
-
-        public static IEnumerable<object[]> IsSuffix_TestData()
-        {
-            // Empty value comparisons
-
-            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.None, true };
-            yield return new object[] { s_invariantCompare, "hello", "", CompareOptions.IgnoreCase, true };
-            yield return new object[] { s_invariantCompare, "hello", "", (CompareOptions)(-1), true }; // should short-circuit before checking 'CompareOptions' legality
-
-            // Culture-aware comparisons
-            // Per https://www.unicode.org/cldr/charts/latest/summary/hu.html, {dzs}, {s}, and {zs} are different characters.
-
-            yield return new object[] { s_hungarianCompare, "dzs", "s", CompareOptions.None, false };
-            yield return new object[] { s_hungarianCompare, "dz\u200ds", "s", CompareOptions.None, true }; // ZWJ splits the "zs" portion
-            yield return new object[] { s_hungarianCompare, "xdzs", "ZS", CompareOptions.IgnoreCase, false };
-            yield return new object[] { s_hungarianCompare, "xdzs", "DZS", CompareOptions.IgnoreCase, true };
-
-            // Weightless comparisons
-
-            yield return new object[] { s_invariantCompare, "", "\u200d", CompareOptions.None, true };
-        }
-
         [Theory]
         [MemberData(nameof(CompareInfo_TestData))]
         public static void LcidTest(string cultureName, int lcid)
@@ -501,70 +461,6 @@ namespace System.Globalization.Tests
 
             foreach (char c in source)
                 Assert.Equal(expected && !char.IsSurrogate(c), CompareInfo.IsSortable(c));
-        }
-
-        [Theory]
-        [MemberData(nameof(IsPrefix_TestData))]
-        public void IsPrefixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool isPrefixExpectedValue)
-        {
-            if (options == CompareOptions.None)
-            {
-                Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(source, value));
-            }
-
-            Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(source, value, options));
-
-            // Now test the span version - use BoundedMemory to detect buffer overruns
-
-            using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
-            sourceBoundedMemory.MakeReadonly();
-
-            using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(value);
-            valueBoundedMemory.MakeReadonly();
-
-            Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
-
-            // For 'value' to be a prefix of 'source' implies that 'value' first occurs at index 0 in 'source'.
-
-            int indexWhereSourceFound = compareInfo.IndexOf(source, value, options);
-            Assert.Equal(isPrefixExpectedValue, indexWhereSourceFound == 0);
-        }
-
-        [Theory]
-        [MemberData(nameof(IsSuffix_TestData))]
-        public void IsSuffixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool isSuffixExpectedValue)
-        {
-            if (options == CompareOptions.None)
-            {
-                Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(source, value));
-            }
-
-            Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(source, value, options));
-
-            // Now test the span version - use BoundedMemory to detect buffer overruns
-
-            using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(source);
-            sourceBoundedMemory.MakeReadonly();
-
-            using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData<char>(value);
-            valueBoundedMemory.MakeReadonly();
-
-            Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
-
-            // For 'value' to be a suffix of 'source' implies that given the index where 'value' last occurs
-            // in 'source', the source string sliced beginning with that index is equivalent to 'value'.
-
-            int lastIndexWhereSourceFound = compareInfo.LastIndexOf(source, value, options);
-
-            if (lastIndexWhereSourceFound < 0)
-            {
-                Assert.False(isSuffixExpectedValue);
-            }
-            else
-            {
-                string sourceSubstr = source.Substring(lastIndexWhereSourceFound);
-                Assert.True(sourceSubstr == value || compareInfo.Compare(sourceSubstr, value, options) == 0);
-            }
         }
 
         [Fact]
