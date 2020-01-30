@@ -305,7 +305,7 @@ namespace System.Globalization.Tests
 
         public static IEnumerable<object[]> IndexOf_TestData()
         {
-            yield return new object[] { s_invariantCompare, "foo", "", 0,  0, 0 };
+            yield return new object[] { s_invariantCompare, "foo", "", 0, 0, 1 };
             yield return new object[] { s_invariantCompare, "", "", 0, 0, 0 };
             yield return new object[] { s_invariantCompare, "Hello", "l", 0,  2, -1 };
             yield return new object[] { s_invariantCompare, "Hello", "l", 3,  3, 3 };
@@ -354,12 +354,12 @@ namespace System.Globalization.Tests
             yield return new object[] { s_invariantCompare, "hello", "", (CompareOptions)(-1), true }; // should short-circuit before checking 'CompareOptions' legality
 
             // Culture-aware comparisons
-            // Per https://www.unicode.org/cldr/charts/latest/summary/hu.html, {d}, {dz}, and {ddz} are different characters.
+            // Per https://www.unicode.org/cldr/charts/latest/summary/hu.html, {dzs}, {s}, and {zs} are different characters.
 
-            yield return new object[] { s_hungarianCompare, "dddz", "z", CompareOptions.None, false };
-            yield return new object[] { s_hungarianCompare, "dddz", "dz", CompareOptions.None, false };
-            yield return new object[] { s_hungarianCompare, "dddz", "ddz", CompareOptions.None, true };
-            yield return new object[] { s_hungarianCompare, "dddz", "DDZ", CompareOptions.IgnoreCase, true };
+            yield return new object[] { s_hungarianCompare, "dzs", "s", CompareOptions.None, false };
+            yield return new object[] { s_hungarianCompare, "dz\u200ds", "s", CompareOptions.None, true }; // ZWJ splits the "zs" portion
+            yield return new object[] { s_hungarianCompare, "xdzs", "ZS", CompareOptions.IgnoreCase, false };
+            yield return new object[] { s_hungarianCompare, "xdzs", "DZS", CompareOptions.IgnoreCase, true };
 
             // Weightless comparisons
 
@@ -482,33 +482,33 @@ namespace System.Globalization.Tests
 
         [Theory]
         [MemberData(nameof(IsPrefix_TestData))]
-        public void IsPrefixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool expectedIsPrefix)
+        public void IsPrefixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool isPrefixExpectedValue)
         {
             if (options == CompareOptions.None)
             {
-                Assert.Equal(expectedIsPrefix, compareInfo.IsPrefix(source, value));
+                Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(source, value));
             }
 
-            Assert.Equal(expectedIsPrefix, compareInfo.IsPrefix(source, value, options));
-            Assert.Equal(expectedIsPrefix, compareInfo.IsPrefix(source.AsSpan(), value.AsSpan(), options));
+            Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(source, value, options));
+            Assert.Equal(isPrefixExpectedValue, compareInfo.IsPrefix(source.AsSpan(), value.AsSpan(), options));
 
             // For 'value' to be a prefix of 'source' implies that 'value' first occurs at index 0 in 'source'.
 
             int indexWhereSourceFound = compareInfo.IndexOf(source, value, options);
-            Assert.Equal(expectedIsPrefix, indexWhereSourceFound == 0);
+            Assert.Equal(isPrefixExpectedValue, indexWhereSourceFound == 0);
         }
 
         [Theory]
         [MemberData(nameof(IsSuffix_TestData))]
-        public void IsSuffixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool expectedIsSuffix)
+        public void IsSuffixTest(CompareInfo compareInfo, string source, string value, CompareOptions options, bool isSuffixExpectedValue)
         {
             if (options == CompareOptions.None)
             {
-                Assert.Equal(expectedIsSuffix, compareInfo.IsSuffix(source, value));
+                Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(source, value));
             }
 
-            Assert.Equal(expectedIsSuffix, compareInfo.IsSuffix(source, value, options));
-            Assert.Equal(expectedIsSuffix, compareInfo.IsSuffix(source.AsSpan(), value.AsSpan(), options));
+            Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(source, value, options));
+            Assert.Equal(isSuffixExpectedValue, compareInfo.IsSuffix(source.AsSpan(), value.AsSpan(), options));
 
             // For 'value' to be a suffix of 'source' implies that given the index where 'value' last occurs
             // in 'source', the source string sliced beginning with that index is equivalent to 'value'.
@@ -517,12 +517,12 @@ namespace System.Globalization.Tests
 
             if (lastIndexWhereSourceFound < 0)
             {
-                Assert.False(expectedIsSuffix);
+                Assert.False(isSuffixExpectedValue);
             }
             else
             {
                 string sourceSubstr = source.Substring(lastIndexWhereSourceFound);
-                Assert.Equal(0, compareInfo.Compare(sourceSubstr, value, options));
+                Assert.True(sourceSubstr == value || compareInfo.Compare(sourceSubstr, value, options) == 0);
             }
         }
 

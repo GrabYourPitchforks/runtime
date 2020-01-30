@@ -76,9 +76,9 @@ namespace System.Globalization.Tests
             yield return new object[] { s_invariantCompare, "o\u0308", "o", 1, 2, CompareOptions.None, -1 };
 
             // Weightless characters
-            yield return new object[] { "", "\u200d", 0, 0, CompareOptions.None, 0 };
-            yield return new object[] { "", "\u200d", -1, 0, CompareOptions.None, 0 };
-            yield return new object[] { "hello", "\u200d", 4, 5, CompareOptions.IgnoreCase, 5 };
+            yield return new object[] { s_invariantCompare, "", "\u200d", 0, 0, CompareOptions.None, 0 };
+            yield return new object[] { s_invariantCompare, "", "\u200d", -1, 0, CompareOptions.None, 0 };
+            yield return new object[] { s_invariantCompare, "hello", "\u200d", 4, 5, CompareOptions.IgnoreCase, 5 };
 
             // Ignore symbols
             yield return new object[] { s_invariantCompare, "More Test's", "Tests", 10, 11, CompareOptions.IgnoreSymbols, 5 };
