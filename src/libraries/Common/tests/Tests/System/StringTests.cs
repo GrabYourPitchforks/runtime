@@ -22,6 +22,7 @@ namespace System.Tests
     public partial class StringTests
     {
         private const string SoftHyphen = "\u00AD";
+        private const string ZeroWidthJoiner = "\u200D"; // weightless in both ICU and NLS
         private static readonly char[] s_whiteSpaceCharacters = { '\u0009', '\u000a', '\u000b', '\u000c', '\u000d', '\u0020', '\u0085', '\u00a0', '\u1680' };
 
         [Theory]
@@ -3886,18 +3887,23 @@ namespace System.Tests
 
             if (value.Length == 0)
             {
-                int expectedIndex = s.Length > 0 ? s.Length - 1 : 0;
-                int expectedStartIndex = startIndex == s.Length ? startIndex - 1 : startIndex;
+                int expectedStartIndex = startIndex;
                 if (s.Length == 0 && (startIndex == -1 || startIndex == 0))
-                    expectedStartIndex = (value.Length == 0) ? 0 : -1;
-                Assert.Equal(expectedIndex, s.LastIndexOf(value, comparison));
+                    expectedStartIndex = 0; // empty string occurs at beginning of search space
+                if (s.Length > 0 && startIndex < s.Length)
+                    expectedStartIndex = startIndex + 1; // empty string occurs just after the last char included in the search space
+
+                Assert.Equal(s.Length, s.LastIndexOf(value, comparison));
                 Assert.Equal(expectedStartIndex, s.LastIndexOf(value, startIndex, comparison));
-                Assert.Equal(expectedIndex, s.AsSpan().LastIndexOf(value.AsSpan(), comparison));
+                Assert.Equal(s.Length, s.AsSpan().LastIndexOf(value.AsSpan(), comparison));
                 return;
             }
 
             if (s.Length == 0)
             {
+                // unit test shouldn't have passed a weightless string to this routine
+                Assert.NotEqual(value, string.Empty, StringComparer.FromComparison(comparison));
+
                 Assert.Equal(-1, s.LastIndexOf(value, comparison));
                 Assert.Equal(-1, s.LastIndexOf(value, startIndex, comparison));
                 Assert.Equal(-1, s.AsSpan().LastIndexOf(value.AsSpan(), comparison));
@@ -4067,8 +4073,8 @@ namespace System.Tests
         }
 
         [Theory]
-        [InlineData("foo", 2)]
-        [InlineData("hello", 4)]
+        [InlineData("foo", 3)]
+        [InlineData("hello", 5)]
         [InlineData("", 0)]
         public static void LastIndexOf_EmptyString(string s, int expected)
         {
@@ -4324,13 +4330,13 @@ namespace System.Tests
             string s1 = "0172377457778667789";
             string s2 = string.Empty;
             int index = s1.LastIndexOf(s2);
-            Assert.Equal(s1.Length - 1, index);
+            Assert.Equal(s1.Length, index);
 
-            // A zero-length value is always "found" at the start of the span.
+            // A zero-length value is always "found" at the end of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.LastIndexOf(value);
-            Assert.Equal(0, index);
+            Assert.Equal(span.Length, index);
         }
 
         [Fact]
@@ -6764,6 +6770,19 @@ namespace System.Tests
              CultureInfo ci = cultureName != null ? CultureInfo.GetCultureInfo(cultureName) : null;
              Assert.Equal(expected, source.StartsWith(start, ignoreCase, ci));
              Assert.Equal(expected, source.EndsWith(end, ignoreCase, ci));
+        }
+
+        [Theory]
+        [InlineData("", StringComparison.InvariantCulture, true)]
+        [InlineData("", StringComparison.Ordinal, true)]
+        [InlineData(ZeroWidthJoiner, StringComparison.InvariantCulture, true)]
+        [InlineData(ZeroWidthJoiner, StringComparison.Ordinal, false)]
+        public static void StartEndWith_ZeroWeightValue(string value, StringComparison comparison, bool expectedStartsAndEndsWithResult)
+        {
+            Assert.Equal(expectedStartsAndEndsWithResult, string.Empty.StartsWith(value, comparison));
+            Assert.Equal(expectedStartsAndEndsWithResult, string.Empty.EndsWith(value, comparison));
+            Assert.Equal(expectedStartsAndEndsWithResult ? 0 : -1, string.Empty.IndexOf(value, comparison));
+            Assert.Equal(expectedStartsAndEndsWithResult ? 0 : -1, string.Empty.LastIndexOf(value, comparison));
         }
 
         [Fact]

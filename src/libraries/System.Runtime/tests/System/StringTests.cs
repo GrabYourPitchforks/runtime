@@ -731,10 +731,18 @@ namespace System.Tests
         }
 
         [Fact]
-        public void Replace_StringComparison_WeightlessOldValue_ThrowsArgumentException()
+        public void Replace_StringComparison_WeightlessOldValue_WithOrdinalComparison_Succeeds()
         {
-            AssertExtensions.Throws<ArgumentException>("oldValue", () => "abc".Replace("\u200d", "def", StringComparison.CurrentCulture));
-            AssertExtensions.Throws<ArgumentException>("oldValue", () => "abc".Replace("\u200d", "def", true, CultureInfo.CurrentCulture));
+            Assert.Equal("abcdef", ("abc" + ZeroWidthJoiner).Replace(ZeroWidthJoiner, "def"));
+            Assert.Equal("abcdef", ("abc" + ZeroWidthJoiner).Replace(ZeroWidthJoiner, "def", StringComparison.Ordinal));
+            Assert.Equal("abcdef", ("abc" + ZeroWidthJoiner).Replace(ZeroWidthJoiner, "def", StringComparison.OrdinalIgnoreCase));
+        }
+
+        [Fact]
+        public void Replace_StringComparison_WeightlessOldValue_WithLinguisticComparison_ThrowsArgumentException()
+        {
+            AssertExtensions.Throws<ArgumentException>("oldValue", () => ("abc" + ZeroWidthJoiner).Replace(ZeroWidthJoiner, "def", StringComparison.CurrentCulture));
+            AssertExtensions.Throws<ArgumentException>("oldValue", () => ("abc" + ZeroWidthJoiner).Replace(ZeroWidthJoiner, "def", true, CultureInfo.CurrentCulture));
         }
 
         [Theory]
