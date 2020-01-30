@@ -62,6 +62,10 @@ namespace System.Globalization.Tests
             yield return new object[] { "FooBar", "Foo\u0400Bar", 0, 6, CompareOptions.Ordinal, -1 };
             yield return new object[] { "TestFooBA\u0300R", "FooB\u00C0R", 0, 11, CompareOptions.IgnoreNonSpace, -1 };
 
+            // Weightless characters
+            yield return new object[] { "", "\u200d", 0, 0, CompareOptions.None, -1 };
+            yield return new object[] { "hello", "\u200d", 0, 5, CompareOptions.IgnoreCase, -1 };
+
             // Ignore symbols
             yield return new object[] { "More Test's", "Tests", 0, 11, CompareOptions.IgnoreSymbols, -1 };
             yield return new object[] { "More Test's", "Tests", 0, 11, CompareOptions.None, -1 };
@@ -114,7 +118,7 @@ namespace System.Globalization.Tests
         public static IEnumerable<object[]> LastIndexOf_TestData()
         {
             // Empty strings
-            yield return new object[] { "foo", "", 2, 3, CompareOptions.None, 2 };
+            yield return new object[] { "foo", "", 2, 3, CompareOptions.None, 3 };
             yield return new object[] { "", "", 0, 0, CompareOptions.None, 0 };
             yield return new object[] { "", "a", 0, 0, CompareOptions.None, -1 };
             yield return new object[] { "", "", -1, 0, CompareOptions.None, 0 };
@@ -127,8 +131,8 @@ namespace System.Globalization.Tests
             yield return new object[] { "Hello", "b", 5, 5, CompareOptions.None, -1 };
             yield return new object[] { "Hello", "l", 5, 0, CompareOptions.None, -1 };
 
-            yield return new object[] { "Hello", "", 5, 5, CompareOptions.None, 4 };
-            yield return new object[] { "Hello", "", 5, 0, CompareOptions.None, 4 };
+            yield return new object[] { "Hello", "", 5, 5, CompareOptions.None, 5 };
+            yield return new object[] { "Hello", "", 5, 0, CompareOptions.None, 5 };
 
             // OrdinalIgnoreCase
             yield return new object[] { "Hello", "l", 4, 5, CompareOptions.OrdinalIgnoreCase, 3 };
@@ -166,6 +170,11 @@ namespace System.Globalization.Tests
             yield return new object[] { "FooBar", "Foo\u0400Bar", 5, 6, CompareOptions.Ordinal, -1 };
             yield return new object[] { "TestFooBA\u0300R", "FooB\u00C0R", 10, 11, CompareOptions.IgnoreNonSpace, -1 };
 
+            // Weightless characters
+            yield return new object[] { "", "\u200d", 0, 0, CompareOptions.None, -1 };
+            yield return new object[] { "", "\u200d", -1, 0, CompareOptions.None, -1 };
+            yield return new object[] { "hello", "\u200d", 4, 5, CompareOptions.IgnoreCase, -1 };
+
             // Ignore symbols
             yield return new object[] { "More Test's", "Tests", 10, 11, CompareOptions.IgnoreSymbols, -1 };
             yield return new object[] { "More Test's", "Tests", 10, 11, CompareOptions.None, -1 };
@@ -180,6 +189,9 @@ namespace System.Globalization.Tests
             // Empty strings
             yield return new object[] { "foo", "", CompareOptions.None, true };
             yield return new object[] { "", "", CompareOptions.None, true };
+
+            // Early exit for empty values before 'options' is validated
+            yield return new object[] { "hello", "", (CompareOptions)(-1), true };
 
             // Long strings
             yield return new object[] { new string('a', 5555), "aaaaaaaaaaaaaaa", CompareOptions.None, true };
@@ -205,6 +217,10 @@ namespace System.Globalization.Tests
             yield return new object[] { "FooBar", "Foo\u0400Bar", CompareOptions.Ordinal, false };
             yield return new object[] { "FooBA\u0300R", "FooB\u00C0R", CompareOptions.IgnoreNonSpace, false };
 
+            // Weightless characters
+            yield return new object[] { "", "\u200d", CompareOptions.None, false };
+            yield return new object[] { "", "\u200d", CompareOptions.IgnoreCase, false };
+
             // Ignore symbols
             yield return new object[] { "Test's can be interesting", "Tests", CompareOptions.IgnoreSymbols, false };
             yield return new object[] { "Test's can be interesting", "Tests", CompareOptions.None, false };
@@ -218,6 +234,9 @@ namespace System.Globalization.Tests
             // Empty strings
             yield return new object[] { "foo", "", CompareOptions.None, true };
             yield return new object[] { "", "", CompareOptions.None, true };
+
+            // Early exit for empty values before 'options' is validated
+            yield return new object[] { "hello", "", (CompareOptions)(-1), true };
 
             // Long strings
             yield return new object[] { new string('a', 5555), "aaaaaaaaaaaaaaa", CompareOptions.None, true };
@@ -241,6 +260,10 @@ namespace System.Globalization.Tests
             yield return new object[] { "Exhibit \u00C0", "a\u0300", CompareOptions.OrdinalIgnoreCase, false };
             yield return new object[] { "FooBar", "Foo\u0400Bar", CompareOptions.Ordinal, false };
             yield return new object[] { "FooBA\u0300R", "FooB\u00C0R", CompareOptions.IgnoreNonSpace, false };
+
+            // Weightless characters
+            yield return new object[] { "", "\u200d", CompareOptions.None, false };
+            yield return new object[] { "", "\u200d", CompareOptions.IgnoreCase, false };
 
             // Ignore symbols
             yield return new object[] { "More Test's", "Tests", CompareOptions.IgnoreSymbols, false };

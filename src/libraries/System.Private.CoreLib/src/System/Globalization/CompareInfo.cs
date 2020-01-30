@@ -711,10 +711,8 @@ namespace System.Globalization
 
         public bool IsPrefix(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options = CompareOptions.None)
         {
-            if ((options & ValidIndexMaskOffFlags) != 0)
-            {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
+            // For compatibility with previous versions of the Framework, we early-exit when given a zero-length
+            // prefix before checking that 'options' contains a legal value.
 
             if (prefix.IsEmpty)
             {
@@ -729,6 +727,11 @@ namespace System.Globalization
             if (options == CompareOptions.OrdinalIgnoreCase)
             {
                 return source.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if ((options & ValidIndexMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
             }
 
             if (GlobalizationMode.Invariant)
@@ -764,10 +767,8 @@ namespace System.Globalization
 
         public bool IsSuffix(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options = CompareOptions.None)
         {
-            if ((options & ValidIndexMaskOffFlags) != 0)
-            {
-                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
-            }
+            // For compatibility with previous versions of the Framework, we early-exit when given a zero-length
+            // suffix before checking that 'options' contains a legal value.
 
             if (suffix.IsEmpty)
             {
@@ -782,6 +783,11 @@ namespace System.Globalization
             if (options == CompareOptions.OrdinalIgnoreCase)
             {
                 return source.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if ((options & ValidIndexMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
             }
 
             if (GlobalizationMode.Invariant)
