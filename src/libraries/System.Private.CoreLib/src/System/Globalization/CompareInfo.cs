@@ -1240,6 +1240,14 @@ namespace System.Globalization
         {
             Debug.Assert(source != null);
 
+            // Validate CompareOptions
+            // Ordinal can't be selected with other flags
+
+            if ((options & ValidIndexMaskOffFlags) != 0 && options != CompareOptions.Ordinal && options != CompareOptions.OrdinalIgnoreCase)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
         TryAgain:
 
             // Previous versions of the Framework special-cased empty 'source' to allow startIndex = -1 or startIndex = 0,

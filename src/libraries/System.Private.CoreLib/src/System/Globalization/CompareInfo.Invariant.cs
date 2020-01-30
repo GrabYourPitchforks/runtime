@@ -194,7 +194,7 @@ namespace System.Globalization
                 throw new ArgumentException(SR.Argument_DestinationTooShort, nameof(sortKey));
             }
 
-            if ((options & (CompareOptions.IgnoreCase | CompareOptions.OrdinalIgnoreCase)) != 0)
+            if ((options & CompareOptions.IgnoreCase) != 0)
             {
                 ref byte rSortKey = ref MemoryMarshal.GetReference(sortKey);
                 for (int i = 0; i < source.Length; i++)

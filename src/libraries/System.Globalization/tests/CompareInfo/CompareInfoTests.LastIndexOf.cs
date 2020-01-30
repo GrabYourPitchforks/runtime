@@ -17,7 +17,7 @@ namespace System.Globalization.Tests
         public static IEnumerable<object[]> LastIndexOf_TestData()
         {
             // Empty strings
-            yield return new object[] { s_invariantCompare, "foo", "", 2, 3, CompareOptions.None, 2 };
+            yield return new object[] { s_invariantCompare, "foo", "", 2, 3, CompareOptions.None, 3 };
             yield return new object[] { s_invariantCompare, "", "", 0, 0, CompareOptions.None, 0 };
             yield return new object[] { s_invariantCompare, "", "a", 0, 0, CompareOptions.None, -1 };
             yield return new object[] { s_invariantCompare, "", "", -1, 0, CompareOptions.None, 0 };
@@ -30,8 +30,8 @@ namespace System.Globalization.Tests
             yield return new object[] { s_invariantCompare, "Hello", "b", 5, 5, CompareOptions.None, -1 };
             yield return new object[] { s_invariantCompare, "Hello", "l", 5, 0, CompareOptions.None, -1 };
 
-            yield return new object[] { s_invariantCompare, "Hello", "", 5, 5, CompareOptions.None, 4 };
-            yield return new object[] { s_invariantCompare, "Hello", "", 5, 0, CompareOptions.None, 4 };
+            yield return new object[] { s_invariantCompare, "Hello", "", 5, 5, CompareOptions.None, 5 };
+            yield return new object[] { s_invariantCompare, "Hello", "", 5, 0, CompareOptions.None, 5 };
 
             // OrdinalIgnoreCase
             yield return new object[] { s_invariantCompare, "Hello", "l", 4, 5, CompareOptions.OrdinalIgnoreCase, 3 };
@@ -74,6 +74,11 @@ namespace System.Globalization.Tests
             yield return new object[] { s_invariantCompare, "FooBar", "Foo\u0400Bar", 5, 6, CompareOptions.Ordinal, -1 };
             yield return new object[] { s_invariantCompare, "TestFooBA\u0300R", "FooB\u00C0R", 10, 11, CompareOptions.IgnoreNonSpace, 4 };
             yield return new object[] { s_invariantCompare, "o\u0308", "o", 1, 2, CompareOptions.None, -1 };
+
+            // Weightless characters
+            yield return new object[] { "", "\u200d", 0, 0, CompareOptions.None, 0 };
+            yield return new object[] { "", "\u200d", -1, 0, CompareOptions.None, 0 };
+            yield return new object[] { "hello", "\u200d", 4, 5, CompareOptions.IgnoreCase, 5 };
 
             // Ignore symbols
             yield return new object[] { s_invariantCompare, "More Test's", "Tests", 10, 11, CompareOptions.IgnoreSymbols, 5 };

@@ -2,8 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
-using System.Collections;
+using System.Runtime.InteropServices;
 using System.Text;
 using Xunit;
 
@@ -648,6 +649,73 @@ namespace System.Globalization.Tests
                                                             (byte)((0x7F & 0x0000FF00) >> 8),
                                                             (byte)(0x7F & 0xFF)));
             Assert.Equal(version, new CultureInfo(cultureName).CompareInfo.Version);
+        }
+
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(1, 2)]
+        [InlineData(100_000, 200_000)]
+        [InlineData(0x3FFF_FFFF, 0x7FFF_FFFE)]
+        [InlineData(0x4000_0000, -1)]
+        public unsafe void TestGetSortKeyLength(int inputLength, int expectedSortKeyLength)
+        {
+            ReadOnlySpan<char> dummySpan = new ReadOnlySpan<char>((void*)1, inputLength); // only used for its length; never dereferenced
+            CompareInfo compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+
+            if (expectedSortKeyLength >= 0)
+            {
+                Assert.Equal(expectedSortKeyLength, compareInfo.GetSortKeyLength(dummySpan));
+            }
+            else
+            {
+                Assert.Throws<OverflowException>(() =>
+                {
+                    compareInfo.GetSortKeyLength(new ReadOnlySpan<char>((void*)1, inputLength));
+                });
+            }
+        }
+
+        [Theory]
+        [InlineData("Hello", CompareOptions.None, "Hello")]
+        [InlineData("Hello", CompareOptions.IgnoreWidth, "Hello")]
+        [InlineData("Hello", CompareOptions.IgnoreCase, "HELLO")]
+        [InlineData("Hello", CompareOptions.IgnoreCase | CompareOptions.IgnoreWidth, "HELLO")]
+        [InlineData("Hell\u00F6", CompareOptions.None, "Hell\u00F6")] // U+00F6 = LATIN SMALL LETTER O WITH DIAERESIS
+        [InlineData("Hell\u00F6", CompareOptions.IgnoreCase, "HELL\u00F6")] // note the final "o with diaeresis" isn't capitalized
+        public unsafe void TestSortKey_FromSpan(string input, CompareOptions options, string expected)
+        {
+            int expectedOutputBytes = checked(expected.Length * sizeof(char));
+
+            CompareInfo compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+
+            // First, validate that too short a buffer throws
+
+            Assert.Throws<ArgumentException>("sortKey", () => compareInfo.GetSortKey(input, new byte[expectedOutputBytes - 1], options));
+
+            // Next, validate that using a properly-sized buffer succeeds
+            // We'll use BoundedMemory to check for buffer overruns
+
+            using BoundedMemory<char> boundedInputMemory = BoundedMemory.AllocateFromExistingData<char>(input);
+            boundedInputMemory.MakeReadonly();
+            ReadOnlySpan<char> boundedInputSpan = boundedInputMemory.Span;
+
+            using BoundedMemory<byte> boundedOutputMemory = BoundedMemory.Allocate<byte>(expectedOutputBytes);
+            Span<byte> boundedOutputSpan = boundedOutputMemory.Span;
+
+            Assert.Equal(expectedOutputBytes, compareInfo.GetSortKey(boundedInputSpan, boundedOutputSpan, options));
+            Assert.Equal(MemoryMarshal.AsBytes<char>(expected).ToArray(), boundedOutputSpan[0..expectedOutputBytes].ToArray());
+
+            // Now try it once more, passing a larger span where the last byte points to unallocated memory.
+            // If GetSortKey attempts to write beyond the number of bytes we expect, the unit test will AV.
+
+            boundedOutputSpan.Clear();
+
+            fixed (byte* pBoundedOutputSpan = boundedOutputSpan)
+            {
+                boundedOutputSpan = new Span<byte>(pBoundedOutputSpan, boundedOutputSpan.Length + 1); // last byte is unallocated memory
+                Assert.Equal(expectedOutputBytes, compareInfo.GetSortKey(boundedInputSpan, boundedOutputSpan, options));
+                Assert.Equal(MemoryMarshal.AsBytes<char>(expected).ToArray(), boundedOutputSpan[0..expectedOutputBytes].ToArray());
+            }
         }
 
         [Fact]

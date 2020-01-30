@@ -455,13 +455,13 @@ namespace System.Globalization.Tests
         public void IndexOfTest(CompareInfo compareInfo, string source, string value, int startIndex, int indexOfExpected, int lastIndexOfExpected)
         {
             Assert.Equal(indexOfExpected, compareInfo.IndexOf(source, value, startIndex));
-            if (value.Length > 0)
+            if (value.Length == 1)
             {
                 Assert.Equal(indexOfExpected, compareInfo.IndexOf(source, value[0], startIndex));
             }
 
             Assert.Equal(lastIndexOfExpected, compareInfo.LastIndexOf(source, value, startIndex));
-            if (value.Length > 0)
+            if (value.Length == 1)
             {
                 Assert.Equal(lastIndexOfExpected, compareInfo.LastIndexOf(source, value[0], startIndex));
             }
