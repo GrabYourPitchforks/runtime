@@ -80,6 +80,8 @@ namespace System.Globalization
                 return -1;
             }
 
+            Debug.Assert(!source.IsEmpty);
+
             uint positionFlag = fromBeginning ? (uint)FIND_FROMSTART : FIND_FROMEND;
             return FindStringOrdinal(positionFlag, source, value, ignoreCase);
         }
@@ -279,10 +281,6 @@ namespace System.Globalization
                 return retVal;
             }
         }
-
-        // Internal method which skips all parameter checks, for Framework use only
-        internal unsafe int IndexOfInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, bool fromBeginning)
-            => IndexOfInternal(source, target, options, fromBeginning, matchLengthPtr: null);
 
         // Internal method which skips all parameter checks, for Framework use only
         internal unsafe int IndexOfInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, bool fromBeginning, int* matchLengthPtr)
@@ -513,12 +511,15 @@ namespace System.Globalization
             return new SortKey(Name, source, options, keyData);
         }
 
-        private static unsafe bool IsSortable(char* text, int length)
+        private static unsafe bool IsSortableCore(ReadOnlySpan<char> text)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(text != null);
+            Debug.Assert(!text.IsEmpty);
 
-            return Interop.Kernel32.IsNLSDefinedString(Interop.Kernel32.COMPARE_STRING, 0, IntPtr.Zero, text, length);
+            fixed (char* pText = &MemoryMarshal.GetReference(text))
+            {
+                return Interop.Kernel32.IsNLSDefinedString(Interop.Kernel32.COMPARE_STRING, 0, IntPtr.Zero, pText, text.Length);
+            }
         }
 
         private const int COMPARE_OPTIONS_ORDINAL = 0x40000000;       // Ordinal

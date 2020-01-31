@@ -147,7 +147,7 @@ namespace System.Globalization
             return IsSortable(text.AsSpan());
         }
 
-        public static unsafe bool IsSortable(ReadOnlySpan<char> text)
+        public static bool IsSortable(ReadOnlySpan<char> text)
         {
             if (text.IsEmpty)
             {
@@ -156,13 +156,10 @@ namespace System.Globalization
 
             if (GlobalizationMode.Invariant)
             {
-                return true;
+                return true; // all non-empty strings are sortable under Invariant mode
             }
 
-            fixed (char* pChar = text)
-            {
-                return IsSortable(pChar, text.Length);
-            }
+            return IsSortableCore(text);
         }
 
         [OnDeserializing]
@@ -1122,6 +1119,10 @@ namespace System.Globalization
                 return retValue;
             }
         }
+
+        // Internal method which skips all parameter checks, for Framework use only
+        internal unsafe int IndexOfInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, bool fromBeginning)
+            => IndexOfInternal(source, target, options, fromBeginning, matchLengthPtr: null);
 
         internal static int IndexOfOrdinal(string source, string value, int startIndex, int count, bool ignoreCase)
         {

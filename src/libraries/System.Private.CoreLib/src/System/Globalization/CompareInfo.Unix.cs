@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 using System.Threading;
 
 using Internal.Runtime.CompilerServices;
@@ -43,63 +44,21 @@ namespace System.Globalization
             }
         }
 
-        internal static unsafe int IndexOfOrdinalCore(string source, string value, int startIndex, int count, bool ignoreCase)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(source != null);
-            Debug.Assert(value != null);
-
-            if (value.Length == 0)
-            {
-                return startIndex;
-            }
-
-            if (count < value.Length)
-            {
-                return -1;
-            }
-
-            if (ignoreCase)
-            {
-                fixed (char* pSource = source)
-                {
-                    int index = Interop.Globalization.IndexOfOrdinalIgnoreCase(value, value.Length, pSource + startIndex, count, findLast: false);
-                    return index != -1 ?
-                        startIndex + index :
-                        -1;
-                }
-            }
-
-            int endIndex = startIndex + (count - value.Length);
-            for (int i = startIndex; i <= endIndex; i++)
-            {
-                int valueIndex, sourceIndex;
-
-                for (valueIndex = 0, sourceIndex = i;
-                     valueIndex < value.Length && source[sourceIndex] == value[valueIndex];
-                     valueIndex++, sourceIndex++) ;
-
-                if (valueIndex == value.Length)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
         internal static unsafe int IndexOfOrdinalCore(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase, bool fromBeginning)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
+            Debug.Assert(!value.IsEmpty);
 
-            Debug.Assert(source.Length != 0);
-            Debug.Assert(value.Length != 0);
+            // Ordinal (non-linguistic) comparisons require the length of the target string to be no greater
+            // than the length of the search space. Since our caller already checked for empty target strings,
+            // the below check also handles the case of empty search space strings.
 
-            if (source.Length < value.Length)
+            if (value.Length > source.Length)
             {
                 return -1;
             }
+
+            Debug.Assert(!source.IsEmpty);
 
             if (ignoreCase)
             {
@@ -110,94 +69,31 @@ namespace System.Globalization
                 }
             }
 
-            int startIndex, endIndex, jump;
-            if (fromBeginning)
-            {
-                // Left to right, from zero to last possible index in the source string.
-                // Incrementing by one after each iteration. Stop condition is last possible index plus 1.
-                startIndex = 0;
-                endIndex = source.Length - value.Length + 1;
-                jump = 1;
-            }
-            else
-            {
-                // Right to left, from first possible index in the source string to zero.
-                // Decrementing by one after each iteration. Stop condition is last possible index minus 1.
-                startIndex = source.Length - value.Length;
-                endIndex = -1;
-                jump = -1;
-            }
-
-            for (int i = startIndex; i != endIndex; i += jump)
-            {
-                int valueIndex, sourceIndex;
-
-                for (valueIndex = 0, sourceIndex = i;
-                     valueIndex < value.Length && source[sourceIndex] == value[valueIndex];
-                     valueIndex++, sourceIndex++)
-                    ;
-
-                if (valueIndex == value.Length)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
+            return (fromBeginning) ? source.IndexOf(value) : source.LastIndexOf(value);
         }
 
-        internal static unsafe int LastIndexOfOrdinalCore(string source, string value, int startIndex, int count, bool ignoreCase)
+        internal static int LastIndexOfOrdinalCore(string source, string value, int startIndex, int count, bool ignoreCase)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
             Debug.Assert(source != null);
             Debug.Assert(value != null);
 
-            if (value.Length == 0)
+            int offset = startIndex - count + 1;
+            int retVal = IndexOfOrdinalCore(source.AsSpan(offset, count), value.AsSpan(), ignoreCase, fromBegining: false);
+            if (retVal >= 0)
             {
-                return startIndex;
+                retVal += offset;
             }
 
-            if (count < value.Length)
-            {
-                return -1;
-            }
-
-            // startIndex is the index into source where we start search backwards from.
-            // leftStartIndex is the index into source of the start of the string that is
-            // count characters away from startIndex.
-            int leftStartIndex = startIndex - count + 1;
-
-            if (ignoreCase)
-            {
-                fixed (char* pSource = source)
-                {
-                    int lastIndex = Interop.Globalization.IndexOfOrdinalIgnoreCase(value, value.Length, pSource + leftStartIndex, count, findLast: true);
-                    return lastIndex != -1 ?
-                        leftStartIndex + lastIndex :
-                        -1;
-                }
-            }
-
-            for (int i = startIndex - value.Length + 1; i >= leftStartIndex; i--)
-            {
-                int valueIndex, sourceIndex;
-
-                for (valueIndex = 0, sourceIndex = i;
-                     valueIndex < value.Length && source[sourceIndex] == value[valueIndex];
-                     valueIndex++, sourceIndex++) ;
-
-                if (valueIndex == value.Length) {
-                    return i;
-                }
-            }
-
-            return -1;
+            return retVal;
         }
 
         private static unsafe int CompareStringOrdinalIgnoreCase(ref char string1, int count1, ref char string2, int count2)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
+            Debug.Assert(count1 > 0);
+            Debug.Assert(count2 > 0);
 
             fixed (char* char1 = &string1)
             fixed (char* char2 = &string2)
@@ -206,26 +102,13 @@ namespace System.Globalization
             }
         }
 
-        // TODO https://github.com/dotnet/coreclr/issues/13827:
-        // This method shouldn't be necessary, as we should be able to just use the overload
-        // that takes two spans.  But due to this issue, that's adding significant overhead.
-        private unsafe int CompareString(ReadOnlySpan<char> string1, string string2, CompareOptions options)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(string2 != null);
-            Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
-
-            fixed (char* pString1 = &MemoryMarshal.GetReference(string1))
-            fixed (char* pString2 = &string2.GetRawStringData())
-            {
-                return Interop.Globalization.CompareString(_sortHandle, pString1, string1.Length, pString2, string2.Length, options);
-            }
-        }
-
         private unsafe int CompareString(ReadOnlySpan<char> string1, ReadOnlySpan<char> string2, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
+
+            // Unlike NLS, ICU (ucol_getSortKey) allows passing nullptr for either of the source arguments
+            // as long as the corresponding length parameter is 0.
 
             fixed (char* pString1 = &MemoryMarshal.GetReference(string1))
             fixed (char* pString2 = &MemoryMarshal.GetReference(string2))
@@ -234,42 +117,13 @@ namespace System.Globalization
             }
         }
 
-        internal unsafe int IndexOfCore(string source, string target, int startIndex, int count, CompareOptions options, int* matchLengthPtr)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(!string.IsNullOrEmpty(source));
-            Debug.Assert(target != null);
-            Debug.Assert((options & CompareOptions.OrdinalIgnoreCase) == 0);
-            Debug.Assert((options & CompareOptions.Ordinal) == 0);
-
-            int index;
-
-            if (_isAsciiEqualityOrdinal && CanUseAsciiOrdinalForOptions(options))
-            {
-                if ((options & CompareOptions.IgnoreCase) != 0)
-                    index = IndexOfOrdinalIgnoreCaseHelper(source.AsSpan(startIndex, count), target.AsSpan(), options, matchLengthPtr, fromBeginning: true);
-                else
-                    index = IndexOfOrdinalHelper(source.AsSpan(startIndex, count), target.AsSpan(), options, matchLengthPtr, fromBeginning: true);
-            }
-            else
-            {
-                fixed (char* pSource = source)
-                fixed (char* pTarget = target)
-                {
-                    index = Interop.Globalization.IndexOf(_sortHandle, pTarget, target.Length, pSource + startIndex, count, options, matchLengthPtr);
-                }
-            }
-
-            return index != -1 ? index + startIndex : -1;
-        }
-
         // For now, this method is only called from Span APIs with either options == CompareOptions.None or CompareOptions.IgnoreCase
-        internal unsafe int IndexOfCore(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, int* matchLengthPtr, bool fromBeginning)
+        internal unsafe int IndexOfInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> target, CompareOptions options, bool fromBeginning, int* matchLengthPtr)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-            Debug.Assert(source.Length != 0);
-            Debug.Assert(target.Length != 0);
+            Debug.Assert(!target.IsEmpty);
+
+            // n.b. 'source' could be empty (or null)
 
             if (_isAsciiEqualityOrdinal && CanUseAsciiOrdinalForOptions(options))
             {
@@ -280,13 +134,13 @@ namespace System.Globalization
             }
             else
             {
-                fixed (char* pSource = &MemoryMarshal.GetReference(source))
+                fixed (char* pSource = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
                 fixed (char* pTarget = &MemoryMarshal.GetReference(target))
                 {
                     if (fromBeginning)
                         return Interop.Globalization.IndexOf(_sortHandle, pTarget, target.Length, pSource, source.Length, options, matchLengthPtr);
                     else
-                        return Interop.Globalization.LastIndexOf(_sortHandle, pTarget, target.Length, pSource, source.Length, options);
+                        return Interop.Globalization.LastIndexOf(_sortHandle, pTarget, target.Length, pSource, source.Length, options, matchLengthPtr);
                 }
             }
         }
@@ -303,7 +157,7 @@ namespace System.Globalization
             Debug.Assert(!target.IsEmpty);
             Debug.Assert(_isAsciiEqualityOrdinal);
 
-            fixed (char* ap = &MemoryMarshal.GetReference(source))
+            fixed (char* ap = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
             fixed (char* bp = &MemoryMarshal.GetReference(target))
             {
                 char* a = ap;
@@ -326,6 +180,8 @@ namespace System.Globalization
                     }
                     return -1;
                 }
+
+                Debug.Assert(!source.IsEmpty, "Empty 'source' values should've been handled by the above block.");
 
                 int startIndex, endIndex, jump;
                 if (fromBeginning)
@@ -407,7 +263,7 @@ namespace System.Globalization
             Debug.Assert(!target.IsEmpty);
             Debug.Assert(_isAsciiEqualityOrdinal);
 
-            fixed (char* ap = &MemoryMarshal.GetReference(source))
+            fixed (char* ap = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
             fixed (char* bp = &MemoryMarshal.GetReference(target))
             {
                 char* a = ap;
@@ -430,6 +286,8 @@ namespace System.Globalization
                     }
                     return -1;
                 }
+
+                Debug.Assert(!source.IsEmpty, "Empty 'source' values should've been handled by the above block.");
 
                 int startIndex, endIndex, jump;
                 if (fromBeginning)
@@ -536,12 +394,11 @@ namespace System.Globalization
             return lastIndex != -1 ? lastIndex + leftStartIndex : -1;
         }
 
-        private unsafe bool StartsWith(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
+        private unsafe bool StartsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!prefix.IsEmpty);
+            Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 
             if (_isAsciiEqualityOrdinal && CanUseAsciiOrdinalForOptions(options))
@@ -553,7 +410,7 @@ namespace System.Globalization
             }
             else
             {
-                fixed (char* pSource = &MemoryMarshal.GetReference(source))
+                fixed (char* pSource = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
                 fixed (char* pPrefix = &MemoryMarshal.GetReference(prefix))
                 {
                     return Interop.Globalization.StartsWith(_sortHandle, pPrefix, prefix.Length, pSource, source.Length, options);
@@ -565,13 +422,12 @@ namespace System.Globalization
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!prefix.IsEmpty);
             Debug.Assert(_isAsciiEqualityOrdinal);
 
             int length = Math.Min(source.Length, prefix.Length);
 
-            fixed (char* ap = &MemoryMarshal.GetReference(source))
+            fixed (char* ap = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
             fixed (char* bp = &MemoryMarshal.GetReference(prefix))
             {
                 char* a = ap;
@@ -636,13 +492,12 @@ namespace System.Globalization
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!prefix.IsEmpty);
             Debug.Assert(_isAsciiEqualityOrdinal);
 
             int length = Math.Min(source.Length, prefix.Length);
 
-            fixed (char* ap = &MemoryMarshal.GetReference(source))
+            fixed (char* ap = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
             fixed (char* bp = &MemoryMarshal.GetReference(prefix))
             {
                 char* a = ap;
@@ -692,12 +547,12 @@ namespace System.Globalization
             }
         }
 
-        private unsafe bool EndsWith(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
+        // Internal method which skips all parameter checks, for Framework use only
+        private unsafe bool EndsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
-
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!suffix.IsEmpty);
+            Debug.Assert((options & ValidIndexMaskOffFlags) == 0);
             Debug.Assert((options & (CompareOptions.Ordinal | CompareOptions.OrdinalIgnoreCase)) == 0);
 
             if (_isAsciiEqualityOrdinal && CanUseAsciiOrdinalForOptions(options))
@@ -709,7 +564,7 @@ namespace System.Globalization
             }
             else
             {
-                fixed (char* pSource = &MemoryMarshal.GetReference(source))
+                fixed (char* pSource = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
                 fixed (char* pSuffix = &MemoryMarshal.GetReference(suffix))
                 {
                     return Interop.Globalization.EndsWith(_sortHandle, pSuffix, suffix.Length, pSource, source.Length, options);
@@ -721,13 +576,12 @@ namespace System.Globalization
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!suffix.IsEmpty);
             Debug.Assert(_isAsciiEqualityOrdinal);
 
             int length = Math.Min(source.Length, suffix.Length);
 
-            fixed (char* ap = &MemoryMarshal.GetReference(source))
+            fixed (char* ap = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
             fixed (char* bp = &MemoryMarshal.GetReference(suffix))
             {
                 char* a = ap + source.Length - 1;
@@ -773,13 +627,12 @@ namespace System.Globalization
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
-            Debug.Assert(!source.IsEmpty);
             Debug.Assert(!suffix.IsEmpty);
             Debug.Assert(_isAsciiEqualityOrdinal);
 
             int length = Math.Min(source.Length, suffix.Length);
 
-            fixed (char* ap = &MemoryMarshal.GetReference(source))
+            fixed (char* ap = &MemoryMarshal.GetReference(source)) // could be null (or otherwise unable to be dereferenced)
             fixed (char* bp = &MemoryMarshal.GetReference(suffix))
             {
                 char* a = ap + source.Length - 1;
@@ -810,6 +663,69 @@ namespace System.Globalization
             }
         }
 
+        private unsafe int GetSortKeyLengthCore(ReadOnlySpan<char> source, CompareOptions options)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+
+            if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            // Unlike NLS, ICU (ucol_getSortKey) allows passing nullptr for the 'source' argument,
+            // assuming sourceLength = 0. The function returns a positive value on success; a non-positive
+            // value on error.
+
+            fixed (char* pSource = &MemoryMarshal.GetReference(source))
+            {
+                int sortKeyLength = Interop.Globalization.GetSortKey(_sortHandle, pSource, source.Length, null, 0, options);
+                if (sortKeyLength <= 0)
+                {
+                    throw new ArgumentException(SR.Arg_ExternalException); // function failed
+                }
+
+                return sortKeyLength;
+            }
+        }
+
+        private unsafe int CreateSortKey(ReadOnlySpan<char> source, Span<byte> sortKey, CompareOptions options)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+
+            if ((options & ValidSortkeyCtorMaskOffFlags) != 0)
+            {
+                throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
+            }
+
+            if (sortKey.IsEmpty)
+            {
+                goto DestinationTooSmall; // ICU will always return a non-empty sort key
+            }
+
+            fixed (char* pSource = &MemoryMarshal.GetReference(source)) // can be null
+            fixed (byte* pSortKey = &MemoryMarshal.GetReference(sortKey)) // won't be null (due to IsEmpty check above)
+            {
+                int numBytesWritten = Interop.Globalization.GetSortKey(_sortHandle, pSource, source.Length, pSortKey, sortKey.Length, options);
+                if (numBytesWritten <= 0)
+                {
+                    throw new ArgumentException(SR.Arg_ExternalException); // function failed
+                }
+                else if (numBytesWritten > sortKey.Length)
+                {
+                    // ICU (ucol_getSortKey) always returns the number of bytes needed to hold the resulting sort key,
+                    // even if the input buffer is too small to contain the resulting value. This doesn't mean that it
+                    // overran the buffer; it's just signaling to us that the buffer was too small.
+                    goto DestinationTooSmall;
+                }
+
+                return numBytesWritten;
+            }
+
+        DestinationTooSmall:
+
+            throw new ArgumentException(SR.Argument_DestinationTooShort, nameof(sortKey));
+        }
+
         private unsafe SortKey CreateSortKey(string source, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
@@ -825,6 +741,11 @@ namespace System.Globalization
             fixed (char* pSource = source)
             {
                 int sortKeyLength = Interop.Globalization.GetSortKey(_sortHandle, pSource, source.Length, null, 0, options);
+                if (sortKeyLength <= 0)
+                {
+                    throw new ArgumentException(SR.Arg_ExternalException); // function failed
+                }
+
                 keyData = new byte[sortKeyLength];
 
                 fixed (byte* pSortKey = keyData)
@@ -839,41 +760,28 @@ namespace System.Globalization
             return new SortKey(Name, source, options, keyData);
         }
 
-        private static unsafe bool IsSortable(char *text, int length)
+        private static bool IsSortableCore(ReadOnlySpan<char> text)
         {
-            Debug.Assert(!GlobalizationMode.Invariant);
+            // Return true if and only if 'text' is not empty (checked by our caller), it consists
+            // of only well-formed UTF-16 code units, and no Private Use Area or Unassigned scalar
+            // values occur in the text.
 
-            int index = 0;
-            UnicodeCategory uc;
-
-            while (index < length)
+            do
             {
-                if (char.IsHighSurrogate(text[index]))
-                {
-                    if (index == length - 1 || !char.IsLowSurrogate(text[index+1]))
-                        return false; // unpaired surrogate
-
-                    uc = CharUnicodeInfo.GetUnicodeCategory(char.ConvertToUtf32(text[index], text[index+1]));
-                    if (uc == UnicodeCategory.PrivateUse || uc == UnicodeCategory.OtherNotAssigned)
-                        return false;
-
-                    index += 2;
-                    continue;
-                }
-
-                if (char.IsLowSurrogate(text[index]))
-                {
-                    return false; // unpaired surrogate
-                }
-
-                uc = CharUnicodeInfo.GetUnicodeCategory(text[index]);
-                if (uc == UnicodeCategory.PrivateUse || uc == UnicodeCategory.OtherNotAssigned)
+                if (Rune.DecodeFromUtf16(text, out Rune result, out int charsConsumed) != OperationStatus.Done)
                 {
                     return false;
                 }
 
-                index++;
-            }
+                switch (Rune.GetUnicodeCategory(result))
+                {
+                    case UnicodeCategory.PrivateUse:
+                    case UnicodeCategory.OtherNotAssigned:
+                        return false;
+                }
+
+                text = text.Slice(charsConsumed);
+            } while (!text.IsEmpty);
 
             return true;
         }
