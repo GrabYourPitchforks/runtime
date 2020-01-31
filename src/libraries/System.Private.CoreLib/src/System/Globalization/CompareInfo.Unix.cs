@@ -15,7 +15,7 @@ using Internal.Runtime.CompilerServices;
 
 namespace System.Globalization
 {
-    public partial class CompareInfo
+    public sealed partial class CompareInfo
     {
         [NonSerialized]
         private IntPtr _sortHandle;
