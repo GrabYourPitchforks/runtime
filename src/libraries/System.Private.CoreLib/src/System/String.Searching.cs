@@ -260,7 +260,7 @@ namespace System
          * 'startPos' which makes the expression evaluate to true, then it returns any 'startPos' within that
          * subset. For example:
          *
-         * let searchString = "hi<ZWJ><ZWJ>hi"
+         * let searchString = "hi<ZWJ><ZWJ>hi" (this is slightly modified from the earlier example)
          * let value = "hi"
          * let comparer = StringComparison.InvariantCulture
          * then S = { (0, 2), (0, 3), (0, 4), (2, 6), (3, 6), (4, 6) }

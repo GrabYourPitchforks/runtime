@@ -1370,7 +1370,7 @@ namespace System.Globalization
                 return InvariantGetSortKeyLength(source, options);
             }
 
-            return GetSortKeyLength_Windows(source, options);
+            return GetSortKeyLengthCore(source, options);
         }
 
         // Given an input string buffer and sorting options, populates the 'sortKey' buffer with the

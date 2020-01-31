@@ -359,7 +359,7 @@ namespace System.Globalization
         private const int FIND_FROMSTART = 0x00400000;
         private const int FIND_FROMEND = 0x00800000;
 
-        private unsafe int GetSortKeyLength_Windows(ReadOnlySpan<char> source, CompareOptions options)
+        private unsafe int GetSortKeyLengthCore(ReadOnlySpan<char> source, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
 
