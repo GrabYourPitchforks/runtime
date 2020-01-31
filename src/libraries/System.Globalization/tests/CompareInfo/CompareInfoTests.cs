@@ -466,5 +466,31 @@ namespace System.Globalization.Tests
             AssertExtensions.Throws<ArgumentException>("options", () => CultureInfo.InvariantCulture.CompareInfo.GetHashCode("Test".AsSpan(), CompareOptions.Ordinal | CompareOptions.IgnoreSymbols));
             AssertExtensions.Throws<ArgumentException>("options", () => CultureInfo.InvariantCulture.CompareInfo.GetHashCode("Test".AsSpan(), (CompareOptions)(-1)));
         }
+
+        [Fact]
+        [PlatformSpecific(TestPlatforms.AnyUnix)] // ICU behavior only
+        public static void ICU_OrdinalIgnoreCase_UsesCaseFoldInsteadOfCaseMap()
+        {
+            // U+00DF = LATIN SMALL LETTER SHARP S (case folds to self, upper maps to self)
+            // U+1E9E = LATIN CAPITAL LETTER SHARP S (case folds to U+00DF, upper maps to self)
+
+            Assert.Equal(-1, Math.Sign(s_invariantCompare.Compare("x\u00DFy", "x\u1E9Ey", CompareOptions.None)));
+            Assert.Equal(0, Math.Sign(s_invariantCompare.Compare("x\u00DFy", "x\u1E9Ey", CompareOptions.OrdinalIgnoreCase)));
+
+            Assert.False("x\u00DFy".Equals("x\u1E9Ey", StringComparison.InvariantCulture));
+            Assert.True("x\u00DFy".Equals("x\u1E9Ey", StringComparison.OrdinalIgnoreCase));
+
+            Assert.Equal(-1, s_invariantCompare.IndexOf("x\u00DFy", "\u1E9E", CompareOptions.None));
+            Assert.Equal(1, s_invariantCompare.IndexOf("x\u00DFy", "\u1E9E", CompareOptions.OrdinalIgnoreCase));
+
+            Assert.Equal(-1, s_invariantCompare.LastIndexOf("x\u00DFy", "\u1E9E", CompareOptions.None));
+            Assert.Equal(1, s_invariantCompare.LastIndexOf("x\u00DFy", "\u1E9E", CompareOptions.OrdinalIgnoreCase));
+
+            Assert.False(s_invariantCompare.IsPrefix("\u00DFy", "\u1E9E", CompareOptions.None));
+            Assert.True(s_invariantCompare.IsPrefix("\u00DFy", "\u1E9E", CompareOptions.OrdinalIgnoreCase));
+
+            Assert.False(s_invariantCompare.IsSuffix("x\u00DF", "\u1E9E", CompareOptions.None));
+            Assert.True(s_invariantCompare.IsSuffix("x\u00DF", "\u1E9E", CompareOptions.OrdinalIgnoreCase));
+        }
     }
 }

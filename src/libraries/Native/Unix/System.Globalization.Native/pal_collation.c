@@ -542,7 +542,10 @@ static int AreEqualOrdinalIgnoreCase(UChar32 one, UChar32 two)
         return FALSE;
     }
 
-    return u_toupper(one) == u_toupper(two);
+    // Since we're performing caseless comparisons of text, we want to perform case folding, not case mapping.
+    // See https://unicode.org/faq/casemap_charprop.html for more information.
+
+    return u_foldCase(one, U_FOLD_CASE_DEFAULT) == u_foldCase(two, U_FOLD_CASE_DEFAULT);
 }
 
 /*
@@ -857,7 +860,11 @@ int32_t GlobalizationNative_CompareStringOrdinalIgnoreCase(
         U16_NEXT(lpStr2, str2Idx, cwStr2Length, str2Codepoint);
 #pragma clang diagnostic pop
 
-        if (str1Codepoint != str2Codepoint && u_toupper(str1Codepoint) != u_toupper(str2Codepoint))
+        // Since we're performing caseless comparisons of text, we want to perform case folding, not case mapping.
+        // See https://unicode.org/faq/casemap_charprop.html for more information.
+
+        if (str1Codepoint != str2Codepoint &&
+            u_foldCase(str1Codepoint, U_FOLD_CASE_DEFAULT) != u_foldCase(str2Codepoint, U_FOLD_CASE_DEFAULT))
         {
             return str1Codepoint < str2Codepoint ? -1 : 1;
         }
