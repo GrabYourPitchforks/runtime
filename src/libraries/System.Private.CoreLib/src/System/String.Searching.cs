@@ -251,7 +251,7 @@ namespace System
          *
          * There exists a relationship between IndexOf and StartsWith. If there exists in set S any entry with
          * the tuple values (startPos = 0, endPos = <anything>), we say "'searchString' starts with 'value'", and
-         * the expression "searchString.StartsWith(value, comparer)" should evaluate to false. If there exists
+         * the expression "searchString.StartsWith(value, comparer)" should evaluate to true. If there exists
          * no such entry in set S, then we say "'searchString' does not start with 'value'", and the expression
          * "searchString.StartsWith(value, comparer)" should evaluate to false.
          *
