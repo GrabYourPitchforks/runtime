@@ -80,7 +80,7 @@ namespace System.Globalization
             Debug.Assert(value != null);
 
             int offset = startIndex - count + 1;
-            int retVal = IndexOfOrdinalCore(source.AsSpan(offset, count), value.AsSpan(), ignoreCase, fromBegining: false);
+            int retVal = IndexOfOrdinalCore(source.AsSpan(offset, count), value.AsSpan(), ignoreCase, fromBeginning: false);
             if (retVal >= 0)
             {
                 retVal += offset;
@@ -252,7 +252,7 @@ namespace System.Globalization
                 if (fromBeginning)
                     return Interop.Globalization.IndexOf(_sortHandle, b, target.Length, a, source.Length, options, matchLengthPtr);
                 else
-                    return Interop.Globalization.LastIndexOf(_sortHandle, b, target.Length, a, source.Length, options);
+                    return Interop.Globalization.LastIndexOf(_sortHandle, b, target.Length, a, source.Length, options, matchLengthPtr);
             }
         }
 
@@ -347,7 +347,7 @@ namespace System.Globalization
                 if (fromBeginning)
                     return Interop.Globalization.IndexOf(_sortHandle, b, target.Length, a, source.Length, options, matchLengthPtr);
                 else
-                    return Interop.Globalization.LastIndexOf(_sortHandle, b, target.Length, a, source.Length, options);
+                    return Interop.Globalization.LastIndexOf(_sortHandle, b, target.Length, a, source.Length, options, matchLengthPtr);
             }
         }
 
@@ -387,14 +387,14 @@ namespace System.Globalization
                 fixed (char* pSource = source)
                 fixed (char* pTarget = target)
                 {
-                    lastIndex = Interop.Globalization.LastIndexOf(_sortHandle, pTarget, target.Length, pSource + (startIndex - count + 1), count, options);
+                    lastIndex = Interop.Globalization.LastIndexOf(_sortHandle, pTarget, target.Length, pSource + (startIndex - count + 1), count, options, matchLengthPtr: null);
                 }
             }
 
             return lastIndex != -1 ? lastIndex + leftStartIndex : -1;
         }
 
-        private unsafe bool StartsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
+        internal unsafe bool StartsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> prefix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert(!prefix.IsEmpty);
@@ -548,7 +548,7 @@ namespace System.Globalization
         }
 
         // Internal method which skips all parameter checks, for Framework use only
-        private unsafe bool EndsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
+        internal unsafe bool EndsWithInternal(ReadOnlySpan<char> source, ReadOnlySpan<char> suffix, CompareOptions options)
         {
             Debug.Assert(!GlobalizationMode.Invariant);
             Debug.Assert(!suffix.IsEmpty);
