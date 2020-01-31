@@ -3379,7 +3379,6 @@ namespace System.Tests
             Assert.Equal(2, index);
             Assert.Equal(index, s1.IndexOf(s2, StringComparison.Ordinal));
 
-            // A zero-length value is always "found" at the start of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.IndexOf(value);
@@ -3396,7 +3395,6 @@ namespace System.Tests
             Assert.Equal(5, index);
             Assert.Equal(index, s1.IndexOf(s2, StringComparison.Ordinal));
 
-            // A zero-length value is always "found" at the start of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.IndexOf(value);
@@ -3413,7 +3411,6 @@ namespace System.Tests
             Assert.Equal(-1, index);
             Assert.Equal(index, s1.IndexOf(s2, StringComparison.Ordinal));
 
-            // A zero-length value is always "found" at the start of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.IndexOf(value);
@@ -4361,7 +4358,6 @@ namespace System.Tests
             int index = s1.LastIndexOf(s2);
             Assert.Equal(2, index);
 
-            // A zero-length value is always "found" at the start of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.LastIndexOf(value);
@@ -4376,7 +4372,6 @@ namespace System.Tests
             int index = s1.LastIndexOf(s2);
             Assert.Equal(5, index);
 
-            // A zero-length value is always "found" at the start of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.LastIndexOf(value);
@@ -4391,7 +4386,6 @@ namespace System.Tests
             int index = s1.LastIndexOf(s2);
             Assert.Equal(5, index);
 
-            // A zero-length value is always "found" at the start of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.LastIndexOf(value);
@@ -4406,7 +4400,6 @@ namespace System.Tests
             int index = s1.LastIndexOf(s2);
             Assert.Equal(-1, index);
 
-            // A zero-length value is always "found" at the start of the span.
             ReadOnlySpan<char> span = s1.AsSpan();
             ReadOnlySpan<char> value = s2.AsSpan();
             index = span.LastIndexOf(value);
