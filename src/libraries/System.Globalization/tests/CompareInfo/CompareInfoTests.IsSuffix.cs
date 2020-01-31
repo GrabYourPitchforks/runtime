@@ -118,21 +118,6 @@ namespace System.Globalization.Tests
             valueBoundedMemory.MakeReadonly();
 
             Assert.Equal(expected, compareInfo.IsSuffix(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
-
-            // For 'value' to be a suffix of 'source' implies that given the index where 'value' last occurs
-            // in 'source', the source string sliced beginning with that index is equivalent to 'value'.
-
-            int lastIndexWhereSourceFound = compareInfo.LastIndexOf(source, value, options);
-
-            if (lastIndexWhereSourceFound < 0)
-            {
-                Assert.False(expected);
-            }
-            else if (expected)
-            {
-                string sourceSubstr = source.Substring(lastIndexWhereSourceFound);
-                Assert.True(sourceSubstr == value || compareInfo.Compare(sourceSubstr, value, options) == 0);
-            }
         }
 
         [Fact]

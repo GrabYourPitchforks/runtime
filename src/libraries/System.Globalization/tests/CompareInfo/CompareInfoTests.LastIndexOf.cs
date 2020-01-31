@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using Xunit;
 
@@ -162,6 +163,32 @@ namespace System.Globalization.Tests
             // Use LastIndexOf(string, string, int, int, CompareOptions)
             Assert.Equal(expected, compareInfo.LastIndexOf(source, value, startIndex, count, options));
 
+            // Fixup offsets so that we can call the span-based APIs.
+
+            ReadOnlySpan<char> sourceSpan;
+            int adjustmentFactor; // number of chars to add to retured index from span-based APIs
+
+            if (startIndex == source.Length - 1 && count == source.Length)
+            {
+                // This idiom means "read the whole span"
+                sourceSpan = source;
+                adjustmentFactor = 0;
+            }
+            else if (startIndex == source.Length)
+            {
+                // Account for possible off-by-one at the call site
+                sourceSpan = source.AsSpan()[^(Math.Max(0, count - 1))..];
+                adjustmentFactor = source.Length - sourceSpan.Length;
+            }
+            else
+            {
+                // Bump 'startIndex' by 1, then go back 'count' chars
+                sourceSpan = source.AsSpan()[..(startIndex + 1)][^count..];
+                adjustmentFactor = startIndex + 1 - count;
+            }
+
+            if (expected < 0) { adjustmentFactor = 0; } // don't modify "not found" (-1) return values
+
             if ((compareInfo == s_invariantCompare) && ((options == CompareOptions.None) || (options == CompareOptions.IgnoreCase)))
             {
                 StringComparison stringComparison = (options == CompareOptions.IgnoreCase) ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture;
@@ -170,20 +197,27 @@ namespace System.Globalization.Tests
                 Assert.Equal(expected, source.LastIndexOf(value, startIndex, count, stringComparison));
 
                 // Use int MemoryExtensions.LastIndexOf(this ReadOnlySpan<char>, ReadOnlySpan<char>, StringComparison)
-                // Filter differences betweeen string-based and Span-based LastIndexOf
-                // - Empty value handling - https://github.com/dotnet/coreclr/issues/26608
-                // - Negative count
-                if (value.Length == 0 || count < 0)
-                    return;
+                Assert.Equal(expected - adjustmentFactor, sourceSpan.LastIndexOf(value.AsSpan(), stringComparison));
+            }
 
-                if (startIndex == source.Length)
+            // Now test the span-based versions - use BoundedMemory to detect buffer overruns
+
+            RunSpanLastIndexOfTest(compareInfo, sourceSpan, value, options, expected - adjustmentFactor);
+
+            static void RunSpanLastIndexOfTest(CompareInfo compareInfo, ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options, int expected)
+            {
+                using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData(source);
+                sourceBoundedMemory.MakeReadonly();
+
+                using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData(value);
+                valueBoundedMemory.MakeReadonly();
+
+                Assert.Equal(expected, compareInfo.LastIndexOf(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
+
+                if (value.Length == 1)
                 {
-                    startIndex--;
-                    if (count > 0)
-                        count--;
+                    Assert.Equal(expected, compareInfo.LastIndexOf(sourceBoundedMemory.Span, valueBoundedMemory.Span[0], options)); // try the char-based version
                 }
-                int leftStartIndex = (startIndex - count + 1);
-                Assert.Equal((expected == -1) ? -1 : (expected - leftStartIndex), source.AsSpan(leftStartIndex, count).LastIndexOf(value.AsSpan(), stringComparison));
             }
         }
 

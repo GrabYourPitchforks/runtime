@@ -220,22 +220,56 @@ namespace System
         }
 
         /*
-         * Contains, IndexOf, and LastIndexOf
-         * ==================================
+         * IndexOf, LastIndexOf, Contains, StartsWith, and EndsWith
+         * ========================================================
          *
          * Given a search string 'searchString', a target string 'value' to locate within the search string, and a comparer
-         * 'comparer', there is a set S of integers 'i' for which the below expression returns true:
-         * >> bool result = searchString.Substring(i).StartsWith(value, comparer);
+         * 'comparer', the comparer will return a set S of tuples '(startPos, endPos)' for which the below expression
+         * returns true:
          *
-         * If the set S is empty (i.e., there is no integer 'i' which makes the above expression evaluate to true),
-         * then we say "'searchString' does not contain 'value'", and the expression "searchString.Contains(value, comparer)"
-         * should evaluate to false. If the set S is non-empty, then we say "'searchString' contains 'value'", and the
-         * expression "searchString.Contains(value, comparer)" should evaluate to true.
+         * >> bool result = searchString.Substring(startPos, endPos - startPos).Equals(value, comparer);
          *
-         * Given a 'searchString', 'value', and 'comparer', the behavior of the IndexOf method is that it returns
-         * the value of the smallest integer 'i' in the set S. The behavior of LastIndexOf is that it returns the
-         * value of the largest integer 'i' in the set S. If the set S is empty, both IndexOf and LastIndexOf
-         * return -1.
+         * If the set S is empty (i.e., there is no combination of values 'startPos' and 'endPos' which makes the
+         * above expression evaluate to true), then we say "'searchString' does not contain 'value'", and the expression
+         * "searchString.Contains(value, comparer)" should evaluate to false. If the set S is non-empty, then we say
+         * "'searchString' contains 'value'", and the expression "searchString.Contains(value, comparer)" should
+         * evaluate to true.
+         *
+         * Given a 'searchString', 'value', and 'comparer', the behavior of the IndexOf method is that it finds the
+         * smallest possible 'endPos' for which there exists any corresponding 'startPos' which makes the above
+         * expression evaluate to true, then it returns any 'startPos' within that subset. For example:
+         *
+         * let searchString = "<ZWJ><ZWJ>hihi" (where <ZWJ> = U+200D ZERO WIDTH JOINER, a weightless code point)
+         * let value = "hi"
+         * let comparer = a linguistic culture-invariant comparer (e.g., StringComparison.InvariantCulture)
+         * then S = { (0, 4), (1, 4), (2, 4), (4, 6) }
+         * so the expression "<ZWJ><ZWJ>hihi".IndexOf("hi", comparer) can evaluate to any of { 0, 1, 2 }.
+         *
+         * n.b. ordinal comparers (e.g., StringComparison.Ordinal and StringComparison.OrdinalIgnoreCase) do not
+         * exhibit this ambiguity, as any given 'startPos' or 'endPos' will appear at most exactly once across
+         * all entries from set S. With the above example, S = { (2, 4), (4, 6) }, so IndexOf = 2 unambiguously.
+         *
+         * There exists a relationship between IndexOf and StartsWith. If there exists in set S any entry with
+         * the tuple values (startPos = 0, endPos = <anything>), we say "'searchString' starts with 'value'", and
+         * the expression "searchString.StartsWith(value, comparer)" should evaluate to false. If there exists
+         * no such entry in set S, then we say "'searchString' does not start with 'value'", and the expression
+         * "searchString.StartsWith(value, comparer)" should evaluate to false.
+         *
+         * LastIndexOf and EndsWith have a similar relationship as IndexOf and StartsWith. The behavior of the
+         * LastIndexOf method is that it finds the largest possible 'endPos' for which there exists any corresponding
+         * 'startPos' which makes the expression evaluate to true, then it returns any 'startPos' within that
+         * subset. For example:
+         *
+         * let searchString = "hi<ZWJ><ZWJ>hi"
+         * let value = "hi"
+         * let comparer = StringComparison.InvariantCulture
+         * then S = { (0, 2), (0, 3), (0, 4), (2, 6), (3, 6), (4, 6) }
+         * so the expression "hi<ZWJ><ZWJ>hi".LastIndexOf("hi", comparer) can evaluate to any of { 2, 3, 4 }.
+         *
+         * If there exists in set S any entry with the tuple values (startPos = <anything>, endPos = searchString.Length),
+         * we say "'searchString' ends with 'value'", and the expression "searchString.EndsWith(value, comparer)"
+         * should evaluate to true. If there exists no such entry in set S, then we say "'searchString' does not
+         * start with 'value'", and the expression "searchString.EndsWith(value, comparer)" should evaluate to false.
          *
          * There are overloads of IndexOf and LastIndexOf which take an offset and length in order to constrain the
          * search space to a substring of the original search string.

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using Xunit;
 
@@ -192,7 +193,27 @@ namespace System.Globalization.Tests
                 // Use int MemoryExtensions.IndexOf(this ReadOnlySpan<char>, ReadOnlySpan<char>, StringComparison)
                 Assert.Equal((expected == -1) ? -1 : (expected - startIndex), source.AsSpan(startIndex, count).IndexOf(value.AsSpan(), stringComparison));
             }
-         }
+
+            // Now test the span-based versions - use BoundedMemory to detect buffer overruns
+
+            RunSpanIndexOfTest(compareInfo, source.AsSpan(startIndex, count), value, options, (expected < 0) ? expected : expected - startIndex);
+
+            static void RunSpanIndexOfTest(CompareInfo compareInfo, ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options, int expected)
+            {
+                using BoundedMemory<char> sourceBoundedMemory = BoundedMemory.AllocateFromExistingData(source);
+                sourceBoundedMemory.MakeReadonly();
+
+                using BoundedMemory<char> valueBoundedMemory = BoundedMemory.AllocateFromExistingData(value);
+                valueBoundedMemory.MakeReadonly();
+
+                Assert.Equal(expected, compareInfo.IndexOf(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
+
+                if (value.Length == 1)
+                {
+                    Assert.Equal(expected, compareInfo.IndexOf(sourceBoundedMemory.Span, valueBoundedMemory.Span[0], options)); // try the char-based version
+                }
+            }
+        }
 
         private static void IndexOf_Char(CompareInfo compareInfo, string source, char value, int startIndex, int count, CompareOptions options, int expected)
         {

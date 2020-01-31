@@ -115,11 +115,6 @@ namespace System.Globalization.Tests
             valueBoundedMemory.MakeReadonly();
 
             Assert.Equal(expected, compareInfo.IsPrefix(sourceBoundedMemory.Span, valueBoundedMemory.Span, options));
-
-            // For 'value' to be a prefix of 'source' implies that 'value' first occurs at index 0 in 'source'.
-
-            int indexWhereSourceFound = compareInfo.IndexOf(source, value, options);
-            Assert.Equal(expected, indexWhereSourceFound == 0);
         }
 
         [Fact]
