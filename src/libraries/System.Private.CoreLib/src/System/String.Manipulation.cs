@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using Internal.Runtime.CompilerServices;
 
@@ -15,7 +16,7 @@ namespace System
     {
         private const int StackallocIntBufferSizeLimit = 128;
 
-        private static unsafe void FillStringChecked(string dest, int destPos, string src)
+        private static void FillStringChecked(string dest, int destPos, string src)
         {
             Debug.Assert(dest != null);
             Debug.Assert(src != null);
@@ -24,11 +25,7 @@ namespace System
                 throw new IndexOutOfRangeException();
             }
 
-            fixed (char* pDest = &dest._firstChar)
-            fixed (char* pSrc = &src._firstChar)
-            {
-                wstrcpy(pDest + destPos, pSrc, src.Length);
-            }
+            Buffer.Memmove(ref Unsafe.Add(ref dest._firstChar, destPos), ref src._firstChar, (uint)src.Length);
         }
 
         public static string Concat(object? arg0) => arg0?.ToString() ?? string.Empty;
@@ -548,21 +545,9 @@ namespace System
             // In case this computation overflows, newLength will be negative and FastAllocateString throws OutOfMemoryException
             int newLength = oldLength + insertLength;
             string result = FastAllocateString(newLength);
-            unsafe
-            {
-                fixed (char* srcThis = &_firstChar)
-                {
-                    fixed (char* srcInsert = &value._firstChar)
-                    {
-                        fixed (char* dst = &result._firstChar)
-                        {
-                            wstrcpy(dst, srcThis, startIndex);
-                            wstrcpy(dst + startIndex, srcInsert, insertLength);
-                            wstrcpy(dst + startIndex + insertLength, srcThis + startIndex, oldLength - startIndex);
-                        }
-                    }
-                }
-            }
+            Buffer.Memmove(ref result._firstChar, ref this._firstChar, (uint)startIndex);
+            Buffer.Memmove(ref Unsafe.Add(ref result._firstChar, startIndex), ref value._firstChar, (uint)insertLength);
+            Buffer.Memmove(ref Unsafe.Add(ref result._firstChar, startIndex + insertLength), ref Unsafe.Add(ref this._firstChar, startIndex), (uint)(oldLength - startIndex));
             return result;
         }
 
@@ -845,20 +830,19 @@ namespace System
                 if (i < end - 1)
                 {
                     // Fill in the separator.
-                    fixed (char* pResult = &result._firstChar)
+                    //
+                    // If we are called from the char-based overload, we will not
+                    // want to call MemoryCopy each time we fill in the separator. So
+                    // specialize for 1-length separators.
+                    if (separatorLength == 1)
                     {
-                        // If we are called from the char-based overload, we will not
-                        // want to call MemoryCopy each time we fill in the separator. So
-                        // specialize for 1-length separators.
-                        if (separatorLength == 1)
-                        {
-                            pResult[copiedLength] = *separator;
-                        }
-                        else
-                        {
-                            wstrcpy(pResult + copiedLength, separator, separatorLength);
-                        }
+                        Unsafe.Add(ref result._firstChar, copiedLength) = *separator;
                     }
+                    else
+                    {
+                        Buffer.Memmove(ref Unsafe.Add(ref result._firstChar, copiedLength), ref *separator, (uint)separatorLength);
+                    }
+
                     copiedLength += separatorLength;
                 }
             }
@@ -941,17 +925,8 @@ namespace System
                 return string.Empty;
 
             string result = FastAllocateString(newLength);
-            unsafe
-            {
-                fixed (char* src = &_firstChar)
-                {
-                    fixed (char* dst = &result._firstChar)
-                    {
-                        wstrcpy(dst, src, startIndex);
-                        wstrcpy(dst + startIndex, src + startIndex + count, newLength - startIndex);
-                    }
-                }
-            }
+            Buffer.Memmove(ref result._firstChar, ref this._firstChar, (uint)startIndex);
+            Buffer.Memmove(ref Unsafe.Add(ref result._firstChar, startIndex), ref Unsafe.Add(ref this._firstChar, startIndex + count), (uint)(newLength - startIndex));
             return result;
         }
 
@@ -1661,19 +1636,13 @@ namespace System
             return InternalSubString(startIndex, length);
         }
 
-        private unsafe string InternalSubString(int startIndex, int length)
+        private string InternalSubString(int startIndex, int length)
         {
             Debug.Assert(startIndex >= 0 && startIndex <= this.Length, "StartIndex is out of range!");
             Debug.Assert(length >= 0 && startIndex <= this.Length - length, "length is out of range!");
 
             string result = FastAllocateString(length);
-
-            fixed (char* dest = &result._firstChar)
-            fixed (char* src = &_firstChar)
-            {
-                wstrcpy(dest, src + startIndex, length);
-            }
-
+            Buffer.Memmove(ref result._firstChar, ref Unsafe.Add(ref this._firstChar, startIndex), (uint)length);
             return result;
         }
 

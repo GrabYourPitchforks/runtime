@@ -81,15 +81,12 @@ namespace System
         }
 
         // Copies the source String (byte buffer) to the destination IntPtr memory allocated with len bytes.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static unsafe void InternalCopy(string src, IntPtr dest, int len)
         {
-            if (len == 0)
-                return;
-            fixed (char* charPtr = &src._firstChar)
+            if (len != 0)
             {
-                byte* srcPtr = (byte*)charPtr;
-                byte* dstPtr = (byte*)dest;
-                Buffer.Memcpy(dstPtr, srcPtr, len);
+                Buffer.Memmove(ref *(char*)dest, ref src._firstChar, (uint)len);
             }
         }
 

@@ -47,7 +47,7 @@ namespace System
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [PreserveDependency("Ctor(System.Char[])", "System.String")]
-        public extern String(char[] value);
+        public extern String(char[]? value);
 
 #if !CORECLR
         static
@@ -58,11 +58,7 @@ namespace System
                 return Empty;
 
             string result = FastAllocateString(value.Length);
-            unsafe
-            {
-                fixed (char* dest = &result._firstChar, source = value)
-                    wstrcpy(dest, source, value.Length);
-            }
+            Buffer.Memmove(ref result._firstChar, ref MemoryMarshal.GetArrayDataReference(value), (uint)value.Length);
             return result;
         }
 
@@ -91,11 +87,7 @@ namespace System
                 return Empty;
 
             string result = FastAllocateString(length);
-            unsafe
-            {
-                fixed (char* dest = &result._firstChar, source = value)
-                    wstrcpy(dest, source + startIndex, length);
-            }
+            Buffer.Memmove(ref result._firstChar, ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(value), startIndex), (uint)length);
             return result;
         }
 
@@ -117,8 +109,7 @@ namespace System
                 return Empty;
 
             string result = FastAllocateString(count);
-            fixed (char* dest = &result._firstChar)
-                wstrcpy(dest, ptr, count);
+            Buffer.Memmove(ref result._firstChar, ref *ptr, (uint)count);
             return result;
         }
 
@@ -151,8 +142,7 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(ptr), SR.ArgumentOutOfRange_PartialWCHAR);
 
             string result = FastAllocateString(length);
-            fixed (char* dest = &result._firstChar)
-                wstrcpy(dest, pStart, length);
+            Buffer.Memmove(ref result._firstChar, ref *pStart, (uint)length);
             return result;
         }
 
@@ -291,32 +281,7 @@ namespace System
 
             if (c != '\0') // Fast path null char string
             {
-                unsafe
-                {
-                    fixed (char* dest = &result._firstChar)
-                    {
-                        uint cc = (uint)((c << 16) | c);
-                        uint* dmem = (uint*)dest;
-                        if (count >= 4)
-                        {
-                            count -= 4;
-                            do
-                            {
-                                dmem[0] = cc;
-                                dmem[1] = cc;
-                                dmem += 2;
-                                count -= 4;
-                            } while (count >= 0);
-                        }
-                        if ((count & 2) != 0)
-                        {
-                            *dmem = cc;
-                            dmem++;
-                        }
-                        if ((count & 1) != 0)
-                            ((char*)dmem)[0] = c;
-                    }
-                }
+                new Span<char>(ref result._firstChar, result.Length).Fill(c);
             }
             return result;
         }
@@ -328,7 +293,7 @@ namespace System
 #if !CORECLR
         static
 #endif
-        private unsafe string Ctor(ReadOnlySpan<char> value)
+        private string Ctor(ReadOnlySpan<char> value)
         {
             if (value.Length == 0)
                 return Empty;
@@ -380,7 +345,7 @@ namespace System
         // sourceIndex + count - 1 to the character array buffer, beginning
         // at destinationIndex.
         //
-        public unsafe void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count)
+        public void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count)
         {
             if (destination == null)
                 throw new ArgumentNullException(nameof(destination));
@@ -393,25 +358,26 @@ namespace System
             if (destinationIndex > destination.Length - count || destinationIndex < 0)
                 throw new ArgumentOutOfRangeException(nameof(destinationIndex), SR.ArgumentOutOfRange_IndexCount);
 
-            fixed (char* src = &_firstChar, dest = destination)
-                wstrcpy(dest + destinationIndex, src + sourceIndex, count);
+            Buffer.Memmove(
+                destination: ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(destination), destinationIndex),
+                source: ref Unsafe.Add(ref this._firstChar, sourceIndex),
+                elementCount: (uint)count);
         }
 
         // Returns the entire string as an array of characters.
-        public unsafe char[] ToCharArray()
+        public char[] ToCharArray()
         {
             if (Length == 0)
                 return Array.Empty<char>();
 
             char[] chars = new char[Length];
-            fixed (char* src = &_firstChar, dest = &chars[0])
-                wstrcpy(dest, src, Length);
+            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(chars), ref this._firstChar, (uint)Length);
             return chars;
         }
 
         // Returns a substring of this string as an array of characters.
         //
-        public unsafe char[] ToCharArray(int startIndex, int length)
+        public char[] ToCharArray(int startIndex, int length)
         {
             // Range check everything.
             if (startIndex < 0 || startIndex > Length || startIndex > Length - length)
@@ -425,8 +391,7 @@ namespace System
             }
 
             char[] chars = new char[length];
-            fixed (char* src = &_firstChar, dest = &chars[0])
-                wstrcpy(dest, src + startIndex, length);
+            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(chars), ref Unsafe.Add(ref this._firstChar, startIndex), (uint)length);
             return chars;
         }
 

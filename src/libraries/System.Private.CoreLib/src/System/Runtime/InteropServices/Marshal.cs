@@ -703,11 +703,7 @@ namespace System.Runtime.InteropServices
             }
 
             IntPtr hglobal = AllocHGlobal((IntPtr)nb);
-
-            fixed (char* firstChar = s)
-            {
-                string.wstrcpy((char*)hglobal, firstChar, s.Length + 1);
-            }
+            Buffer.Memmove(ref *(char*)hglobal, ref Unsafe.AsRef(in s.GetPinnableReference()), (uint)s.Length + 1);
             return hglobal;
         }
 
@@ -751,11 +747,7 @@ namespace System.Runtime.InteropServices
             }
 
             IntPtr hglobal = AllocCoTaskMem(nb);
-
-            fixed (char* firstChar = s)
-            {
-                string.wstrcpy((char*)hglobal, firstChar, s.Length + 1);
-            }
+            Buffer.Memmove(ref *(char*)hglobal, ref Unsafe.AsRef(in s.GetPinnableReference()), (uint)s.Length + 1);
             return hglobal;
         }
 

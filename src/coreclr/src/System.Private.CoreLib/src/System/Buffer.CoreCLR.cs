@@ -101,13 +101,9 @@ namespace System
         {
             Debug.Assert((srcIndex >= 0) && (destIndex >= 0) && (len >= 0), "Index and length must be non-negative!");
             Debug.Assert(src.Length - srcIndex >= len, "not enough bytes in src");
-            // If dest has 0 elements, the fixed statement will throw an
-            // IndexOutOfRangeException.  Special-case 0-byte copies.
-            if (len == 0)
-                return;
-            fixed (byte* pSrc = src)
+            if (len != 0)
             {
-                Memcpy(pDest + destIndex, pSrc + srcIndex, len);
+                Memmove(ref pDest[destIndex], ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(src), srcIndex), (uint)len);
             }
         }
     }

@@ -789,34 +789,31 @@ namespace System
         // or are otherwise mitigated
         internal unsafe int GetNonRandomizedHashCode()
         {
-            fixed (char* src = &_firstChar)
+            Debug.Assert(Unsafe.Add(ref this._firstChar, this.Length) == '\0', "this[this.Length] == '\\0'");
+            Debug.Assert((int)Unsafe.AsPointer(ref this._firstChar) % 4 == 0, "Managed string should start at 4 bytes boundary");
+
+            uint hash1 = (5381 << 16) + 5381;
+            uint hash2 = hash1;
+
+            ref uint ptr = ref Unsafe.As<char, uint>(ref this._firstChar);
+            int length = this.Length;
+
+            while (length > 2)
             {
-                Debug.Assert(src[this.Length] == '\0', "src[this.Length] == '\\0'");
-                Debug.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
-
-                uint hash1 = (5381 << 16) + 5381;
-                uint hash2 = hash1;
-
-                uint* ptr = (uint*)src;
-                int length = this.Length;
-
-                while (length > 2)
-                {
-                    length -= 4;
-                    // Where length is 4n-1 (e.g. 3,7,11,15,19) this additionally consumes the null terminator
-                    hash1 = (BitOperations.RotateLeft(hash1, 5) + hash1) ^ ptr[0];
-                    hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ ptr[1];
-                    ptr += 2;
-                }
-
-                if (length > 0)
-                {
-                    // Where length is 4n-3 (e.g. 1,5,9,13,17) this additionally consumes the null terminator
-                    hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ ptr[0];
-                }
-
-                return (int)(hash1 + (hash2 * 1566083941));
+                length -= 4;
+                // Where length is 4n-1 (e.g. 3,7,11,15,19) this additionally consumes the null terminator
+                hash1 = (BitOperations.RotateLeft(hash1, 5) + hash1) ^ ptr;
+                hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ Unsafe.Add(ref ptr, 1);
+                ptr = ref Unsafe.Add(ref ptr, 2);
             }
+
+            if (length > 0)
+            {
+                // Where length is 4n-3 (e.g. 1,5,9,13,17) this additionally consumes the null terminator
+                hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ ptr;
+            }
+
+            return (int)(hash1 + (hash2 * 1566083941));
         }
 
         // Determines whether a specified string is a prefix of the current instance

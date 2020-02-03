@@ -97,10 +97,7 @@ namespace System.StubHelpers
                     // + 1 for the null character from the user.  + 1 for the null character we put in.
                     pbNativeBuffer = (byte*)Marshal.AllocCoTaskMem(nb + 2);
 
-                    fixed (byte* pBytes = &bytes[0])
-                    {
-                        Buffer.Memcpy(pbNativeBuffer, pBytes, nb);
-                    }
+                    Buffer.Memmove(ref *pbNativeBuffer, ref MemoryMarshal.GetArrayDataReference(bytes), (uint)nb);
                 }
             }
 
@@ -341,13 +338,7 @@ namespace System.StubHelpers
                 }
 
                 // copy characters from the managed string
-                fixed (char* ch = strManaged)
-                {
-                    Buffer.Memcpy(
-                        ptrToFirstChar,
-                        (byte*)ch,
-                        (strManaged.Length + 1) * 2);
-                }
+                Buffer.Memmove(ref *(char*)ptrToFirstChar, ref Unsafe.AsRef(in strManaged.GetPinnableReference()), (uint)strManaged.Length + 1);
 
                 // copy the trail byte if present
                 if (hasTrailByte)
@@ -445,10 +436,7 @@ namespace System.StubHelpers
                 byte[] bytes = AnsiCharMarshaler.DoAnsiConversion(strManaged, fBestFit, fThrowOnUnmappableChar, out nbytesused);
 
                 Debug.Assert(nbytesused < nbytes, "Insufficient buffer allocated in VBByValStrMarshaler.ConvertToNative");
-                fixed (byte* pBytes = &bytes[0])
-                {
-                    Buffer.Memcpy(pNative, pBytes, nbytesused);
-                }
+                Buffer.Memmove(ref *pNative, ref MemoryMarshal.GetArrayDataReference(bytes), (uint)nbytesused);
 
                 pNative[nbytesused] = 0;
                 *pLength = nbytesused;
