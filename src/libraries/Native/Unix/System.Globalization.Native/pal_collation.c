@@ -527,25 +527,11 @@ AreEqualOrdinalIgnoreCase
 */
 static int AreEqualOrdinalIgnoreCase(UChar32 one, UChar32 two)
 {
-    // Return whether the two characters are identical or would be identical if they were upper-cased.
-
-    if (one == two)
-    {
-        return TRUE;
-    }
-
-    if (one == 0x0131 || two == 0x0131)
-    {
-        // On Windows with InvariantCulture, the LATIN SMALL LETTER DOTLESS I (U+0131)
-        // capitalizes to itself, whereas with ICU it capitalizes to LATIN CAPITAL LETTER I (U+0049).
-        // We special case it to match the Windows invariant behavior.
-        return FALSE;
-    }
-
     // Since we're performing caseless comparisons of text, we want to perform case folding, not case mapping.
     // See https://unicode.org/faq/casemap_charprop.html for more information.
 
-    return u_foldCase(one, U_FOLD_CASE_DEFAULT) == u_foldCase(two, U_FOLD_CASE_DEFAULT);
+    return one == two
+        || u_foldCase(one, U_FOLD_CASE_DEFAULT) == u_foldCase(two, U_FOLD_CASE_DEFAULT);
 }
 
 /*
