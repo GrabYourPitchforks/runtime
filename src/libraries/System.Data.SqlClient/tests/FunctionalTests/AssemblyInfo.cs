@@ -4,4 +4,5 @@
 
 using Xunit;
 
-[assembly: SkipOnCoreClr("Timeout in stress tests on Linux/arm32", TestPlatforms.Linux)]
+[assembly: SkipOnCoreClr("Timeout in stress tests on Linux/arm32", TestPlatforms.Linux, RuntimeTestModes.CheckedRuntime)]
+[assembly: SkipOnMono("Timeout in stress tests on Linux/arm32", TestPlatforms.Linux)]
