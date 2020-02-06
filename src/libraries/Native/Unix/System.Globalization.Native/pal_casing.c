@@ -42,7 +42,7 @@ void GlobalizationNative_CaseFold(
         U16_NEXT(lpSrc, srcIdx, cwLength, srcCodepoint);
         dstCodePoint = u_foldCase(srcCodePoint, U_FOLD_CASE_DEFAULT);
 
-        UU16_APPEND(lpDst, dstIdx, cwLength, dstCodepoint, isError);
+        U16_APPEND(lpDst, dstIdx, cwLength, dstCodepoint, isError);
         assert(isError == FALSE && srcIdx == dstIdx);
     }
 }
