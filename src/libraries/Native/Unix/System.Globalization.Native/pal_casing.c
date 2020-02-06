@@ -40,7 +40,7 @@ void GlobalizationNative_CaseFold(
     while (srcIdx < cwLength)
     {
         U16_NEXT(lpSrc, srcIdx, cwLength, srcCodepoint);
-        dstCodePoint = u_foldCase(srcCodePoint, U_FOLD_CASE_DEFAULT);
+        dstCodepoint = u_foldCase(srcCodepoint, U_FOLD_CASE_DEFAULT);
 
         U16_APPEND(lpDst, dstIdx, cwLength, dstCodepoint, isError);
         assert(isError == FALSE && srcIdx == dstIdx);
