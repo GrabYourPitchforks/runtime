@@ -28,6 +28,39 @@ namespace System.Globalization
 
         private bool IsInvariant { get { return _cultureName.Length == 0; } }
 
+        // For internal use only. Performs case folding of data from the source buffer
+        // to the destination buffer. The conversion is ordinal / non-linguistic.
+        internal static void CaseFold(ReadOnlySpan<char> source, Span<char> destination)
+        {
+            Debug.Assert(destination.Length >= source.Length);
+
+            if (GlobalizationMode.Invariant)
+            {
+                ToLowerAsciiInvariant(source, destination);
+            }
+            else
+            {
+                CaseFoldImpl(source, destination);
+            }
+        }
+
+        private static unsafe void CaseFoldImpl(ReadOnlySpan<char> source, Span<char> destination)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+            Debug.Assert(destination.Length >= source.Length);
+
+            if (destination.Length < source.Length)
+            {
+                ThrowHelper.ThrowArgumentException_DestinationTooShort();
+            }
+
+            fixed (char* pSource = &MemoryMarshal.GetReference(source))
+            fixed (char* pDestination = &MemoryMarshal.GetReference(destination))
+            {
+                Interop.Globalization.CaseFold(pSource, pDestination, source.Length);
+            }
+        }
+
         internal unsafe void ChangeCase(char* src, int srcLen, char* dstBuffer, int dstBufferCapacity, bool bToUpper)
         {
             Debug.Assert(!GlobalizationMode.Invariant);

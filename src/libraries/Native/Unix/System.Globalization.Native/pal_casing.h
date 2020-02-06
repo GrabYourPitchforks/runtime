@@ -5,6 +5,10 @@
 #include "pal_compiler.h"
 #include "pal_locale.h"
 
+DLLEXPORT void GlobalizationNative_CaseFold(const UChar* lpSrc,
+                                            UChar* lpDst,
+                                            int32_t cwLength);
+
 DLLEXPORT void GlobalizationNative_ChangeCase(const UChar* lpSrc,
                                               int32_t cwSrcLength,
                                               UChar* lpDst,

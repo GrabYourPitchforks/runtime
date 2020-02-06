@@ -15,6 +15,40 @@
 
 /*
 Function:
+CaseFold
+
+Performs simple ordinal / non-linguistic case folding from a UTF-16
+source buffer to a UTF-16 destination buffer. The 'cwLength' parameter
+is common to both buffers.
+*/
+void GlobalizationNative_CaseFold(
+    const UChar* lpSrc, UChar* lpDst, int32_t cwLength)
+{
+    // Iterate through the string, decoding the next one or two UTF-16 code units
+    // into a codepoint and updating srcIdx to point to the next UTF-16 code unit
+    // to decode. Then case fold it and write dstCodepoint into lpDst at the
+    // appropriate offset. Case folding won't convert any code point from the BMP
+    // into a supplementary plane or vice versa, so the destination string length
+    // will always be equal to the source string length.
+    //
+    // n.b. Not using u_strFoldCase since we don't want full folding semantics.
+
+    UBool isError = FALSE;
+    int32_t srcIdx = 0, dstIdx = 0;
+    UChar32 srcCodepoint, dstCodepoint;
+
+    while (srcIdx < cwLength)
+    {
+        U16_NEXT(lpSrc, srcIdx, cwLength, srcCodepoint);
+        dstCodePoint = u_foldCase(srcCodePoint, U_FOLD_CASE_DEFAULT);
+
+        UU16_APPEND(lpDst, dstIdx, cwLength, dstCodepoint, isError);
+        assert(isError == FALSE && srcIdx == dstIdx);
+    }
+}
+
+/*
+Function:
 ChangeCase
 
 Performs upper or lower casing of a string into a new buffer.

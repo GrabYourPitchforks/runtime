@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace System.Globalization
 {
@@ -11,6 +12,36 @@ namespace System.Globalization
         private unsafe void FinishInitialization()
         {
             _sortHandle = CompareInfo.GetSortHandle(_textInfoName);
+        }
+
+        // For internal use only. Performs case folding of data from the source buffer
+        // to the destination buffer. The conversion is ordinal / non-linguistic.
+        internal static void CaseFold(ReadOnlySpan<char> source, Span<char> destination)
+        {
+            Debug.Assert(destination.Length >= source.Length);
+
+            if (GlobalizationMode.Invariant)
+            {
+                ToUpperAsciiInvariant(source, destination);
+            }
+            else
+            {
+                CaseFoldImpl(source, destination);
+            }
+        }
+
+        private static unsafe void CaseFoldImpl(ReadOnlySpan<char> source, Span<char> destination)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+
+            // Windows (NLS) doesn't have an implementation of simple case folding.
+            // Instead, the NLS code paths normalize to uppercase using the invariant culture.
+
+            fixed (char* pSource = &MemoryMarshal.GetReference(source))
+            fixed (char* pDestination = &MemoryMarshal.GetReference(destination))
+            {
+                Invariant.ChangeCase(pSource, source.Length, pDestination, destination.Length, toUpper: true);
+            }
         }
 
         private unsafe void ChangeCase(char* pSource, int pSourceLen, char* pResult, int pResultLen, bool toUpper)

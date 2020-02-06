@@ -11,6 +11,9 @@ internal static partial class Interop
 {
     internal static partial class Globalization
     {
+        [DllImport(Libraries.GlobalizationNative, CharSet = CharSet.Unicode, EntryPoint = "GlobalizationNative_CaseFold")]
+        internal static extern unsafe void CaseFold(char* src, char* dstBuffer, int len);
+
         [DllImport(Libraries.GlobalizationNative, CharSet = CharSet.Unicode, EntryPoint = "GlobalizationNative_ChangeCase")]
         internal static extern unsafe void ChangeCase(char* src, int srcLen, char* dstBuffer, int dstBufferCapacity, bool bToUpper);
 
