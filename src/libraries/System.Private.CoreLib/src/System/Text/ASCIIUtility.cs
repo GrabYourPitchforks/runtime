@@ -739,16 +739,16 @@ namespace System.Text
                     secondVector = Sse2.LoadAlignedVector128((ushort*)pBuffer + SizeOfVector128InChars);
                     Vector128<ushort> combinedVector = Sse2.Or(firstVector, secondVector);
 
-                    if (Sse41.IsSupported)
-                    {
-                        // If a non-ASCII bit is set in any WORD of the combined vector, we have seen non-ASCII data.
-                        // Jump to the non-ASCII handler to figure out which particular vector contained non-ASCII data.
-                        if (!Sse41.TestZ(combinedVector, asciiMaskForPTEST))
-                        {
-                            goto FoundNonAsciiDataInFirstOrSecondVector;
-                        }
-                    }
-                    else
+                    //if (false)
+                    //{
+                    //    // If a non-ASCII bit is set in any WORD of the combined vector, we have seen non-ASCII data.
+                    //    // Jump to the non-ASCII handler to figure out which particular vector contained non-ASCII data.
+                    //    if (!Sse41.TestZ(combinedVector, asciiMaskForPTEST))
+                    //    {
+                    //        goto FoundNonAsciiDataInFirstOrSecondVector;
+                    //    }
+                    //}
+                    //else
                     {
                         // See comment earlier in the method for an explanation of how the below logic works.
                         currentMask = (uint)Sse2.MoveMask(Sse2.AddSaturate(combinedVector, asciiMaskForPADDUSW).AsByte());
@@ -782,16 +782,16 @@ namespace System.Text
 
             firstVector = Sse2.LoadAlignedVector128((ushort*)pBuffer);
 
-            if (Sse41.IsSupported)
-            {
-                // If a non-ASCII bit is set in any WORD of the combined vector, we have seen non-ASCII data.
-                // Jump to the non-ASCII handler to figure out which particular vector contained non-ASCII data.
-                if (!Sse41.TestZ(firstVector, asciiMaskForPTEST))
-                {
-                    goto FoundNonAsciiDataInFirstVector;
-                }
-            }
-            else
+            //if (Sse41.IsSupported)
+            //{
+            //    // If a non-ASCII bit is set in any WORD of the combined vector, we have seen non-ASCII data.
+            //    // Jump to the non-ASCII handler to figure out which particular vector contained non-ASCII data.
+            //    if (!Sse41.TestZ(firstVector, asciiMaskForPTEST))
+            //    {
+            //        goto FoundNonAsciiDataInFirstVector;
+            //    }
+            //}
+            //else
             {
                 // See comment earlier in the method for an explanation of how the below logic works.
                 currentMask = (uint)Sse2.MoveMask(Sse2.AddSaturate(firstVector, asciiMaskForPADDUSW).AsByte());
@@ -815,16 +815,16 @@ namespace System.Text
                 pBuffer = (char*)((byte*)pBuffer + (bufferLength & (SizeOfVector128InBytes - 1)) - SizeOfVector128InBytes);
                 firstVector = Sse2.LoadVector128((ushort*)pBuffer); // unaligned load
 
-                if (Sse41.IsSupported)
-                {
-                    // If a non-ASCII bit is set in any WORD of the combined vector, we have seen non-ASCII data.
-                    // Jump to the non-ASCII handler to figure out which particular vector contained non-ASCII data.
-                    if (!Sse41.TestZ(firstVector, asciiMaskForPTEST))
-                    {
-                        goto FoundNonAsciiDataInFirstVector;
-                    }
-                }
-                else
+                //if (Sse41.IsSupported)
+                //{
+                //    // If a non-ASCII bit is set in any WORD of the combined vector, we have seen non-ASCII data.
+                //    // Jump to the non-ASCII handler to figure out which particular vector contained non-ASCII data.
+                //    if (!Sse41.TestZ(firstVector, asciiMaskForPTEST))
+                //    {
+                //        goto FoundNonAsciiDataInFirstVector;
+                //    }
+                //}
+                //else
                 {
                     // See comment earlier in the method for an explanation of how the below logic works.
                     currentMask = (uint)Sse2.MoveMask(Sse2.AddSaturate(firstVector, asciiMaskForPADDUSW).AsByte());
@@ -849,14 +849,14 @@ namespace System.Text
             // we'll make sure the first vector local is the one that contains the non-ASCII data.
 
             // See comment earlier in the method for an explanation of how the below logic works.
-            if (Sse41.IsSupported)
-            {
-                if (!Sse41.TestZ(firstVector, asciiMaskForPTEST))
-                {
-                    goto FoundNonAsciiDataInFirstVector;
-                }
-            }
-            else
+            //if (Sse41.IsSupported)
+            //{
+            //    if (!Sse41.TestZ(firstVector, asciiMaskForPTEST))
+            //    {
+            //        goto FoundNonAsciiDataInFirstVector;
+            //    }
+            //}
+            //else
             {
                 currentMask = (uint)Sse2.MoveMask(Sse2.AddSaturate(firstVector, asciiMaskForPADDUSW).AsByte());
                 if ((currentMask & NonAsciiDataSeenMask) != 0)
@@ -870,7 +870,7 @@ namespace System.Text
             pBuffer += SizeOfVector128InChars;
             firstVector = secondVector;
 
-        FoundNonAsciiDataInFirstVector:
+        // FoundNonAsciiDataInFirstVector:
 
             // See comment earlier in the method for an explanation of how the below logic works.
             currentMask = (uint)Sse2.MoveMask(Sse2.AddSaturate(firstVector, asciiMaskForPADDUSW).AsByte());
@@ -1321,14 +1321,14 @@ namespace System.Text
             // If there's non-ASCII data in the first 8 elements of the vector, there's nothing we can do.
             // See comments in GetIndexOfFirstNonAsciiChar_Sse2 for information about how this works.
 
-            if (Sse41.IsSupported)
-            {
-                if (!Sse41.TestZ(utf16VectorFirst, asciiMaskForPTEST))
-                {
-                    return 0;
-                }
-            }
-            else
+            //if (Sse41.IsSupported)
+            //{
+            //    if (!Sse41.TestZ(utf16VectorFirst, asciiMaskForPTEST))
+            //    {
+            //        return 0;
+            //    }
+            //}
+            //else
             {
                 if ((Sse2.MoveMask(Sse2.AddSaturate(utf16VectorFirst.AsUInt16(), asciiMaskForPADDUSW).AsByte()) & NonAsciiDataSeenMask) != 0)
                 {
@@ -1361,14 +1361,14 @@ namespace System.Text
                 utf16VectorFirst = Sse2.LoadVector128((short*)pUtf16Buffer + currentOffsetInElements); // unaligned load
 
                 // See comments earlier in this method for information about how this works.
-                if (Sse41.IsSupported)
-                {
-                    if (!Sse41.TestZ(utf16VectorFirst, asciiMaskForPTEST))
-                    {
-                        goto Finish;
-                    }
-                }
-                else
+                //if (Sse41.IsSupported)
+                //{
+                //    if (!Sse41.TestZ(utf16VectorFirst, asciiMaskForPTEST))
+                //    {
+                //        goto Finish;
+                //    }
+                //}
+                //else
                 {
                     if ((Sse2.MoveMask(Sse2.AddSaturate(utf16VectorFirst.AsUInt16(), asciiMaskForPADDUSW).AsByte()) & NonAsciiDataSeenMask) != 0)
                     {
@@ -1400,14 +1400,14 @@ namespace System.Text
                 Vector128<short> combinedVector = Sse2.Or(utf16VectorFirst, utf16VectorSecond);
 
                 // See comments in GetIndexOfFirstNonAsciiChar_Sse2 for information about how this works.
-                if (Sse41.IsSupported)
-                {
-                    if (!Sse41.TestZ(combinedVector, asciiMaskForPTEST))
-                    {
-                        goto FoundNonAsciiDataInLoop;
-                    }
-                }
-                else
+                //if (Sse41.IsSupported)
+                //{
+                //    if (!Sse41.TestZ(combinedVector, asciiMaskForPTEST))
+                //    {
+                //        goto FoundNonAsciiDataInLoop;
+                //    }
+                //}
+                //else
                 {
                     if ((Sse2.MoveMask(Sse2.AddSaturate(combinedVector.AsUInt16(), asciiMaskForPADDUSW).AsByte()) & NonAsciiDataSeenMask) != 0)
                     {
@@ -1434,14 +1434,14 @@ namespace System.Text
 
             // Can we at least narrow the high vector?
             // See comments in GetIndexOfFirstNonAsciiChar_Sse2 for information about how this works.
-            if (Sse41.IsSupported)
-            {
-                if (!Sse41.TestZ(utf16VectorFirst, asciiMaskForPTEST))
-                {
-                    goto Finish; // found non-ASCII data
-                }
-            }
-            else
+            //if (Sse41.IsSupported)
+            //{
+            //    if (!Sse41.TestZ(utf16VectorFirst, asciiMaskForPTEST))
+            //    {
+            //        goto Finish; // found non-ASCII data
+            //    }
+            //}
+            //else
             {
                 if ((Sse2.MoveMask(Sse2.AddSaturate(utf16VectorFirst.AsUInt16(), asciiMaskForPADDUSW).AsByte()) & NonAsciiDataSeenMask) != 0)
                 {

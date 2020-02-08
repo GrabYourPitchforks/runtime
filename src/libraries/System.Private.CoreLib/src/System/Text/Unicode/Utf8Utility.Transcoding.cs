@@ -899,10 +899,10 @@ namespace System.Text.Unicode
             // is not enabled.
 
             Unsafe.SkipInit(out Vector128<short> nonAsciiUtf16DataMask);
-            if (Sse41.X64.IsSupported)
-            {
-                nonAsciiUtf16DataMask = Vector128.Create(unchecked((short)0xFF80)); // mask of non-ASCII bits in a UTF-16 char
-            }
+            //if (Sse41.X64.IsSupported)
+            //{
+            //    nonAsciiUtf16DataMask = Vector128.Create(unchecked((short)0xFF80)); // mask of non-ASCII bits in a UTF-16 char
+            //}
 
             // Begin the main loop.
 
@@ -957,91 +957,91 @@ namespace System.Text.Unicode
                     uint inputCharsRemaining = (uint)(pFinalPosWhereCanReadDWordFromInputBuffer - pInputBuffer) + 2;
                     uint minElementsRemaining = (uint)Math.Min(inputCharsRemaining, outputBytesRemaining);
 
-                    if (Sse41.X64.IsSupported)
-                    {
-                        Debug.Assert(BitConverter.IsLittleEndian, "SSE41 requires little-endian.");
+                    //if (Sse41.X64.IsSupported)
+                    //{
+                    //    Debug.Assert(BitConverter.IsLittleEndian, "SSE41 requires little-endian.");
 
-                        // Try reading and writing 8 elements per iteration.
-                        uint maxIters = minElementsRemaining / 8;
-                        ulong possibleNonAsciiQWord;
-                        int i;
-                        Vector128<short> utf16Data;
-                        for (i = 0; (uint)i < maxIters; i++)
-                        {
-                            utf16Data = Unsafe.ReadUnaligned<Vector128<short>>(pInputBuffer);
-                            if (!Sse41.TestZ(utf16Data, nonAsciiUtf16DataMask))
-                            {
-                                goto LoopTerminatedDueToNonAsciiDataInVectorLocal;
-                            }
+                    //    // Try reading and writing 8 elements per iteration.
+                    //    uint maxIters = minElementsRemaining / 8;
+                    //    ulong possibleNonAsciiQWord;
+                    //    int i;
+                    //    Vector128<short> utf16Data;
+                    //    for (i = 0; (uint)i < maxIters; i++)
+                    //    {
+                    //        utf16Data = Unsafe.ReadUnaligned<Vector128<short>>(pInputBuffer);
+                    //        if (!Sse41.TestZ(utf16Data, nonAsciiUtf16DataMask))
+                    //        {
+                    //            goto LoopTerminatedDueToNonAsciiDataInVectorLocal;
+                    //        }
 
-                            // narrow and write
+                    //        // narrow and write
 
-                            Sse2.StoreScalar((ulong*)pOutputBuffer /* unaligned */, Sse2.PackUnsignedSaturate(utf16Data, utf16Data).AsUInt64());
+                    //        Sse2.StoreScalar((ulong*)pOutputBuffer /* unaligned */, Sse2.PackUnsignedSaturate(utf16Data, utf16Data).AsUInt64());
 
-                            pInputBuffer += 8;
-                            pOutputBuffer += 8;
-                        }
+                    //        pInputBuffer += 8;
+                    //        pOutputBuffer += 8;
+                    //    }
 
-                        outputBytesRemaining -= 8 * i;
+                    //    outputBytesRemaining -= 8 * i;
 
-                        // Can we perform one more iteration, but reading & writing 4 elements instead of 8?
+                    //    // Can we perform one more iteration, but reading & writing 4 elements instead of 8?
 
-                        if ((minElementsRemaining & 4) != 0)
-                        {
-                            possibleNonAsciiQWord = Unsafe.ReadUnaligned<ulong>(pInputBuffer);
-                            if (!Utf16Utility.AllCharsInUInt64AreAscii(possibleNonAsciiQWord))
-                            {
-                                goto LoopTerminatedDueToNonAsciiDataInPossibleNonAsciiQWordLocal;
-                            }
+                    //    if ((minElementsRemaining & 4) != 0)
+                    //    {
+                    //        possibleNonAsciiQWord = Unsafe.ReadUnaligned<ulong>(pInputBuffer);
+                    //        if (!Utf16Utility.AllCharsInUInt64AreAscii(possibleNonAsciiQWord))
+                    //        {
+                    //            goto LoopTerminatedDueToNonAsciiDataInPossibleNonAsciiQWordLocal;
+                    //        }
 
-                            utf16Data = Vector128.CreateScalarUnsafe(possibleNonAsciiQWord).AsInt16();
-                            Unsafe.WriteUnaligned<uint>(pOutputBuffer, Sse2.ConvertToUInt32(Sse2.PackUnsignedSaturate(utf16Data, utf16Data).AsUInt32()));
+                    //        utf16Data = Vector128.CreateScalarUnsafe(possibleNonAsciiQWord).AsInt16();
+                    //        Unsafe.WriteUnaligned<uint>(pOutputBuffer, Sse2.ConvertToUInt32(Sse2.PackUnsignedSaturate(utf16Data, utf16Data).AsUInt32()));
 
-                            pInputBuffer += 4;
-                            pOutputBuffer += 4;
-                            outputBytesRemaining -= 4;
-                        }
+                    //        pInputBuffer += 4;
+                    //        pOutputBuffer += 4;
+                    //        outputBytesRemaining -= 4;
+                    //    }
 
-                        continue; // Go back to beginning of main loop, read data, check for ASCII
+                    //    continue; // Go back to beginning of main loop, read data, check for ASCII
 
-                    LoopTerminatedDueToNonAsciiDataInVectorLocal:
+                    //LoopTerminatedDueToNonAsciiDataInVectorLocal:
 
-                        outputBytesRemaining -= 8 * i;
-                        possibleNonAsciiQWord = Sse2.X64.ConvertToUInt64(utf16Data.AsUInt64());
+                    //    outputBytesRemaining -= 8 * i;
+                    //    possibleNonAsciiQWord = Sse2.X64.ConvertToUInt64(utf16Data.AsUInt64());
 
-                        // Temporarily set 'possibleNonAsciiQWord' to be the low 64 bits of the vector,
-                        // then check whether it's all-ASCII. If so, narrow and write to the destination
-                        // buffer. Since we know that either the high 64 bits or the low 64 bits of the
-                        // vector contains non-ASCII data, by the end of the following block the
-                        // 'possibleNonAsciiQWord' local is guaranteed to contain the non-ASCII segment.
+                    //    // Temporarily set 'possibleNonAsciiQWord' to be the low 64 bits of the vector,
+                    //    // then check whether it's all-ASCII. If so, narrow and write to the destination
+                    //    // buffer. Since we know that either the high 64 bits or the low 64 bits of the
+                    //    // vector contains non-ASCII data, by the end of the following block the
+                    //    // 'possibleNonAsciiQWord' local is guaranteed to contain the non-ASCII segment.
 
-                        if (Utf16Utility.AllCharsInUInt64AreAscii(possibleNonAsciiQWord)) // all chars in first QWORD are ASCII
-                        {
-                            Unsafe.WriteUnaligned<uint>(pOutputBuffer, Sse2.ConvertToUInt32(Sse2.PackUnsignedSaturate(utf16Data, utf16Data).AsUInt32()));
-                            pInputBuffer += 4;
-                            pOutputBuffer += 4;
-                            outputBytesRemaining -= 4;
-                            possibleNonAsciiQWord = utf16Data.AsUInt64().GetElement(1);
-                        }
+                    //    if (Utf16Utility.AllCharsInUInt64AreAscii(possibleNonAsciiQWord)) // all chars in first QWORD are ASCII
+                    //    {
+                    //        Unsafe.WriteUnaligned<uint>(pOutputBuffer, Sse2.ConvertToUInt32(Sse2.PackUnsignedSaturate(utf16Data, utf16Data).AsUInt32()));
+                    //        pInputBuffer += 4;
+                    //        pOutputBuffer += 4;
+                    //        outputBytesRemaining -= 4;
+                    //        possibleNonAsciiQWord = utf16Data.AsUInt64().GetElement(1);
+                    //    }
 
-                    LoopTerminatedDueToNonAsciiDataInPossibleNonAsciiQWordLocal:
+                    //LoopTerminatedDueToNonAsciiDataInPossibleNonAsciiQWordLocal:
 
-                        Debug.Assert(!Utf16Utility.AllCharsInUInt64AreAscii(possibleNonAsciiQWord)); // this condition should've been checked earlier
+                    //    Debug.Assert(!Utf16Utility.AllCharsInUInt64AreAscii(possibleNonAsciiQWord)); // this condition should've been checked earlier
 
-                        thisDWord = (uint)possibleNonAsciiQWord;
-                        if (Utf16Utility.AllCharsInUInt32AreAscii(thisDWord))
-                        {
-                            // [ 00000000 0bbbbbbb | 00000000 0aaaaaaa ] -> [ 00000000 0bbbbbbb | 0bbbbbbb 0aaaaaaa ]
-                            Unsafe.WriteUnaligned<ushort>(pOutputBuffer, (ushort)(thisDWord | (thisDWord >> 8)));
-                            pInputBuffer += 2;
-                            pOutputBuffer += 2;
-                            outputBytesRemaining -= 2;
-                            thisDWord = (uint)(possibleNonAsciiQWord >> 32);
-                        }
+                    //    thisDWord = (uint)possibleNonAsciiQWord;
+                    //    if (Utf16Utility.AllCharsInUInt32AreAscii(thisDWord))
+                    //    {
+                    //        // [ 00000000 0bbbbbbb | 00000000 0aaaaaaa ] -> [ 00000000 0bbbbbbb | 0bbbbbbb 0aaaaaaa ]
+                    //        Unsafe.WriteUnaligned<ushort>(pOutputBuffer, (ushort)(thisDWord | (thisDWord >> 8)));
+                    //        pInputBuffer += 2;
+                    //        pOutputBuffer += 2;
+                    //        outputBytesRemaining -= 2;
+                    //        thisDWord = (uint)(possibleNonAsciiQWord >> 32);
+                    //    }
 
-                        goto AfterReadDWordSkipAllCharsAsciiCheck;
-                    }
-                    else
+                    //    goto AfterReadDWordSkipAllCharsAsciiCheck;
+                    //}
+                    //else
                     {
                         // Can't use SSE41 x64, so we'll only read and write 4 elements per iteration.
                         uint maxIters = minElementsRemaining / 4;

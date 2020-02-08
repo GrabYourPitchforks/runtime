@@ -89,14 +89,14 @@ namespace System.Text.Unicode
                         uint mask;
 
                         Vector128<ushort> charIsNonAscii;
-                        if (Sse41.IsSupported)
-                        {
-                            // Sets the 0x0080 bit of each element in 'charIsNonAscii' if the corresponding
-                            // input was 0x0080 <= [value]. (i.e., [value] is non-ASCII.)
+                        //if (Sse41.IsSupported)
+                        //{
+                        //    // Sets the 0x0080 bit of each element in 'charIsNonAscii' if the corresponding
+                        //    // input was 0x0080 <= [value]. (i.e., [value] is non-ASCII.)
 
-                            charIsNonAscii = Sse41.Min(utf16Data, vector0080);
-                        }
-                        else
+                        //    charIsNonAscii = Sse41.Min(utf16Data, vector0080);
+                        //}
+                        //else
                         {
                             // Sets the 0x0080 bit of each element in 'charIsNonAscii' if the corresponding
                             // input was 0x0080 <= [value] <= 0x7FFF. The case where 0x8000 <= [value] will
