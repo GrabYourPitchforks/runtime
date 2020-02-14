@@ -3,7 +3,7 @@ Copyright
 
 The .NET Core copyright is held by ".NET Foundation and Contributors".
 
-The [.NET Foundation](http://www.dotnetfoundation.org/) is an independent organization that encourages open development and collaboration around the .NET ecosystem.
+The [.NET Foundation](https://www.dotnetfoundation.org/) is an independent organization that encourages open development and collaboration around the .NET ecosystem.
 
 Source License
 --------------

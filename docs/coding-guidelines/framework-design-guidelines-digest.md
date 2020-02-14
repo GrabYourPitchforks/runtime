@@ -12,7 +12,7 @@ considered the canonical way to design frameworks at Microsoft. They carry the
 experience and cumulative wisdom of thousands of developer hours over several
 versions of the .NET Framework.
 
-[FDG]: http://amazon.com/dp/0321545613
+[FDG]: https://amazon.com/dp/0321545613
 
 # General Design Principles
 
