@@ -832,7 +832,7 @@ namespace System
         /// <summary>
         /// The values of the ConsoleColor enums unfortunately don't map to the
         /// corresponding ANSI values.  We need to do the mapping manually.
-        /// See http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+        /// See https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
         /// </summary>
         private static readonly int[] _consoleColorToAnsiCode = new int[]
         {

@@ -12,7 +12,7 @@
 // NOTE: See code:clr::regex::RegExBase (below) for description of supported regex language.
 //
 // NOTE: we had to forego standard options such as tr1::regex
-//       (http://en.wikipedia.org/wiki/Technical_Report_1#Regular_Expressions) and Microsoft's
+//       (https://en.wikipedia.org/wiki/Technical_Report_1#Regular_Expressions) and Microsoft's
 //       internal GRETA regular expressions (http://toolbox/sites/987/default.aspx) because they
 //       both rely heavily on the STL, which can not currently be used within the CLR.
 //

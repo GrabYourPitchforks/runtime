@@ -502,7 +502,7 @@ int verbMerge::DoWork(const char* nameOfOutputFile, const char* pattern, bool re
 
     LogInfo("Read/Wrote %lld MB @ %4.2f MB/s.", totalSize / (1000 * 1000),
             (((double)totalSize) / (1000 * 1000)) /
-                st1.GetSeconds()); // yes yes.. http://en.wikipedia.org/wiki/Megabyte_per_second#Megabyte_per_second
+                st1.GetSeconds()); // yes yes.. https://en.wikipedia.org/wiki/Megabyte_per_second#Megabyte_per_second
 
 CLEAN_UP:
 

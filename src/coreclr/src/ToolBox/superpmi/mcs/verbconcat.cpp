@@ -95,7 +95,7 @@ int verbConcat::DoWork(const char* nameOfFile1, const char* nameOfFile2)
 
     LogInfo("Read/Wrote %lld MB @ %4.2f MB/s.\n", DataTemp2.QuadPart / (1000 * 1000),
             (((double)DataTemp2.QuadPart) / (1000 * 1000)) /
-                st1.GetSeconds()); // yes yes.. http://en.wikipedia.org/wiki/Megabyte_per_second#Megabyte_per_second
+                st1.GetSeconds()); // yes yes.. https://en.wikipedia.org/wiki/Megabyte_per_second#Megabyte_per_second
 
     return 0;
 }

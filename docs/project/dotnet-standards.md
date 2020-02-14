@@ -22,13 +22,13 @@ The C# language was standardized as [ECMA 334](http://www.ecma-international.org
 ECMA 335 - CLI
 ==============
 
-[Common Language Infrastructure](http://en.wikipedia.org/wiki/Common_Language_Infrastructure) - the formalized basis of .NET -- was standardized as [ECMA 335](http://www.ecma-international.org/publications/standards/Ecma-335.htm) in 2001 and approved as [ISO/IEC 23271](http://www.iso.org/iso/home/store/catalogue_ics/catalogue_detail_ics.htm?csnumber=58046) in 2003. The  standards have been since updated, to reflect changes in .NET, such as generics.
+[Common Language Infrastructure](https://en.wikipedia.org/wiki/Common_Language_Infrastructure) - the formalized basis of .NET -- was standardized as [ECMA 335](http://www.ecma-international.org/publications/standards/Ecma-335.htm) in 2001 and approved as [ISO/IEC 23271](http://www.iso.org/iso/home/store/catalogue_ics/catalogue_detail_ics.htm?csnumber=58046) in 2003. The  standards have been since updated, to reflect changes in .NET, such as generics.
 
 **ECMA 335 Resources**
 
 - [ECMA 335 Standard Overview](http://www.ecma-international.org/publications/standards/Ecma-335.htm)
 - [ECMA 335 Standard (PDF)](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf)
-- [Wikipedia entry on CLI](http://en.wikipedia.org/wiki/Common_Language_Infrastructure)
+- [Wikipedia entry on CLI](https://en.wikipedia.org/wiki/Common_Language_Infrastructure)
 
 **ECMA 335 Partitions with added Microsoft Specific Implementation Notes**
 
@@ -59,11 +59,11 @@ ECMA 372 is supported by the .NET Framework, but not .NET Core.
 Shared Source CLI (SSCLI)
 =========================
 
-[Shared Source CLI](http://en.wikipedia.org/wiki/Shared_Source_Common_Language_Infrastructure) or "Rotor" was a working implementation for the ECMA-334 (C#) and ECMA-335 (Common Language Infrastructure, or CLI) standards. It was released under a shared source license in 2002, primarily to encourage academic research focused on .NET and to demonstrate viability of .NET on diverse platforms. It was last released in 2006, to align with the .NET Framework 2 release. It is no longer relevant, given that [CoreCLR](https://github.com/dotnet/coreclr) has been released as open source on GitHub.
+[Shared Source CLI](https://en.wikipedia.org/wiki/Shared_Source_Common_Language_Infrastructure) or "Rotor" was a working implementation for the ECMA-334 (C#) and ECMA-335 (Common Language Infrastructure, or CLI) standards. It was released under a shared source license in 2002, primarily to encourage academic research focused on .NET and to demonstrate viability of .NET on diverse platforms. It was last released in 2006, to align with the .NET Framework 2 release. It is no longer relevant, given that [CoreCLR](https://github.com/dotnet/coreclr) has been released as open source on GitHub.
 
 **SSCLI Resources**
 
-- [Wikipedia entry on SSCLI](http://en.wikipedia.org/wiki/Shared_Source_Common_Language_Infrastructure)
+- [Wikipedia entry on SSCLI](https://en.wikipedia.org/wiki/Shared_Source_Common_Language_Infrastructure)
 - [The Microsoft Shared Source CLI Implementation](https://msdn.microsoft.com/library/ms973879.aspx)
 - [Shared Source Common Language Infrastructure 2.0 Release ](http://www.microsoft.com/en-us/download/details.aspx?id=4917)
 - [Shared Source CLI 2.0 Infrastructure 2.0 Release - 3rd party provided on GitHub](https://github.com/gbarnett/shared-source-cli-2.0)

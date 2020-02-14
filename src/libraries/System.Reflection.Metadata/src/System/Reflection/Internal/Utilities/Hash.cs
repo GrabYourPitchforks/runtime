@@ -25,19 +25,19 @@ namespace System.Reflection.Internal
 
         /// <summary>
         /// The offset bias value used in the FNV-1a algorithm
-        /// See http://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+        /// See https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
         /// </summary>
         internal const int FnvOffsetBias = unchecked((int)2166136261);
 
         /// <summary>
         /// The generative factor used in the FNV-1a algorithm
-        /// See http://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+        /// See https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
         /// </summary>
         internal const int FnvPrime = 16777619;
 
         /// <summary>
         /// Compute the FNV-1a hash of a sequence of bytes
-        /// See http://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+        /// See https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
         /// </summary>
         /// <param name="data">The sequence of bytes</param>
         /// <returns>The FNV-1a hash of <paramref name="data"/></returns>
@@ -55,7 +55,7 @@ namespace System.Reflection.Internal
 
         /// <summary>
         /// Compute the FNV-1a hash of a sequence of bytes
-        /// See http://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+        /// See https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
         /// </summary>
         /// <param name="data">The sequence of bytes</param>
         /// <returns>The FNV-1a hash of <paramref name="data"/></returns>

@@ -85,7 +85,7 @@ namespace System.Reflection.Internal
             return true;
         }
 
-        // Both hash computations below use the FNV-1a algorithm (http://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function).
+        // Both hash computations below use the FNV-1a algorithm (https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function).
 
         internal static int GetHashCode(byte[] x)
         {

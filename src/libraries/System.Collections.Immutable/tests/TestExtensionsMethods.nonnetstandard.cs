@@ -72,7 +72,7 @@ namespace System.Collections.Immutable.Tests
         /// <param name="count">The number of nodes in the tree. May be <c>null</c> if <see cref="IBinaryTree.Count"/> is functional.</param>
         internal static void VerifyHeightIsWithinTolerance(this IBinaryTree node, int? count = null)
         {
-            // http://en.wikipedia.org/wiki/AVL_tree
+            // https://en.wikipedia.org/wiki/AVL_tree
             double heightMustBeLessThan = Math.Log(2, s_GoldenRatio) * Math.Log(Math.Sqrt(5) * ((count ?? node.Count) + 2), 2) - 2;
             Assert.True(node.Height < heightMustBeLessThan);
         }

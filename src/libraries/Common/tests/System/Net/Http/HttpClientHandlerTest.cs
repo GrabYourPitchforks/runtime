@@ -780,7 +780,7 @@ namespace System.Net.Http.Functional.Tests
                     request.Headers.Pragma.Add(new NameValueHeaderValue("no-cache"));
                     request.Headers.ProxyAuthorization = new AuthenticationHeaderValue("Basic", "QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
                     request.Headers.Range = new RangeHeaderValue(500, 999);
-                    request.Headers.Referrer = new Uri("http://en.wikipedia.org/wiki/Main_Page");
+                    request.Headers.Referrer = new Uri("https://en.wikipedia.org/wiki/Main_Page");
                     request.Headers.TE.Add(new TransferCodingWithQualityHeaderValue("trailers"));
                     request.Headers.TE.Add(new TransferCodingWithQualityHeaderValue("deflate"));
                     request.Headers.Trailer.Add("MyTrailer");
@@ -849,7 +849,7 @@ namespace System.Net.Http.Functional.Tests
                     Assert.Equal("no-cache", requestData.GetSingleHeaderValue("Pragma"));
                     Assert.Equal("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==", requestData.GetSingleHeaderValue("Proxy-Authorization"));
                     Assert.Equal("bytes=500-999", requestData.GetSingleHeaderValue("Range"));
-                    Assert.Equal("http://en.wikipedia.org/wiki/Main_Page", requestData.GetSingleHeaderValue("Referer"));
+                    Assert.Equal("https://en.wikipedia.org/wiki/Main_Page", requestData.GetSingleHeaderValue("Referer"));
                     Assert.Equal("MyTrailer", requestData.GetSingleHeaderValue("Trailer"));
                     Assert.Equal("Mozilla/5.0", requestData.GetSingleHeaderValue("User-Agent"));
                     Assert.Equal("1.0 fred, 1.1 example.com (Apache/1.1)", requestData.GetSingleHeaderValue("Via"));

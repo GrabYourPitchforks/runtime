@@ -87,7 +87,7 @@ concept Encoding {
 // UTF8
 
 //! UTF-8 encoding.
-/*! http://en.wikipedia.org/wiki/UTF-8
+/*! https://en.wikipedia.org/wiki/UTF-8
     http://tools.ietf.org/html/rfc3629
     \tparam CharType Code unit for storing 8-bit UTF-8 data. Default is char.
     \note implements Encoding concept
@@ -257,7 +257,7 @@ struct UTF8 {
 // UTF16
 
 //! UTF-16 encoding.
-/*! http://en.wikipedia.org/wiki/UTF-16
+/*! https://en.wikipedia.org/wiki/UTF-16
     http://tools.ietf.org/html/rfc2781
     \tparam CharType Type for storing 16-bit UTF-16 data. Default is wchar_t. C++11 may use char16_t instead.
     \note implements Encoding concept
@@ -407,7 +407,7 @@ struct UTF16BE : UTF16<CharType> {
 // UTF32
 
 //! UTF-32 encoding. 
-/*! http://en.wikipedia.org/wiki/UTF-32
+/*! https://en.wikipedia.org/wiki/UTF-32
     \tparam CharType Type for storing 32-bit UTF-32 data. Default is unsigned. C++11 may use char32_t instead.
     \note implements Encoding concept
 
@@ -534,7 +534,7 @@ struct UTF32BE : UTF32<CharType> {
 // ASCII
 
 //! ASCII encoding.
-/*! http://en.wikipedia.org/wiki/ASCII
+/*! https://en.wikipedia.org/wiki/ASCII
     \tparam CharType Code unit for storing 7-bit ASCII data. Default is char.
     \note implements Encoding concept
 */

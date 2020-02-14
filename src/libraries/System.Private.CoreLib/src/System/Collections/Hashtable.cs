@@ -373,7 +373,7 @@ namespace System.Collections
             HashHelpers.SerializationInfoTable.Add(this, info);
         }
 
-        // ?InitHash? is basically an implementation of classic DoubleHashing (see http://en.wikipedia.org/wiki/Double_hashing)
+        // ?InitHash? is basically an implementation of classic DoubleHashing (see https://en.wikipedia.org/wiki/Double_hashing)
         //
         // 1) The only ?correctness? requirement is that the ?increment? used to probe
         //    a. Be non-zero

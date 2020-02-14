@@ -248,7 +248,7 @@ Phew!  The runtime does a lot! It has taken many pages just to describe _some_ o
 ## Useful Links
 
 - [MSDN Entry for the CLR][clr]
-- [Wikipedia Entry for the CLR](http://en.wikipedia.org/wiki/Common_Language_Runtime)
+- [Wikipedia Entry for the CLR](https://en.wikipedia.org/wiki/Common_Language_Runtime)
 - [ECMA Standard for the Common Language Infrastructure (CLI)][ecma-spec]
 - [.NET Framework Design Guidelines](https://msdn.microsoft.com/en-us/library/ms229042.aspx)
 - [CoreCLR Repo Documentation](README.md)

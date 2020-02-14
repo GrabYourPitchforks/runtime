@@ -240,7 +240,7 @@ namespace System.Globalization
         // GHA is the Greenwich Hour Angle of the apparent (actual) Sun
         // GMHA is the Greenwich Mean Hour Angle of the mean (fictitious) Sun
         // http://www.esrl.noaa.gov/gmd/grad/solcalc/
-        // http://en.wikipedia.org/wiki/Equation_of_time
+        // https://en.wikipedia.org/wiki/Equation_of_time
         private static double EquationOfTime(double time)
         {
             double julianCenturies = JulianCenturies(time);

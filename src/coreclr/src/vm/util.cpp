@@ -1239,7 +1239,7 @@ DWORD GetLogicalCpuCountFromOS()
                 //
                 // These are not the fastest bit counters. There may be processor intrinsics
                 // (which would be best), but there are variants faster than these:
-                // See http://en.wikipedia.org/wiki/Hamming_weight.
+                // See https://en.wikipedia.org/wiki/Hamming_weight.
                 // This is the naive implementation.
 #if !HOST_64BIT
                 count = (pmask & 0x55555555) + ((pmask >> 1) &  0x55555555);

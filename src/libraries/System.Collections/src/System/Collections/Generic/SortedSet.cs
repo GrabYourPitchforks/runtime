@@ -730,7 +730,7 @@ namespace System.Collections.Generic
         /// <returns>The item's zero-based index in this set, or -1 if it isn't found.</returns>
         /// <remarks>
         /// <para>
-        /// This implementation is based off of http://en.wikipedia.org/wiki/Binary_Tree#Methods_for_storing_binary_trees.
+        /// This implementation is based off of https://en.wikipedia.org/wiki/Binary_Tree#Methods_for_storing_binary_trees.
         /// </para>
         /// <para>
         /// This method is used with the <see cref="BitHelper"/> class. Note that this implementation is

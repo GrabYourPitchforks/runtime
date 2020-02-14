@@ -45,7 +45,7 @@ BROTLI_INTERNAL BROTLI_BOOL BrotliSetDepth(
    The actual Huffman tree is constructed in the tree[] array, which has to
    be at least 2 * length + 1 long.
 
-   See http://en.wikipedia.org/wiki/Huffman_coding */
+   See https://en.wikipedia.org/wiki/Huffman_coding */
 BROTLI_INTERNAL void BrotliCreateHuffmanTree(const uint32_t* data,
                                              const size_t length,
                                              const int tree_limit,

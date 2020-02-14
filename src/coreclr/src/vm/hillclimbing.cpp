@@ -417,7 +417,7 @@ Complex HillClimbing::GetWaveComponent(double* samples, int sampleCount, double 
 
     //
     // Calculate the sinusoid with the given period.
-    // We're using the Goertzel algorithm for this.  See http://en.wikipedia.org/wiki/Goertzel_algorithm.
+    // We're using the Goertzel algorithm for this.  See https://en.wikipedia.org/wiki/Goertzel_algorithm.
     //
     double w = 2.0 * pi / period;
     double cosine = cos(w);

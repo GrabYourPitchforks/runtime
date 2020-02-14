@@ -65,7 +65,7 @@ static BROTLI_INLINE BROTLI_BOOL SortHuffmanTree(
    especially when population counts are longer than 2**tree_limit, but
    we are not planning to use this with extremely long blocks.
 
-   See http://en.wikipedia.org/wiki/Huffman_coding */
+   See https://en.wikipedia.org/wiki/Huffman_coding */
 void BrotliCreateHuffmanTree(const uint32_t* data,
                              const size_t length,
                              const int tree_limit,
