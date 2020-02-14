@@ -1628,7 +1628,32 @@ namespace System
 
         // Returns a substring of this string.
         //
-        public string Substring(int startIndex) => Substring(startIndex, Length - startIndex);
+        public string Substring(int startIndex)
+        {
+            int thisLength = Length;
+
+            if ((uint)startIndex >= (uint)thisLength)
+            {
+                if (startIndex != thisLength)
+                {
+                    Substring_ThrowInvalidArgumentException(startIndex);
+                }
+
+                return Empty;
+            }
+
+            return (startIndex == 0) ? this : InternalSubString(0, thisLength - startIndex);
+        }
+
+        [StackTraceHidden]
+        private string Substring_ThrowInvalidArgumentException(int startIndex)
+        {
+            Debug.Assert(startIndex < 0 || startIndex > Length);
+
+            throw new ArgumentOutOfRangeException(
+                paramName: nameof(startIndex),
+                (startIndex < 0) ? SR.ArgumentOutOfRange_StartIndex : SR.ArgumentOutOfRange_StartIndexLargerThanLength);
+        }
 
         public string Substring(int startIndex, int length)
         {
