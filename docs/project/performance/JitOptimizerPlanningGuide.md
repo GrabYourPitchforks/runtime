@@ -14,7 +14,7 @@ There are a number of public benchmarks which evaluate different platforms'
 relative performance, so naturally dotnet's scores on such benchmarks give
 some indication of how well it satisfies developers' performance needs.  The JIT
 team has used some of these benchmarks, particularly [TechEmpower](https://www.techempower.com/benchmarks/)
-and [Benchmarks Game](http://benchmarksgame.alioth.debian.org/), for scouting
+and [Benchmarks Game](https://benchmarksgame.alioth.debian.org/), for scouting
 out optimization opportunities and prioritizing optimization improvements.
 While it is important to track scores on such benchmarks to validate performance
 changes in the dotnet platform as a whole, when it comes to planning and

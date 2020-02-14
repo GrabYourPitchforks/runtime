@@ -82,7 +82,7 @@ typedef UINT_PTR __stdcall FunctionIDMapper(
 
 ### Writing your ELT hooks
 
-You may have noticed that corprof.idl warns that your implementations of these hooks must be \_\_declspec(naked), and that you've got to save registers you use. Yikes! This keeps things nice and efficient on the CLR code generation side, but at the expense of making life a little more difficult for profilers. For great low-level details of writing the hooks (including yummy sample code!) visit Jonathan Keljo's blog entry [here](http://blogs.msdn.com/jkeljo/archive/2005/08/11/450506.aspx).
+You may have noticed that corprof.idl warns that your implementations of these hooks must be \_\_declspec(naked), and that you've got to save registers you use. Yikes! This keeps things nice and efficient on the CLR code generation side, but at the expense of making life a little more difficult for profilers. For great low-level details of writing the hooks (including yummy sample code!) visit Jonathan Keljo's blog entry [here](https://blogs.msdn.com/jkeljo/archive/2005/08/11/450506.aspx).
 
 ### NGEN /Profile
 

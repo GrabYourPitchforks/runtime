@@ -29,7 +29,7 @@ Relying on the underlying OS for globalization data has the following benefits:
 Globalization support has the following potential challenges for applications:
 
 * Different behavior across OSes (and potentially OS versions).
-* Installing/carrying the [ICU](http://icu-project.org) package on Linux (~28 MB).
+* Installing/carrying the [ICU](https://icu-project.org) package on Linux (~28 MB).
 
 Note: On Linux, .NET Core relies on globalization data from ICU. For example, [.NET Core Linux Docker images](https://github.com/dotnet/dotnet-docker/blob/master/2.0/runtime-deps/stretch/amd64/Dockerfile) install this component. Globalization data is available on Windows and macOS as part of their base installs.
   

@@ -12,7 +12,7 @@ considered the canonical way to design frameworks at Microsoft. They carry the
 experience and cumulative wisdom of thousands of developer hours over several
 versions of the .NET Framework.
 
-[FDG]: http://amazon.com/dp/0321545613
+[FDG]: https://amazon.com/dp/0321545613
 
 # General Design Principles
 
@@ -307,5 +307,5 @@ conformance to the [Framework Design Guidelines][FDG] (also see [MSDN](https://m
 
 ## Presentations
 
-* [Overview of the Framework Design Guidelines](http://blogs.msdn.com/kcwalina/archive/2007/03/29/1989896.aspx)
-* [TechEd 2007 Presentation about framework engineering](http://blogs.msdn.com/kcwalina/archive/2008/01/08/FrameworkEngineering.aspx)
+* [Overview of the Framework Design Guidelines](https://blogs.msdn.com/kcwalina/archive/2007/03/29/1989896.aspx)
+* [TechEd 2007 Presentation about framework engineering](https://blogs.msdn.com/kcwalina/archive/2008/01/08/FrameworkEngineering.aspx)

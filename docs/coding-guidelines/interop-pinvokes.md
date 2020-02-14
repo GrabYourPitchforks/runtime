@@ -70,7 +70,7 @@ as `UnmanagedType.BSTR`.
 > - Pass in 5, get 4: The string is 4 characters long with a trailing null.
 > - Pass in 5, get 6: The string is 5 characters long, need a 6 character buffer to hold the null.
 
-> [Windows Data Types for Strings](http://msdn.microsoft.com/en-us/library/dd374131.aspx)
+> [Windows Data Types for Strings](https://msdn.microsoft.com/en-us/library/dd374131.aspx)
 
 Booleans
 --------
@@ -256,7 +256,7 @@ In C#, we can write it like this:
 Other References
 ----------------
 
-[MarshalAs Attribute](http://msdn.microsoft.com/en-us/library/system.runtime.interopservices.marshalasattribute.aspx)  
-[GetLastError and managed code](http://blogs.msdn.com/b/adam_nathan/archive/2003/04/25/56643.aspx)  
+[MarshalAs Attribute](https://msdn.microsoft.com/en-us/library/system.runtime.interopservices.marshalasattribute.aspx)  
+[GetLastError and managed code](https://blogs.msdn.com/b/adam_nathan/archive/2003/04/25/56643.aspx)  
 [Copying and Pinning](https://msdn.microsoft.com/en-us/library/23acw07k.aspx)  
-[Marshalling between Managed and Unmanaged Code (MSDN Magazine January 2008)](http://download.microsoft.com/download/3/A/7/3A7FA450-1F33-41F7-9E6D-3AA95B5A6AEA/MSDNMagazineJanuary2008en-us.chm) *This is a .chm download*  
+[Marshalling between Managed and Unmanaged Code (MSDN Magazine January 2008)](https://download.microsoft.com/download/3/A/7/3A7FA450-1F33-41F7-9E6D-3AA95B5A6AEA/MSDNMagazineJanuary2008en-us.chm) *This is a .chm download*  

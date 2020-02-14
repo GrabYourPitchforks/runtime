@@ -23,9 +23,9 @@ git clone https://github.com/dotnet/runtime
 CMake
 -----
 
-CoreCLR has a dependency on CMake for the build. You can download it from [CMake downloads](http://www.cmake.org/download/).
+CoreCLR has a dependency on CMake for the build. You can download it from [CMake downloads](https://www.cmake.org/download/).
 
-Alternatively, you can install CMake from [Homebrew](http://brew.sh/).
+Alternatively, you can install CMake from [Homebrew](https://brew.sh/).
 
 ```sh
 brew install cmake
@@ -33,7 +33,7 @@ brew install cmake
 
 ICU
 ---
-ICU (International Components for Unicode) is also required to build and run. It can be obtained via [Homebrew](http://brew.sh/).
+ICU (International Components for Unicode) is also required to build and run. It can be obtained via [Homebrew](https://brew.sh/).
 
 ```sh
 brew install icu4c

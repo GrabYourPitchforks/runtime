@@ -29,20 +29,20 @@ An object is said to escape a method if it can be accessed after the method's ex
 An object allocation can be moved to the stack safely only if the object doesn't escape the allocating method.
 
 Several escape algorithms have been implemented in different Java implementations. Of the 3 algorithms listed in [references](#References),
-[[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf)
+[[1]](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf)
 is the most precise and most expensive (it is based on connection graphs) and was used in the context of a static Java compiler,
 [[3]](https://pdfs.semanticscholar.org/1b33/dff471644f309392049c2791bca9a7f3b19c.pdf)
 is the least precise and cheapest (it doesn't track references through assignments of fields) and was used in MSR's Marmot implementation.
 [[2]](https://www.usenix.org/legacy/events/vee05/full_papers/p111-kotzmann.pdf)
 is between
-[[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf) and
+[[1]](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf) and
 [[3]](https://pdfs.semanticscholar.org/1b33/dff471644f309392049c2791bca9a7f3b19c.pdf)
 both in analysis precision and cost. It was used in Java HotSpot.
 
 Effectiveness of object stack allocation depends in large part on whether escape analysis is done inter-procedurally.
 With intra-procedural analysis only, the compiler has to assume that arguments escape at all non-inlined call sites,
 which blocks many stack allocations. In particular, assuming that 'this' argument always escapes hurts the optimization.
-[[4]](http://www.ssw.uni-linz.ac.at/Research/Papers/Stadler14/Stadler2014-CGO-PEA.pdf) describes an approach that
+[[4]](https://www.ssw.uni-linz.ac.at/Research/Papers/Stadler14/Stadler2014-CGO-PEA.pdf) describes an approach that
 handle objects that only escape on some paths by promoting them to the heap "just in time" as control reaches those paths.
 
 There are several choices for where escape analysis can be performed:
@@ -131,7 +131,7 @@ When a field of an object is modified the jit may need to issue a write barrier:
 
 The goal of the prototype was to have the optimization working end-to-end with a number of simplifications:
 * A simple intra-procedural escape analysis based on
-[[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf)
+[[1]](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf)
 but without field edges in the connection graph.
 * All call arguments are assumed to be escaping.
 * Only simple objects are stack allocated, arrays of constant size are not analyzed.
@@ -182,7 +182,7 @@ may come from manual annotations or from a tool analysis. ILLink or the upcoming
 may be appropriate places for ahead-of-time escape analysis. Self-contained applications will benefit the most from ILLink analysis
 but framework assemblies can also be analyzed and annotated even though cross-assembly calls will have to be processed conservatively.
 
-In this context an algorithm similar to [[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf) can be used
+In this context an algorithm similar to [[1]](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf) can be used
 to get the most accurate escape results.
 
 The cost of adding some infrastructure to ILLink (call graph, proper IR, etc.) will be amortized if we do other IL-to-IL optimizations in the future.
@@ -190,10 +190,10 @@ Also, we may be able to reuse the infrastructure from other projects, i.e., [ILS
 
 ## References
 
-[[1] Jong-Deok Choi at al. Stack Allocation and Synchronization Optimizations for Java Using Escape Analysis.](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf)
+[[1] Jong-Deok Choi at al. Stack Allocation and Synchronization Optimizations for Java Using Escape Analysis.](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.73.4799&rep=rep1&type=pdf)
 
 [[2] Thomas Kotzmann and Hanspeter Moessenbroeck. Escape Analysis in the Context of Dynamic Compilation and Deoptimization](https://www.usenix.org/legacy/events/vee05/full_papers/p111-kotzmann.pdf)
 
 [[3] David Gay and Bjarne Steensgaard. Fast Escape Analysis and Stack Allocation for Object-Based Programs](https://pdfs.semanticscholar.org/1b33/dff471644f309392049c2791bca9a7f3b19c.pdf)
 
-[[4] Lukas Stadler at al. Partial Escape Analysis and Scalar Replacement for Java](http://www.ssw.uni-linz.ac.at/Research/Papers/Stadler14/Stadler2014-CGO-PEA.pdf)
+[[4] Lukas Stadler at al. Partial Escape Analysis and Scalar Replacement for Java](https://www.ssw.uni-linz.ac.at/Research/Papers/Stadler14/Stadler2014-CGO-PEA.pdf)

@@ -7,7 +7,7 @@ Debugging CoreFX build issues
 `dotnet msbuild my.csproj /flp:v=diag /t:rebuild`
 * Generate a flat project file (out.pp):
 `dotnet msbuild my.csproj /pp:out.pp`
-* Generate a binary log usable by the [MSBuild Binary and Structured Log Viewer](http://msbuildlog.com/):
+* Generate a binary log usable by the [MSBuild Binary and Structured Log Viewer](https://msbuildlog.com/):
 `dotnet msbuild my.csproj /bl`
 
 ## Steps to debug packaging build issues

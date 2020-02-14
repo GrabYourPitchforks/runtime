@@ -20,7 +20,7 @@ In addition to `DiagnosticSource`, there are two other logging systems provided 
    to instrument the runtime itself. It is designed to be fast and to be strongly
    typed (payloads are typed, named properties), and to interface with OS logging
    infrastructure like Event Tracing for Windows [(ETW)](https://msdn.microsoft.com/en-us/library/windows/desktop/aa363668(v=vs.85).aspx)
-   or [LTTng](http://lttng.org/) on Linux.
+   or [LTTng](https://lttng.org/) on Linux.
 
 2. `ILogger` [src](https://github.com/aspnet/logging). A number of popular third party
    formatted string logging systems for .NET have been built including NLog, SeriLog,
@@ -81,7 +81,7 @@ A typical call site will look like:
 
 ```C#
     if (httpLogger.IsEnabled("RequestStart"))
-        httpLogger.Write("RequestStart", new { Url="http://clr", Request=aRequest });
+        httpLogger.Write("RequestStart", new { Url="https://clr", Request=aRequest });
 ```
 
 Already some of the architectural elements are being exposed, namely:
@@ -411,7 +411,7 @@ Producers may call `DiagnosticSource.IsEnabled()` overloads and supply additiona
 
 ```C#
     if (httpLogger.IsEnabled("RequestStart", aRequest, anActivity))
-        httpLogger.Write("RequestStart", new { Url="http://clr", Request=aRequest });
+        httpLogger.Write("RequestStart", new { Url="https://clr", Request=aRequest });
 ```
 
 And consumers may use such properties to filter events more precisely:

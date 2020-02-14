@@ -33,11 +33,11 @@ Whereas the "hosting" interfaces enable one to host and manage a CLR in a proces
 
 ## Users and Integrity
 
-The permissions required to attach a profiler are similar to those required to attach a debugger.  First, the trigger process must run as the same user as the target profilee OR as an administrator.  Second, on OS's that support process integrity levels, the trigger process must be running at an integrity level higher than or equal to that of the target profilee process.  For more information about integrity and mandatory labels, [here's](http://msdn.microsoft.com/en-us/library/bb625964.aspx) some reference from MSDN.
+The permissions required to attach a profiler are similar to those required to attach a debugger.  First, the trigger process must run as the same user as the target profilee OR as an administrator.  Second, on OS's that support process integrity levels, the trigger process must be running at an integrity level higher than or equal to that of the target profilee process.  For more information about integrity and mandatory labels, [here's](https://msdn.microsoft.com/en-us/library/bb625964.aspx) some reference from MSDN.
 
 ## Sample Trigger Source Code
 
-For some sample code to attach a profiler to a process, take a look at the sample uploaded to the MSDN Code Gallery [here](http://code.msdn.microsoft.com/ProfilerAttacher/).
+For some sample code to attach a profiler to a process, take a look at the sample uploaded to the MSDN Code Gallery [here](https://code.msdn.microsoft.com/ProfilerAttacher/).
 
 You'll notice the code attempts to enable the SE\_DEBUG\_NAME privilege, as this is required to open a process running as another user with PROCESS\_ALL\_ACCESS.  Again, cross-user attach (i.e., trigger runs as a different user than the target profilee process) is only supported when the trigger is run as an administrator.  Otherwise, only same-user attach is supported, and would not need to enable the SE\_DEBUG\_NAME privilege.
 
@@ -88,7 +88,7 @@ To understand limitations around the GC modes, here's a quick review of the GC m
 - **Workstation Concurrent / Background mode (the default)**.  Concurrent GC (V1 & V2) allows portions of a full GC to execute while other threads are allowed to run.  Background GC (its replacement in V4) takes it one step further, and also allows an ephemeral GC (i.e., gen 0 or gen 1) to execute while a gen 2 GC is executing. 
 - **Server mode**.  Hosts like ASP.NET may choose to enable server mode which creates a heap + dedicated GC thread per CPU.  This allows GCs to be fanned out to multiple threads. 
 
-Of course, [Maoni's blog](http://blogs.msdn.com/maoni/) is required reading for anyone who wants to understand how the GC works.
+Of course, [Maoni's blog](https://blogs.msdn.com/maoni/) is required reading for anyone who wants to understand how the GC works.
 
 The profiling API is able to work against workstation blocking mode and server mode, but not concurrent / background mode.  This has been the case in V1 & V2, and remains the case in V4.  When the app starts up, if a profiler is configured to load, then the CLR forcibly turns off concurrent / background mode, and you end up in workstation blocking mode (or you end up in server mode if the host requested that instead).  Again, this has been the case in V1 & V2, and remains true in V4.
 

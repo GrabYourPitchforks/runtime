@@ -40,7 +40,7 @@ Debugging CoreCLR (Optional)
 
 Note: This step is not required to build CoreCLR itself. If you intend on hacking or debugging the CoreCLR source code, you need to follow these steps. You must follow these steps *before* starting the build itself.
 
-In order to debug CoreCLR you will also need to install [LLDB](http://lldb.llvm.org/), the LLVM debugger.
+In order to debug CoreCLR you will also need to install [LLDB](https://lldb.llvm.org/), the LLVM debugger.
 
 To build with clang 3.7 from coreclr project root:
 

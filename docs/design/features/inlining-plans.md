@@ -117,7 +117,7 @@ building and tuning the Profitability components of the inliners.
 The general approach we suggest is based on past experiences we've had
 developing inliners for various compilers and is inspired by the CGO
 paper [Automatic Construction of Inlining Heuristics using Machine
-Learning](http://dl.acm.org/citation.cfm?id=2495914) by Kulkarni,
+Learning](https://dl.acm.org/citation.cfm?id=2495914) by Kulkarni,
 Cavazos, Wimmer, and Simon.
 
 Kulkarni et. al. treat profitability as an unsupervised learning

@@ -1,7 +1,7 @@
 *This blog post originally appeared on David Broman's blog on 10/13/2005*
 
 
-If your profiler plays with metadata, you've undoubtedly come across signature blobs. They’re used to encode type information for method definitions & references, local variables, and a whole lot more. They’re wonderfully compact, recursively versatile, and sometimes, well, challenging to parse. Fortunately, [Rico Mariani](http://blogs.msdn.com/ricom/) was feeling generous one day, and churned out a simple parser that can read these types of signatures:
+If your profiler plays with metadata, you've undoubtedly come across signature blobs. They’re used to encode type information for method definitions & references, local variables, and a whole lot more. They’re wonderfully compact, recursively versatile, and sometimes, well, challenging to parse. Fortunately, [Rico Mariani](https://blogs.msdn.com/ricom/) was feeling generous one day, and churned out a simple parser that can read these types of signatures:
 
 MethodDefSig  
 MethodRefSig  
@@ -15,7 +15,7 @@ Here are the files:
 [sigformat.cpp](samples/sigformat.cpp) (An example extension to the parser)  
 [PlugInToYourProfiler.cpp](samples/PlugInToYourProfiler.cpp) (Example code to plug the extension into your profiler)
 
-Open up **sigparse.cpp** in your favorite editor and take a look at the grammar at the top. The grammar comes from the ECMA CLI spec. Jonathan Keljo has a [link](http://blogs.msdn.com/jkeljo/archive/2005/08/04/447726.aspx) to it from his blog. This tells you the types of signature blobs the parser can handle.
+Open up **sigparse.cpp** in your favorite editor and take a look at the grammar at the top. The grammar comes from the ECMA CLI spec. Jonathan Keljo has a [link](https://blogs.msdn.com/jkeljo/archive/2005/08/04/447726.aspx) to it from his blog. This tells you the types of signature blobs the parser can handle.
 
 Sigparse.cpp is structured without any dependencies on any headers, so you can easily absorb it into your profiler project. There are two things you will need to do to make use of the code. I provided examples of each of these in the download above to help you out:
 

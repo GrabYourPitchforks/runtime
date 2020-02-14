@@ -1,7 +1,7 @@
 *This blog post originally appeared on David Broman's blog on 12/11/2007*
 
 
-This is the first of some tips to help you debug your profiler.  Note that these tips assume you're using CLR 2.x (see [this entry](http://blogs.msdn.com/davbr/archive/2007/12/06/versions-of-microsoft-net-framework-clr-and-your-profiler.aspx) for info on how CLR version numbers map to .NET Framework version numbers).  In today's post, I address a frequent question from profiler developers and users: "Why didn't my profiler load?".
+This is the first of some tips to help you debug your profiler.  Note that these tips assume you're using CLR 2.x (see [this entry](https://blogs.msdn.com/davbr/archive/2007/12/06/versions-of-microsoft-net-framework-clr-and-your-profiler.aspx) for info on how CLR version numbers map to .NET Framework version numbers).  In today's post, I address a frequent question from profiler developers and users: "Why didn't my profiler load?".
 
 ## Event log (Windows only)
 
@@ -43,7 +43,7 @@ and look at the default value data.  It should be a full path to your profiler's
 
 If the above investigation indicates everything's ok, then your profiler is properly registered and your environment is properly set up, but something bad must be happening at run time.  You'll want symbols for the CLR, which are freely available via Microsoft's symbol server.  If you set this environment variable, you can ensure windbg will always use the symbol server:
 
-set \_NT\_SYMBOL\_PATH=srv\*C:\MySymbolCache\*http://msdl.microsoft.com/download/symbols
+set \_NT\_SYMBOL\_PATH=srv\*C:\MySymbolCache\*https://msdl.microsoft.com/download/symbols
 
 Feel free to add more paths (separate them via ";") so you can include your profiler's symbols as well.  Now, from a command-prompt that has your Cor\_Enable\_Profiling and COR\_PROFILER variables set, run windbg against the executable you want profiled.  The debuggee will inherit the environment, so the profiling environment variables will be propagated to the debuggee.
 

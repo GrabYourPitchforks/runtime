@@ -57,7 +57,7 @@ dotnet R2RDump.dll --in &lt;path to ReadyToRun image&gt;
 
 ### System.Reflection.Metadata
 
-Used for getting method and type signatures from tokens (see: http://jilc.sourceforge.net/ecma_p2_cil.shtml)
+Used for getting method and type signatures from tokens (see: https://jilc.sourceforge.net/ecma_p2_cil.shtml)
 
 ### READYTORUN_SECTION_COMPILER_IDENTIFIER
 

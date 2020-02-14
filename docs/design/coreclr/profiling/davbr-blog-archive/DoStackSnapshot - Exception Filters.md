@@ -5,7 +5,7 @@ Believe it or not, my last (rather large) post on stack walking actually left ou
 
 For those of you diehard C# fans, you might be unaware of the existence of exception filters in managed code. While VB.NET makes them explicitly available to the programmer, C# does not. Filters are important to understand when you call DoStackSnapshot, as your results might look a little weird if you don't know how to interpret them.
 
-First, a little background. For the full deal, check out the MSDN Library topic on VB.NET's [try/catch/finally statements](http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vblr7/html/vastmTryCatchFinally.asp). But here's an appetizer. In VB.NET you can do this:
+First, a little background. For the full deal, check out the MSDN Library topic on VB.NET's [try/catch/finally statements](https://msdn.microsoft.com/library/default.asp?url=/library/en-us/vblr7/html/vastmTryCatchFinally.asp). But here's an appetizer. In VB.NET you can do this:
 
 ```  
 Function Negative() As Boolean  

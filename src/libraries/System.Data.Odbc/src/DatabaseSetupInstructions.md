@@ -32,7 +32,7 @@ This section describes the process to install unixODBC libraries and SQLite/MSSQ
 - `sudo apt-get install unixodbc`
 
 SQLite Driver
-- `wget "http://www.ch-werner.de/sqliteodbc/sqliteodbc-0.9995.tar.gz"` download and install SQLite ODBC Driver
+- `wget "https://www.ch-werner.de/sqliteodbc/sqliteodbc-0.9995.tar.gz"` download and install SQLite ODBC Driver
 - `gunzip sqliteodbc-0.9995.tar.gz`
 - `tar xvf sqliteodbc-0.9995.tar`
 - `cd sqliteodbc-0.9995/`
@@ -77,7 +77,7 @@ Database=
 - `make`
 - `sudo make install`
 - `cd ..`
-- `wget "http://www.ch-werner.de/sqliteodbc/sqliteodbc-0.9995.tar.gz"` download and install SQLite ODBC Driver
+- `wget "https://www.ch-werner.de/sqliteodbc/sqliteodbc-0.9995.tar.gz"` download and install SQLite ODBC Driver
 - `gunzip sqliteodbc-0.9995.tar.gz`
 - `tar xvf sqliteodbc-0.9995.tar`
 - `cd sqliteodbc-0.9995/`

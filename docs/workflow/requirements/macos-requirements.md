@@ -16,7 +16,7 @@ Install Apple Xcode developer tools from the Mac App Store ([link](https://apps.
 Toolchain Setup
 ---------------
 
-Building dotnet/runtime depends on several tools to be installed. You can download them individually or use [Homebrew](http://brew.sh) for easier toolchain setup.
+Building dotnet/runtime depends on several tools to be installed. You can download them individually or use [Homebrew](https://brew.sh) for easier toolchain setup.
 
 Install the following packages:
 

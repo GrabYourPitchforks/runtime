@@ -3,7 +3,7 @@ DllMap is a mechanism to influence native library load resolution via a name map
 
 ### Dllmap in Mono
 
-Mono implements [Dllmap](http://www.mono-project.com/docs/advanced/pinvoke/dllmap/)  using an XML configuration for name mappings.  For example:
+Mono implements [Dllmap](https://www.mono-project.com/docs/advanced/pinvoke/dllmap/)  using an XML configuration for name mappings.  For example:
 
 ```xml
 <configuration>

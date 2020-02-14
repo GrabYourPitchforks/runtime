@@ -322,7 +322,7 @@ How’s that caffeine holding out?  If it’s working, you probably have a coupl
 
 “How do I know which ICorProfilerInfo(2) methods might trigger a garbage collection?”
 
-We plan to document this on MSDN, or at the least, in my or [Jonathan Keljo’s blog](http://blogs.msdn.com/jkeljo/default.aspx).
+We plan to document this on MSDN, or at the least, in my or [Jonathan Keljo’s blog](https://blogs.msdn.com/jkeljo/default.aspx).
 
 “What does this have to do with stack walking?”
 

@@ -81,9 +81,9 @@ Note that uniqueness of the key within the Correlation-Context is not guaranteed
 - De-facto overall HTTP headers size is limited to several kilobytes (depending on a web server)
 
 # Industry standards
-- [Google Dapper tracing system](http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36356.pdf)
-- [Zipkin](http://zipkin.io/)
-- [OpenTracing](http://opentracing.io/)
+- [Google Dapper tracing system](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36356.pdf)
+- [Zipkin](https://zipkin.io/)
+- [OpenTracing](https://opentracing.io/)
 
 # See also
 - [Hierarchical Request-Id](HierarchicalRequestId.md)

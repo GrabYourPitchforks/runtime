@@ -1,7 +1,7 @@
 Performance Tracing on Windows
 =====================================
 
-Performance tracing on Windows is done using the PerfView, which can be downloaded at <http://aka.ms/Perfview>.
+Performance tracing on Windows is done using the PerfView, which can be downloaded at <https://aka.ms/Perfview>.
 
 PerfView has significant documentation built-in, which includes:
 

@@ -210,7 +210,7 @@ These benefits do not disappear just because the type gets put into a List or a 
 
 ### Programs as Data (Reflection APIs)
 
-The fundamentals of the CLR are garbage collection, type safety, and high-level language features.  These basic characteristics forced the specification of the program (the CIL) to be fairly high level.  Once this data existed at run time (something not true for C or C++ programs), it became obvious that it would also be valuable to expose this rich data to end programmers.  This idea resulted in the creation of the System.Reflection interfaces (so-called because they allow the program to look at (reflect upon) itself).  This interface allows you to explore almost all aspects of a program (what types it has, the inheritance relationship, and what methods and fields are present).  In fact, so little information is lost that very good "decompilers" for managed code are possible (e.g., [NET Reflector](http://www.red-gate.com/products/reflector/)).  While those concerned with intellectual property protection are aghast at this capability (which can be fixed by purposefully destroying information through an operation called _obfuscating_ the program), the fact that it is possible is a testament to the richness of the information available at run time in managed code.
+The fundamentals of the CLR are garbage collection, type safety, and high-level language features.  These basic characteristics forced the specification of the program (the CIL) to be fairly high level.  Once this data existed at run time (something not true for C or C++ programs), it became obvious that it would also be valuable to expose this rich data to end programmers.  This idea resulted in the creation of the System.Reflection interfaces (so-called because they allow the program to look at (reflect upon) itself).  This interface allows you to explore almost all aspects of a program (what types it has, the inheritance relationship, and what methods and fields are present).  In fact, so little information is lost that very good "decompilers" for managed code are possible (e.g., [NET Reflector](https://www.red-gate.com/products/reflector/)).  While those concerned with intellectual property protection are aghast at this capability (which can be fixed by purposefully destroying information through an operation called _obfuscating_ the program), the fact that it is possible is a testament to the richness of the information available at run time in managed code.
 
 In addition to simply inspecting programs at run time, it is also possible to perform operations on them (e.g., invoke methods, set fields, etc.), and perhaps most powerfully, to generate code from scratch at run time (System.Reflection.Emit).  In fact, the runtime libraries use this capability to create specialized code for matching strings (System.Text.RegularExpressions), and to generate code for "serializing" objects to store in a file or send across the network.  Capabilities like this were simply infeasible before (you would have to write a compiler!) but thanks to the runtime, are well within reach of many more programming problems.
 
@@ -248,12 +248,12 @@ Phew!  The runtime does a lot! It has taken many pages just to describe _some_ o
 ## Useful Links
 
 - [MSDN Entry for the CLR][clr]
-- [Wikipedia Entry for the CLR](http://en.wikipedia.org/wiki/Common_Language_Runtime)
+- [Wikipedia Entry for the CLR](https://en.wikipedia.org/wiki/Common_Language_Runtime)
 - [ECMA Standard for the Common Language Infrastructure (CLI)][ecma-spec]
-- [.NET Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx)
+- [.NET Framework Design Guidelines](https://msdn.microsoft.com/en-us/library/ms229042.aspx)
 - [CoreCLR Repo Documentation](README.md)
 
-[clr]: http://msdn.microsoft.com/library/8bs2ecf4.aspx
+[clr]: https://msdn.microsoft.com/library/8bs2ecf4.aspx
 [ecma-spec]: ../../../project/dotnet-standards.md
-[cil-spec]: http://download.microsoft.com/download/7/3/3/733AD403-90B2-4064-A81E-01035A7FE13C/MS%20Partition%20III.pdf
-[fx-design-guidelines]: http://msdn.microsoft.com/en-us/library/ms229042.aspx
+[cil-spec]: https://download.microsoft.com/download/7/3/3/733AD403-90B2-4064-A81E-01035A7FE13C/MS%20Partition%20III.pdf
+[fx-design-guidelines]: https://msdn.microsoft.com/en-us/library/ms229042.aspx

@@ -33,7 +33,7 @@ If you want to rewrite IL of NGENd modules, well, it's kind of too late because 
 **Q: Any examples?**
 
 Here is an MSDN article that talks about making an IL rewriting profiler:
-[http://msdn.microsoft.com/en-us/magazine/cc188743.aspx](http://msdn.microsoft.com/en-us/magazine/cc188743.aspx)
+[https://msdn.microsoft.com/en-us/magazine/cc188743.aspx](https://msdn.microsoft.com/en-us/magazine/cc188743.aspx)
 
 **Q: Any caveats?**
 
@@ -47,8 +47,8 @@ And then there's the worst of both worlds: when you need to rewrite IL to call i
 
 Sure. If you want to learn from other people's experiences, read through the [Building Development and Diagnostic Tools for .NET Forum](https://social.msdn.microsoft.com/Forums/en-US/home?forum=netfxtoolsdev). Here are some interesting threads:
 
-[http://social.msdn.microsoft.com/Forums/en-NZ/netfxtoolsdev/thread/5f30596b-e7b7-4b1f-b8e1-8172aa8dde31](http://social.msdn.microsoft.com/Forums/en-NZ/netfxtoolsdev/thread/5f30596b-e7b7-4b1f-b8e1-8172aa8dde31)
-[http://social.msdn.microsoft.com/Forums/en-GB/netfxtoolsdev/thread/c352266f-ded3-4ee2-b2f9-fbeb41a70c27](http://social.msdn.microsoft.com/Forums/en-GB/netfxtoolsdev/thread/c352266f-ded3-4ee2-b2f9-fbeb41a70c27)
+[https://social.msdn.microsoft.com/Forums/en-NZ/netfxtoolsdev/thread/5f30596b-e7b7-4b1f-b8e1-8172aa8dde31](https://social.msdn.microsoft.com/Forums/en-NZ/netfxtoolsdev/thread/5f30596b-e7b7-4b1f-b8e1-8172aa8dde31)
+[https://social.msdn.microsoft.com/Forums/en-GB/netfxtoolsdev/thread/c352266f-ded3-4ee2-b2f9-fbeb41a70c27](https://social.msdn.microsoft.com/Forums/en-GB/netfxtoolsdev/thread/c352266f-ded3-4ee2-b2f9-fbeb41a70c27)
 
 
 

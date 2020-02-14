@@ -1132,27 +1132,27 @@ References
 1.  <a name="[1]"/> Boissinot, B. et
     al "Fast liveness checking for ssa-form programs," CGO 2008, pp.
     35-44.
-    http://portal.acm.org/citation.cfm?id=1356058.1356064&coll=ACM&dl=ACM&CFID=105967773&CFTOKEN=80545349
+    https://portal.acm.org/citation.cfm?id=1356058.1356064&coll=ACM&dl=ACM&CFID=105967773&CFTOKEN=80545349
 
 2.  <a name="[2]"/> Boissinot, B. et al, "Revisiting
     Out-of-SSA Translation for Correctness, Code Quality and
     Efficiency," CGO 2009, pp. 114-125.
-    <http://portal.acm.org/citation.cfm?id=1545006.1545063&coll=ACM&dl=ACM&CFID=105967773&CFTOKEN=80545349>
+    <https://portal.acm.org/citation.cfm?id=1545006.1545063&coll=ACM&dl=ACM&CFID=105967773&CFTOKEN=80545349>
 
 
 3.  <a name="[3]"/>Wimmer, C. and Mössenböck, D. "Optimized
     Interval Splitting in a Linear Scan Register Allocator," ACM VEE
     2005, pp. 132-141.
-    <http://portal.acm.org/citation.cfm?id=1064998&dl=ACM&coll=ACM&CFID=105967773&CFTOKEN=80545349>
+    <https://portal.acm.org/citation.cfm?id=1064998&dl=ACM&coll=ACM&CFID=105967773&CFTOKEN=80545349>
 
 4.  <a name="[4]"/> Wimmer, C. and Franz, M. "Linear Scan
     Register Allocation on SSA Form," ACM CGO 2010, pp. 170-179.
-    <http://portal.acm.org/citation.cfm?id=1772979&dl=ACM&coll=ACM&CFID=105967773&CFTOKEN=80545349>
+    <https://portal.acm.org/citation.cfm?id=1772979&dl=ACM&coll=ACM&CFID=105967773&CFTOKEN=80545349>
 
 5.  <a name="[5]"/> Traub, O. et al "Quality and Speed in Linear-scan Register
     Allocation," SIGPLAN '98, pp. 142-151.
-    <http://portal.acm.org/citation.cfm?id=277650.277714&coll=ACM&dl=ACM&CFID=105967773&CFTOKEN=80545349>
+    <https://portal.acm.org/citation.cfm?id=277650.277714&coll=ACM&dl=ACM&CFID=105967773&CFTOKEN=80545349>
 
 6.  <a name="[6]"/> Olesen, J. "Greedy Register Allocation in LLVM 3.0," LLVM Project Blog, Sept. 2011.
-    <http://blog.llvm.org/2011/09/greedy-register-allocation-in-llvm-30.html>
+    <https://blog.llvm.org/2011/09/greedy-register-allocation-in-llvm-30.html>
     (Last retrieved Feb. 2012)

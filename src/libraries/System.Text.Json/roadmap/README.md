@@ -95,7 +95,7 @@
 * AOT support
 * JSON schema support
   - Specification for providing metadata to annotate and provide structural
-    validation of JSON documents ([currently draft-07](http://json-schema.org/))
+    validation of JSON documents ([currently draft-07](https://json-schema.org/))
 
 ## API Discussions & Issues
 

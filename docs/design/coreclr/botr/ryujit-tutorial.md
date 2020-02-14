@@ -6,7 +6,7 @@
 - An implementation of the Common Language Infrastructure [ECMA 335]
   - Supports multiple languages, including C#, F# and VB
 - Sources are mostly shared between the "desktop" version and the open-source coreclr implementation:
-    http://www.github.com/dotnet/runtime/src/coreclr
+    https://www.github.com/dotnet/runtime/src/coreclr
 - RyuJIT is the "next generation" just in time compiler for .NET
 
 #### Notes

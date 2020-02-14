@@ -99,7 +99,7 @@ src/coreclr/src/debug/inc/arm/primitives.h:66:1: error: __declspec attribute 'se
 This is fixed in clang-5.0.2, which can be installed from the apt
 repository listed below.
 
-For other version of Debian/Ubuntu, please visit http://apt.llvm.org/.
+For other version of Debian/Ubuntu, please visit https://apt.llvm.org/.
 
 Then install the packages you need:
 

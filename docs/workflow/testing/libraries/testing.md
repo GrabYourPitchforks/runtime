@@ -1,6 +1,6 @@
 # Testing Libraries
 
-We use the OSS testing framework [xunit](http://xunit.github.io/).
+We use the OSS testing framework [xunit](https://xunit.github.io/).
 
 To build the tests and run them you can call the libraries build script.
 

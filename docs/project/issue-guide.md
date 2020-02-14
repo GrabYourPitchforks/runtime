@@ -8,7 +8,7 @@ As noted above, we don't close issues just because we don't plan to address them
 
 1. Issues unrelated to CoreFx.  When possible, we'll try to find a better home for the issue and point you to it.
 2. Cross cutting work better suited for another team.  Sometimes the line between the framework, languages and runtime blurs.  For some issues, we may feel that the work is better suited for the runtime team, language team or other partner.  In these cases, we'll close the issue and open it with the partner team.  If they end up not deciding to take on the issue, we can reconsider it here.
-3. Nebulous and Large open issues.  Large open issues are sometimes better suited for [User Voice](http://visualstudio.uservoice.com/forums/121579-visual-studio/category/31481--net), especially when the work will cross the boundaries of the framework, language and runtime.  A good example of this is the SIMD support we recently added to CoreFx.  This started as a [User Voice request](https://visualstudio.uservoice.com/forums/121579-visual-studio-2015/suggestions/2212443-c-and-simd), and eventually turned into work for both the core libraries and runtime.
+3. Nebulous and Large open issues.  Large open issues are sometimes better suited for [User Voice](https://visualstudio.uservoice.com/forums/121579-visual-studio/category/31481--net), especially when the work will cross the boundaries of the framework, language and runtime.  A good example of this is the SIMD support we recently added to CoreFx.  This started as a [User Voice request](https://visualstudio.uservoice.com/forums/121579-visual-studio-2015/suggestions/2212443-c-and-simd), and eventually turned into work for both the core libraries and runtime.
 
 Sometimes after debate, we'll decide an issue isn't a good fit for CoreFx.  In that case, we'll also close it.  Because of this, we ask that you don't start working on an issue until it's tagged with [up-for-grabs](https://github.com/dotnet/runtime/labels/up-for-grabs) or [api-approved](https://github.com/dotnet/runtime/labels/api-approved).  Both you and the team will be unhappy if you spend time and effort working on a change we'll ultimately be unable to take. We try to avoid that.
 
@@ -65,7 +65,7 @@ Feel free to use other labels if it helps your triage efforts (e.g. **needs more
 1. Issue has no **Assignee**, unless someone is working on the issue at the moment
     * Motivation: Observation is that contributors are less likely to grab assigned issues, no matter what the repo rules say.
 1. Use **up-for-grabs** as much as possible, ideally with a quick note about next steps / complexity of the issue
-    * Note: Per http://up-for-grabs.net, such issues should be no longer than few nights' worth of work. They should be actionable (i.e. no misterious CI failures or UWP issues that can't be tested in the open).
+    * Note: Per https://up-for-grabs.net, such issues should be no longer than few nights' worth of work. They should be actionable (i.e. no misterious CI failures or UWP issues that can't be tested in the open).
 1. Set milestone to **Future**, unless you can 95%-commit you can fund the issue in specific milestone
     * Motivation: Helps communicate desire/timeline to community. Can spark further priority/impact discussion.
 1. Each issue has exactly one "*issue type*" label (**bug**, **enhancement**, **api-needs-work**, **test bug**, **test enhancement**, **question**, **documentation**, etc.)

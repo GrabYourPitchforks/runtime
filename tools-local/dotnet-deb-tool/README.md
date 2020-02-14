@@ -53,7 +53,7 @@ Note: Use the commentless version [here](example_config.json).
 
     "short_description": "This is a test package",              // [required] Max. 60 chars
     "long_description": "This is a longer description of the test package", // [required]
-    "homepage": "http://testpackage.com",                       // (optional no default)
+    "homepage": "https://testpackage.com",                       // (optional no default)
 
     "release":{
         "package_version":"0.1",                                // [required]

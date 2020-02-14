@@ -16,7 +16,7 @@ terminology.
 | BOTR | Book Of The Runtime. |
 | CLR | Common Language Runtime. |
 | COMPlus | An early name for the .NET platform, back when it was envisioned as a successor to the COM platform (hence, "COM+"). Used in various places in the CLR infrastructure, most prominently as a common prefix for the names of internal configuration settings. Note that this is different from the product that eventually ended up being named [COM+](https://msdn.microsoft.com/en-us/library/windows/desktop/ms685978.aspx). |
-| COR | [Common Object Runtime](http://www.danielmoth.com/Blog/mscorlibdll.aspx). The name of .NET before it was named .NET. |
+| COR | [Common Object Runtime](https://www.danielmoth.com/Blog/mscorlibdll.aspx). The name of .NET before it was named .NET. |
 | DAC | Data Access Component. An abstraction layer over the internal structures in the runtime. |
 | EE | Execution Engine. |
 | GC | [Garbage Collector](https://github.com/dotnet/coreclr/blob/master/Documentation/botr/garbage-collection.md). |
@@ -27,14 +27,14 @@ terminology.
 | MDA | Managed Debugging Assistant - see [details](https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/diagnosing-errors-with-managed-debugging-assistants) (Note: Not in .NET Core, equivalent diagnostic functionality is made available on a case-by-case basis, e.g. [#15465](https://github.com/dotnet/coreclr/issues/15465)) |
 | NGen | Native Image Generator. |
 | NYI | Not Yet Implemented. |
-| PAL | [Platform Adaptation Layer](http://archive.oreilly.com/pub/a/dotnet/2002/03/04/rotor.html). Provides an abstraction layer between the runtime and the operating system. |
+| PAL | [Platform Adaptation Layer](https://archive.oreilly.com/pub/a/dotnet/2002/03/04/rotor.html). Provides an abstraction layer between the runtime and the operating system. |
 | PE | Portable Executable. |
 | PGO | Profile Guided Optimization - see [details](https://blogs.msdn.microsoft.com/vcblog/2008/11/12/pogo/). |
 | POGO | Profile Guided Optimization - see [details](https://blogs.msdn.microsoft.com/vcblog/2008/11/12/pogo/). |
 | ProjectN | Codename for the first version of [.NET Native for UWP](https://msdn.microsoft.com/en-us/vstudio/dotnetnative.aspx). |
 | R2R | Ready-to-Run. A flavor of native images - command line switch of [crossgen](../workflow/building/coreclr/crossgen.md). |
 | Redhawk | Codename for experimental minimal managed code runtime that evolved into [CoreRT](https://github.com/dotnet/corert/). |
-| SOS | [Son of Strike](http://blogs.msdn.com/b/jasonz/archive/2003/10/21/53581.aspx). The debugging extension for DbgEng based debuggers. Uses the DAC as an abstraction layer for its operation. |
+| SOS | [Son of Strike](https://blogs.msdn.com/b/jasonz/archive/2003/10/21/53581.aspx). The debugging extension for DbgEng based debuggers. Uses the DAC as an abstraction layer for its operation. |
 | SuperPMI | JIT component test framework (super fast JIT testing - it mocks/replays EE in EE-JIT interface) - see [SuperPMI details](https://github.com/dotnet/coreclr/blob/master/src/ToolBox/superpmi/readme.txt). |
 | SVR | The CLR used to be built as two variants, with one called "mscorsvr.dll", to mean the "server" version. In particular, it contained the server GC implementation, which was intended for multi-threaded apps capable of taking advantage of multiple processors. In the .NET Framework 2 release, the two variants were merged into "mscorwks.dll". The WKS version was the default, however the SVR version remained available. |
 | TPA | Trusted Platform Assemblies used to be a special set of assemblies that comprised the platform assemblies, when it was originally designed. As of today, it is simply the set of assemblies known to constitute the application. |
@@ -345,17 +345,17 @@ and enabling support for running WPF on .NET Core (Windows Only).
   and the logs will have the URL.
 
 
-[introducing-net-core]: http://blogs.msdn.com/b/dotnet/archive/2014/12/04/introducing-net-core.aspx
+[introducing-net-core]: https://blogs.msdn.com/b/dotnet/archive/2014/12/04/introducing-net-core.aspx
 [core-build-status]: https://github.com/dotnet/coreclr#build-status
-[corefx]: http://github.com/dotnet/corefx
+[corefx]: https://github.com/dotnet/corefx
 [referencesource]: https://github.com/microsoft/referencesource
-[mono-supported-platforms]: http://www.mono-project.com/docs/about-mono/supported-platforms/
+[mono-supported-platforms]: https://www.mono-project.com/docs/about-mono/supported-platforms/
 [JamesNK]: https://twitter.com/JamesNK
 [Newtonsoft.Json]: https://github.com/JamesNK/Newtonsoft.Json
-[mono-winforms]: http://www.mono-project.com/docs/gui/winforms/
+[mono-winforms]: https://www.mono-project.com/docs/gui/winforms/
 [xunit]: https://github.com/xunit
 [mc.dot.net]: https://mc.dot.net/
-[ECMA-355]: http://www.ecma-international.org/publications/standards/Ecma-335.htm
+[ECMA-355]: https://www.ecma-international.org/publications/standards/Ecma-335.htm
 [dotnet-tooling]: https://docs.microsoft.com/en-us/dotnet/core/tools/
 [WinForms]: https://github.com/dotnet/winforms
 [Wpf]: https://github.com/dotnet/wpf
