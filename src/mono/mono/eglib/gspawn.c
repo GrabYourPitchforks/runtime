@@ -64,7 +64,7 @@
 #define close _close
 #define read _read
 #define write _write
-/* windows pipe api details: http://msdn2.microsoft.com/en-us/library/edze9h7e(VS.80).aspx */
+/* windows pipe api details: https://msdn2.microsoft.com/en-us/library/edze9h7e(VS.80).aspx */
 #define pipe(x) _pipe(x, 256, 0)
 #endif
 

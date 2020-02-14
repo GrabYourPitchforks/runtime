@@ -64,7 +64,7 @@
 //     * Expert .NET 2.0 IL Assembler  http://www.amazon.com/Expert-NET-2-0-IL-Assembler/dp/1590596463
 //
 // * This is also a pretty nice overview of what the CLR is at
-//     http://msdn2.microsoft.com/en-us/netframework/aa497266.aspx
+//     https://msdn2.microsoft.com/en-us/netframework/aa497266.aspx
 //
 // * code:EEStartup - This routine must be called before any interesting runtime services are used. It is
 //     invoked as part of mscorwks's DllMain logic.

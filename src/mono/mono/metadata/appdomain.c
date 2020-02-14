@@ -1754,7 +1754,7 @@ set_domain_search_path (MonoDomain *domain)
 		/*
 		 * As per MSDN documentation, AppDomainSetup.PrivateBinPath contains a list of
 		 * directories relative to ApplicationBase separated by semicolons (see
-		 * http://msdn2.microsoft.com/en-us/library/system.appdomainsetup.privatebinpath.aspx)
+		 * https://msdn2.microsoft.com/en-us/library/system.appdomainsetup.privatebinpath.aspx)
 		 * The loop below copes with the fact that some Unix applications may use ':' (or
 		 * System.IO.Path.PathSeparator) as the path search separator. We replace it with
 		 * ';' for the subsequent split.

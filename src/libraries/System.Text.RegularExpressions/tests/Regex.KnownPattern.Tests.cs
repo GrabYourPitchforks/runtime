@@ -24,7 +24,7 @@ namespace System.Text.RegularExpressions.Tests
 
             const string InputString =
                 "My favorite web sites include:</P>" +
-                "<A HREF=\"http://msdn2.microsoft.com\">" +
+                "<A HREF=\"https://msdn2.microsoft.com\">" +
                 "MSDN Home Page</A></P>" +
                 "<A HREF=\"http://www.microsoft.com\">" +
                 "Microsoft Corporation Home Page</A></P>" +
@@ -33,7 +33,7 @@ namespace System.Text.RegularExpressions.Tests
 
             Match m = Regex.Match(InputString, HrefPattern, options | RegexOptions.IgnoreCase);
             Assert.True(m.Success);
-            Assert.Equal("http://msdn2.microsoft.com", m.Groups[1].ToString());
+            Assert.Equal("https://msdn2.microsoft.com", m.Groups[1].ToString());
             Assert.Equal(43, m.Groups[1].Index);
 
             m = m.NextMatch();
