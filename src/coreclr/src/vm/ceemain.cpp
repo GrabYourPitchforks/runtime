@@ -61,7 +61,7 @@
 //         https://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20III%20CIL.doc
 //
 //  * Serge Liden (worked on the CLR and owned ILASM / ILDASM for a long time wrote a good book on IL
-//     * Expert .NET 2.0 IL Assembler  http://www.amazon.com/Expert-NET-2-0-IL-Assembler/dp/1590596463
+//     * Expert .NET 2.0 IL Assembler  https://www.amazon.com/Expert-NET-2-0-IL-Assembler/dp/1590596463
 //
 // * This is also a pretty nice overview of what the CLR is at
 //     https://msdn2.microsoft.com/en-us/netframework/aa497266.aspx
