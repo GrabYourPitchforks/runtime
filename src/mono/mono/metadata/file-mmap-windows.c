@@ -419,7 +419,7 @@ mono_mmap_map (void *handle, gint64 offset, gint64 *size, int access, void **mma
 	// but more pages may need to be committed in the region.
 	// This is because, VirtualQuery function(that internally invokes VirtualQueryEx function) returns the attributes 
 	// and size of the region of pages with matching attributes starting from base address.
-	// VirtualQueryEx: http://msdn.microsoft.com/en-us/library/windows/desktop/aa366907(v=vs.85).aspx
+	// VirtualQueryEx: https://msdn.microsoft.com/en-us/library/windows/desktop/aa366907(v=vs.85).aspx
 	if (((viewInfo.State & MEM_RESERVE) != 0) || viewSize < (guint64) nativeSize) {
 		void *tempAddress;
 		MONO_ENTER_GC_SAFE;

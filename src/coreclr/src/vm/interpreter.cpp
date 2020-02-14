@@ -1227,7 +1227,7 @@ CorJitResult Interpreter::GenerateInterpreterStub(CEEInfo* comp,
                     argState.argOffsets[k] += intRegArgBaseOffset;
 #elif defined(HOST_AMD64)
                     // First home the register arguments in the stack space allocated by the caller.
-                    // Refer to Stack Allocation on x64 [http://msdn.microsoft.com/en-US/library/ew5tede7(v=vs.80).aspx]
+                    // Refer to Stack Allocation on x64 [https://msdn.microsoft.com/en-US/library/ew5tede7(v=vs.80).aspx]
                     X86Reg argRegs[] = { kECX, kEDX, kR8, kR9 };
                     if (!jmpCall) { sl.X86EmitIndexRegStoreRSP(regArgsFound * sizeof(void*), argRegs[regArgsFound - 1]); }
                     argState.argOffsets[k] = (regArgsFound - 1) * sizeof(void*);

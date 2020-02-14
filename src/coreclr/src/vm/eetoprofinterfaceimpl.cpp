@@ -319,7 +319,7 @@ static HRESULT CoCreateProfiler(
     // cause an AV.
     //
     // There were many MSDN samples (for example
-    // http://msdn.microsoft.com/msdnmag/issues/03/01/NETProfilerAPI/) which
+    // https://msdn.microsoft.com/msdnmag/issues/03/01/NETProfilerAPI/) which
     // unfortunately had this CreateInstance() bug, so many profilers might have been
     // generated based on this code.  Since it's easy & cheap to work around the
     // problem, we do so here with the redundant QI.

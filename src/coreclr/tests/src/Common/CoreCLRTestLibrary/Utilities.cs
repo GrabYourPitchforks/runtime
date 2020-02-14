@@ -336,7 +336,7 @@ namespace TestLibrary
         private sealed class Advapi32
         {
             /// <summary>
-            /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms724884(v=vs.85).aspx
+            /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms724884(v=vs.85).aspx
             /// </summary>
             public enum RFlags
             {
@@ -353,7 +353,7 @@ namespace TestLibrary
             }
 
             /// <summary>
-            /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms724884(v=vs.85).aspx
+            /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms724884(v=vs.85).aspx
             /// </summary>
             public enum RType
             {

@@ -839,7 +839,7 @@ class Wrapper : public BaseWrapper<TYPE, FunctionBase<TYPE, ACQUIREF, RELEASEF>,
 // Dev10 VC++ has some of the new C++0x language extensions. Of particular interest here:
 // rvalue references, which enables differentiation between named (lvalue) and
 // temporary (rvalue) object references, enabling move semantics and perfect forwarding.
-// See http://msdn.microsoft.com/en-us/library/dd293668.aspx for more information.
+// See https://msdn.microsoft.com/en-us/library/dd293668.aspx for more information.
 
 // Enable copy construction and assignment from temporary objects. This permits Wrapper objects
 // to be returned from methods, and for move assignment.

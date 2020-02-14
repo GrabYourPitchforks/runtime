@@ -28,7 +28,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
 
         ''' <summary>
         ''' Flags for MoveFileEx.
-        ''' See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/movefileex.asp
+        ''' See https://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/movefileex.asp
         ''' and public\sdk\inc\winbase.h.
         ''' </summary>
         <Flags()>

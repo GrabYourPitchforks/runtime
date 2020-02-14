@@ -23,7 +23,7 @@ If you seed the stack walk with a bogus seed register context, we try to be nice
 
 Generally, this HRESULT means that your profiler requested to abort the stack walk in its StackSnapshotCallback.  However, you can also see this HRESULT if the CLR aborted the stack walk on your behalf due to a rare scenario on 64 bit architectures.
 
-One of the beautiful things about running 64-bit Windows is that you can get the Windows OS to perform (native) stack walks for you.  Read up on [RtlVirtualUnwind](http://msdn.microsoft.com/library/default.asp?url=/library/en-us/debug/base/rtlvirtualunwind.asp) if you're unfamiliar with this.  The Windows OS has a critical section to protect a block of memory used to help perform this stack walk.  So what would happen if:
+One of the beautiful things about running 64-bit Windows is that you can get the Windows OS to perform (native) stack walks for you.  Read up on [RtlVirtualUnwind](https://msdn.microsoft.com/library/default.asp?url=/library/en-us/debug/base/rtlvirtualunwind.asp) if you're unfamiliar with this.  The Windows OS has a critical section to protect a block of memory used to help perform this stack walk.  So what would happen if:
 
 - The OS's exception handling code causes a thread to walk its own stack 
 - The thread therefore enters this critical section 

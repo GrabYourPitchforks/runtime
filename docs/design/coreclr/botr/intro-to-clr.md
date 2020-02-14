@@ -250,10 +250,10 @@ Phew!  The runtime does a lot! It has taken many pages just to describe _some_ o
 - [MSDN Entry for the CLR][clr]
 - [Wikipedia Entry for the CLR](http://en.wikipedia.org/wiki/Common_Language_Runtime)
 - [ECMA Standard for the Common Language Infrastructure (CLI)][ecma-spec]
-- [.NET Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx)
+- [.NET Framework Design Guidelines](https://msdn.microsoft.com/en-us/library/ms229042.aspx)
 - [CoreCLR Repo Documentation](README.md)
 
-[clr]: http://msdn.microsoft.com/library/8bs2ecf4.aspx
+[clr]: https://msdn.microsoft.com/library/8bs2ecf4.aspx
 [ecma-spec]: ../../../project/dotnet-standards.md
 [cil-spec]: https://download.microsoft.com/download/7/3/3/733AD403-90B2-4064-A81E-01035A7FE13C/MS%20Partition%20III.pdf
-[fx-design-guidelines]: http://msdn.microsoft.com/en-us/library/ms229042.aspx
+[fx-design-guidelines]: https://msdn.microsoft.com/en-us/library/ms229042.aspx

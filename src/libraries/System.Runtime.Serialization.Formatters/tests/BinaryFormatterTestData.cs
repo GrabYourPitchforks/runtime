@@ -1495,7 +1495,7 @@ namespace System.Runtime.Serialization.Formatters.Tests
         private static T PopulateException<T>(T exception, bool setHResult = true)
             where T : Exception
         {
-            exception.HelpLink = "http://msdn.microsoft.com";
+            exception.HelpLink = "https://msdn.microsoft.com";
             exception.Source = "Exception_Class_Samples";
 
             exception.Data.Add("secret", true);

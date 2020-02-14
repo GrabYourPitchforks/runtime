@@ -178,7 +178,7 @@ typedef enum ReplacesCorHdrNumericDefines
 //
 // A managed code EXE or DLL uses the same basic format that unmanaged executables use call the Portable
 // Executable (PE) format. See http://en.wikipedia.org/wiki/Portable_Executable or
-// http://msdn.microsoft.com/msdnmag/issues/02/02/PE/default.aspx for more on this format and RVAs.
+// https://msdn.microsoft.com/msdnmag/issues/02/02/PE/default.aspx for more on this format and RVAs.
 //
 // PE files define fixed table of well known entry pointers call Directory entries. Each entry holds the
 // relative virtual address (RVA) and length of a blob of data within the PE file. You can see these using

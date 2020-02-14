@@ -33,7 +33,7 @@ If you want to rewrite IL of NGENd modules, well, it's kind of too late because 
 **Q: Any examples?**
 
 Here is an MSDN article that talks about making an IL rewriting profiler:
-[http://msdn.microsoft.com/en-us/magazine/cc188743.aspx](http://msdn.microsoft.com/en-us/magazine/cc188743.aspx)
+[https://msdn.microsoft.com/en-us/magazine/cc188743.aspx](https://msdn.microsoft.com/en-us/magazine/cc188743.aspx)
 
 **Q: Any caveats?**
 

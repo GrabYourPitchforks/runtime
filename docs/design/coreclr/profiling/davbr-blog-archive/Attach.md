@@ -33,7 +33,7 @@ Whereas the "hosting" interfaces enable one to host and manage a CLR in a proces
 
 ## Users and Integrity
 
-The permissions required to attach a profiler are similar to those required to attach a debugger.  First, the trigger process must run as the same user as the target profilee OR as an administrator.  Second, on OS's that support process integrity levels, the trigger process must be running at an integrity level higher than or equal to that of the target profilee process.  For more information about integrity and mandatory labels, [here's](http://msdn.microsoft.com/en-us/library/bb625964.aspx) some reference from MSDN.
+The permissions required to attach a profiler are similar to those required to attach a debugger.  First, the trigger process must run as the same user as the target profilee OR as an administrator.  Second, on OS's that support process integrity levels, the trigger process must be running at an integrity level higher than or equal to that of the target profilee process.  For more information about integrity and mandatory labels, [here's](https://msdn.microsoft.com/en-us/library/bb625964.aspx) some reference from MSDN.
 
 ## Sample Trigger Source Code
 

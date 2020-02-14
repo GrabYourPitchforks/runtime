@@ -317,7 +317,7 @@ mono_security_win_is_machine_protected (const gunichar2 *path, MonoError *error)
 	PSID const pEveryoneSid = GetEveryoneSid ();
 	if (pEveryoneSid) {
 		ACCESS_MASK rights = GetRightsFromSid (pEveryoneSid, pDACL);
-		/* http://msdn.microsoft.com/library/en-us/security/security/generic_access_rights.asp?frame=true */
+		/* https://msdn.microsoft.com/library/en-us/security/security/generic_access_rights.asp?frame=true */
 		success = (rights == (READ_CONTROL | SYNCHRONIZE | FILE_READ_DATA | FILE_READ_EA | FILE_READ_ATTRIBUTES));
 		FreeSid (pEveryoneSid);
 	}

@@ -86,7 +86,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
         ''' Contains information that the SHFileOperation function uses to perform file operations on 32-bit platforms.
         ''' </summary>
         ''' <remarks>
-        ''' * For detail documentation: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/shell/reference/structures/shfileopstruct.asp.
+        ''' * For detail documentation: https://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/shell/reference/structures/shfileopstruct.asp.
         ''' Members:
         '''   hwnd: Window handle to the dialog box to display information about the status of the operation.
         '''   wFunc: Value indicates which operation (copy, move, rename, delete) to perform.
@@ -210,7 +210,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
         ''' <param name="dwItem2">Second event-dependent value.</param>
         ''' <remarks>
         ''' Win 95/98/Me: SHChangeNotify is supported by Microsoft Layer for Unicode.
-        ''' To use this http://msdn.microsoft.com/library/default.asp?url=/library/en-us/mslu/winprog/microsoft_layer_for_unicode_on_windows_95_98_me_systems.asp
+        ''' To use this https://msdn.microsoft.com/library/default.asp?url=/library/en-us/mslu/winprog/microsoft_layer_for_unicode_on_windows_95_98_me_systems.asp
         ''' </remarks>
         <DllImport("shell32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
         Friend Shared Sub SHChangeNotify(ByVal wEventId As UInt32, ByVal uFlags As UInt32,
@@ -239,7 +239,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
 
         ''' <summary>
         ''' The MoveFileEx function moves an existing file or directory.
-        ''' http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/movefileex.asp
+        ''' https://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/movefileex.asp
         ''' </summary>
         <DllImport("kernel32",
              PreserveSig:=True,

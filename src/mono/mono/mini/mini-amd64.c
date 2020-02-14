@@ -6503,7 +6503,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				size = 4;
 
 			/* 
-			 * See http://msdn.microsoft.com/en-us/magazine/cc302329.aspx for
+			 * See https://msdn.microsoft.com/en-us/magazine/cc302329.aspx for
 			 * an explanation of how this works.
 			 */
 			g_assert (ins->sreg3 == AMD64_RAX);
