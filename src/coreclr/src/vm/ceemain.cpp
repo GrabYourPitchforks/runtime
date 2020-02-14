@@ -54,11 +54,11 @@
 //
 // * ECMA specifications
 //     * Partition I Concepts
-//         http://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20I%20Architecture.doc
+//         https://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20I%20Architecture.doc
 //     * Partition II Meta Data
-//         http://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20II%20Metadata.doc
+//         https://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20II%20Metadata.doc
 //     * Partition III IL
-//         http://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20III%20CIL.doc
+//         https://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20III%20CIL.doc
 //
 //  * Serge Liden (worked on the CLR and owned ILASM / ILDASM for a long time wrote a good book on IL
 //     * Expert .NET 2.0 IL Assembler  http://www.amazon.com/Expert-NET-2-0-IL-Assembler/dp/1590596463

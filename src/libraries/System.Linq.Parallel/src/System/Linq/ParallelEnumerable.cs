@@ -40,7 +40,7 @@ namespace System.Linq
     //
     // Comments and documentation will be somewhat light in this file. Please refer
     // to the "official" Standard Query Operators specification for details on each API:
-    // http://download.microsoft.com/download/5/8/6/5868081c-68aa-40de-9a45-a3803d8134b8/Standard_Query_Operators.doc
+    // https://download.microsoft.com/download/5/8/6/5868081c-68aa-40de-9a45-a3803d8134b8/Standard_Query_Operators.doc
     //
     // Notes:
     //     The Standard Query Operators herein should be semantically equivalent to
