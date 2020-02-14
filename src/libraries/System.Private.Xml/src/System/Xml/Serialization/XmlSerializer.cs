@@ -776,7 +776,7 @@ namespace System.Xml.Serialization
 
         private static XmlTypeMapping GetKnownMapping(Type type, string ns)
         {
-            if (ns != null && ns != string.Empty)
+            if (!string.IsNullOrEmpty(ns))
                 return null;
             TypeDesc typeDesc = (TypeDesc)TypeScope.PrimtiveTypes[type];
             if (typeDesc == null)

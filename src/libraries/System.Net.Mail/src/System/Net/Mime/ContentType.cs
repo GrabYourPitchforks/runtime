@@ -64,7 +64,7 @@ namespace System.Net.Mime
             get { return Parameters["boundary"]; }
             set
             {
-                if (value == null || value == string.Empty)
+                if (string.IsNullOrEmpty(value))
                 {
                     Parameters.Remove("boundary");
                 }
@@ -80,7 +80,7 @@ namespace System.Net.Mime
             get { return Parameters["charset"]; }
             set
             {
-                if (value == null || value == string.Empty)
+                if (string.IsNullOrEmpty(value))
                 {
                     Parameters.Remove("charset");
                 }
@@ -140,7 +140,7 @@ namespace System.Net.Mime
             }
             set
             {
-                if (value == null || value == string.Empty)
+                if (string.IsNullOrEmpty(value))
                 {
                     Parameters.Remove("name");
                 }

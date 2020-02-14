@@ -153,7 +153,7 @@ namespace System.Net.Mail
                 _part.Stream.Close();
             }
 
-            if (mediaType == null || mediaType == string.Empty)
+            if (string.IsNullOrEmpty(mediaType))
             {
                 mediaType = MediaTypeNames.Text.Plain;
             }
@@ -338,7 +338,7 @@ namespace System.Net.Mail
         public Attachment(string fileName, ContentType contentType) :
             base(fileName, contentType)
         {
-            if (contentType.Name == null || contentType.Name == string.Empty)
+            if (string.IsNullOrEmpty(contentType.Name))
             {
                 Name = Path.GetFileName(fileName);
             }
@@ -422,7 +422,7 @@ namespace System.Net.Mail
             set
             {
                 _nameEncoding = value;
-                if (_name != null && _name != string.Empty)
+                if (!string.IsNullOrEmpty(_name))
                 {
                     SetContentTypeName(true);
                 }
@@ -439,7 +439,7 @@ namespace System.Net.Mail
 
         internal override void PrepareForSending(bool allowUnicode)
         {
-            if (_name != null && _name != string.Empty)
+            if (!string.IsNullOrEmpty(_name))
             {
                 SetContentTypeName(allowUnicode);
             }

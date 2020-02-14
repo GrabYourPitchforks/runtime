@@ -132,11 +132,11 @@ namespace System.Net.Mime
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            if (mimeType != null && mimeType != string.Empty)
+            if (!string.IsNullOrEmpty(mimeType))
             {
                 _contentType = new ContentType(mimeType);
             }
-            if (name != null && name != string.Empty)
+            if (!string.IsNullOrEmpty(name))
             {
                 ContentType.Name = name;
             }

@@ -127,7 +127,7 @@ namespace System.Diagnostics
                 if (complusReg != null)
                 {
                     string installRoot = (string)complusReg.GetValue("InstallRoot");
-                    if (installRoot != null && installRoot != string.Empty)
+                    if (!string.IsNullOrEmpty(installRoot))
                     {
                         // the "policy" subkey contains a v{major}.{minor} subkey for each version installed.  There are also
                         // some extra subkeys like "standards" and "upgrades" we want to ignore.
@@ -215,7 +215,7 @@ namespace System.Diagnostics
                                 policyKey.Close();
                             }
 
-                            if (version != null && version != string.Empty)
+                            if (!string.IsNullOrEmpty(version))
                             {
                                 StringBuilder installBuilder = new StringBuilder();
                                 installBuilder.Append(installRoot);

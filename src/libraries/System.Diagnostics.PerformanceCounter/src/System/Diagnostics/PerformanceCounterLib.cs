@@ -455,7 +455,7 @@ namespace System.Diagnostics
                         iniWriter.Write(languageId);
                         iniWriter.Write(HelpSufix);
                         iniWriter.Write("=");
-                        if (categoryHelp == null || categoryHelp == string.Empty)
+                        if (string.IsNullOrEmpty(categoryHelp))
                             iniWriter.WriteLine(SR.HelpNotAvailable);
                         else
                             iniWriter.WriteLine(categoryHelp);
@@ -883,7 +883,7 @@ namespace System.Diagnostics
             {
                 int counterIndex = entry.CounterIndexes[index];
                 string counterName = (string)NameTable[counterIndex];
-                if (counterName != null && counterName != string.Empty)
+                if (!string.IsNullOrEmpty(counterName))
                 {
                     counters[index2] = counterName;
                     ++index2;
@@ -1641,7 +1641,7 @@ namespace System.Diagnostics
                 int counterIndex = _entry.CounterIndexes[index];
 
                 string name = (string)_library.NameTable[counterIndex];
-                if (name != null && name != string.Empty)
+                if (!sring.IsNullOrEmpty(name))
                 {
                     CounterDefinitionSample sample = (CounterDefinitionSample)_counterTable[counterIndex];
                     if (sample != null)
