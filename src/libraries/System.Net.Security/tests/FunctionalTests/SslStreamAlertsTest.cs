@@ -46,7 +46,7 @@ namespace System.Net.Security.Tests
                 var win32ex = (Win32Exception)exception.InnerException;
 
                 // The Schannel HResults for each alert are documented here:
-                // https://msdn.microsoft.com/en-us/library/windows/desktop/dd721886(v=vs.85).aspx
+                // https://msdn.microsoft.com/library/windows/desktop/dd721886(v=vs.85).aspx
                 Assert.Equal(SEC_E_CERT_UNKNOWN, unchecked((uint)win32ex.NativeErrorCode));
 
                 await Assert.ThrowsAsync<AuthenticationException>(() => serverAuth);

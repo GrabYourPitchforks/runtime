@@ -23,7 +23,7 @@ namespace System.Tests
         /// in some implementation.
         /// </summary>
         [Theory]
-        // https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
+        // https://msdn.microsoft.com/library/kfsatb94(v=vs.110).aspx
         [InlineData("0.6822871999174", 0x3FE5D54BF743FD1Bul)]
         // Common problem numbers
         [InlineData("2.2250738585072011e-308", 0x000FFFFFFFFFFFFFul)]

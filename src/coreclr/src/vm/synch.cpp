@@ -641,7 +641,7 @@ bool CLRLifoSemaphore::WaitForSignal(DWORD timeoutMs)
             waitSuccessful = waitResult == WAIT_OBJECT_0;
 #else // !TARGET_UNIX
             // I/O completion ports release waiters in LIFO order, see
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365198(v=vs.85).aspx
+            // https://msdn.microsoft.com/library/windows/desktop/aa365198(v=vs.85).aspx
             DWORD numberOfBytes;
             ULONG_PTR completionKey;
             LPOVERLAPPED overlapped;

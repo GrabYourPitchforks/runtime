@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 internal static partial class Interop
 {
     /// <summary>
-    /// <a href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff557749.aspx">OBJECT_ATTRIBUTES</a> structure.
+    /// <a href="https://msdn.microsoft.com/library/windows/hardware/ff557749.aspx">OBJECT_ATTRIBUTES</a> structure.
     /// The OBJECT_ATTRIBUTES structure specifies attributes that can be applied to objects or object handles by routines
     /// that create objects and/or return handles to objects.
     /// </summary>
@@ -58,8 +58,8 @@ internal static partial class Interop
     [Flags]
     public enum ObjectAttributes : uint
     {
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff564586.aspx
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff547804.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff564586.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff547804.aspx
 
         /// <summary>
         /// This handle can be inherited by child processes of the current process.

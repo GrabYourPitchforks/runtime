@@ -51,7 +51,7 @@ public:
         void Unlink(ErrorCallback callback = nullptr);
 #else
         static const uint32_t MaxNamedPipeNameLength = 256;
-        char _pNamedPipeName[MaxNamedPipeNameLength]; // https://docs.microsoft.com/en-us/windows/desktop/api/winbase/nf-winbase-createnamedpipea
+        char _pNamedPipeName[MaxNamedPipeNameLength]; // https://docs.microsoft.com/windows/desktop/api/winbase/nf-winbase-createnamedpipea
 
         DiagnosticsIpc(const char(&namedPipeName)[MaxNamedPipeNameLength]);
 #endif /* TARGET_UNIX */

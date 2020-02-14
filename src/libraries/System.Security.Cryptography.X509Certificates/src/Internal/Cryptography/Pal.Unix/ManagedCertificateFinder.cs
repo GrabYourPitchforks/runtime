@@ -257,7 +257,7 @@ namespace Internal.Cryptography.Pal
                         // MSDN says that when there's no extension, this method takes the SHA-1 of the
                         // SubjectPublicKeyInfo block, and returns that.
                         //
-                        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa376079%28v=vs.85%29.aspx
+                        // https://msdn.microsoft.com/library/windows/desktop/aa376079%28v=vs.85%29.aspx
 
                         using (HashAlgorithm hash = SHA1.Create())
                         {

@@ -14,12 +14,12 @@ instrumenting code.
 
 In addition to `DiagnosticSource`, there are two other logging systems provided by Microsoft:
 
-1. `EventSource` [docs](https://msdn.microsoft.com/en-us/library/system.diagnostics.tracing.eventsource(v=vs.110).aspx)
+1. `EventSource` [docs](https://msdn.microsoft.com/library/system.diagnostics.tracing.eventsource(v=vs.110).aspx)
    and [src](https://github.com/dotnet/runtime/blob/master/src/libraries/System.Diagnostics.DiagnosticSource/src/System/Diagnostics/DiagnosticSourceEventSource.cs).
    `EventSource` has been available since V4.5 of the .NET Runtime and is what is used
    to instrument the runtime itself. It is designed to be fast and to be strongly
    typed (payloads are typed, named properties), and to interface with OS logging
-   infrastructure like Event Tracing for Windows [(ETW)](https://msdn.microsoft.com/en-us/library/windows/desktop/aa363668(v=vs.85).aspx)
+   infrastructure like Event Tracing for Windows [(ETW)](https://msdn.microsoft.com/library/windows/desktop/aa363668(v=vs.85).aspx)
    or [LTTng](http://lttng.org/) on Linux.
 
 2. `ILogger` [src](https://github.com/aspnet/logging). A number of popular third party
@@ -89,7 +89,7 @@ Already some of the architectural elements are being exposed, namely:
 1. Every event has a `string` name (e.g. `RequestStart`), and exactly one `object` as a payload.
 
 2. If you need to send more than one item, you can do so by creating an `object` with all information
-   in it as properties. C#'s [anonymous type](https://msdn.microsoft.com/en-us/library/bb397696.aspx)
+   in it as properties. C#'s [anonymous type](https://msdn.microsoft.com/library/bb397696.aspx)
    feature is typically used to create a type to pass 'on the fly', and makes this scheme very
    convenient.
 
@@ -237,7 +237,7 @@ active in the system at runtime. The API to accomplish this is the `AllListeners
 `IObservable<DiagnosticListener>`.
 
 The `IObservable` interface is the 'callback' version of the `IEnumerable` interface. You can learn
-more about it at the [Reactive Extensions](https://msdn.microsoft.com/en-us/data/gg577609.aspx) site.
+more about it at the [Reactive Extensions](https://msdn.microsoft.com/data/gg577609.aspx) site.
 In a nutshell, you have an object called an `IObserver` which has three callbacks, `OnNext`, `OnComplete`
 and `OnError`, and an `IObservable` has single method called `Subscribe` which gets passed one of these
 Observers. Once connected, the Observer gets callbacks (mostly `OnNext` callbacks) when things

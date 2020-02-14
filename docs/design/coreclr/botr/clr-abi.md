@@ -12,9 +12,9 @@ CoreRT refers to https://github.com/dotnet/corert runtime that is optimized for 
 
 Read everything in the documented Windows ABI.
 
-AMD64: See [x64 Software Conventions](https://docs.microsoft.com/en-us/cpp/build/x64-software-conventions).
+AMD64: See [x64 Software Conventions](https://docs.microsoft.com/cpp/build/x64-software-conventions).
 
-ARM: See [Overview of ARM ABI Conventions"](https://docs.microsoft.com/en-us/cpp/build/overview-of-arm-abi-conventions).
+ARM: See [Overview of ARM ABI Conventions"](https://docs.microsoft.com/cpp/build/overview-of-arm-abi-conventions).
 
 The CLR follows those basic conventions. This document only describes things that are CLR-specific, or exceptions from those documents.
 

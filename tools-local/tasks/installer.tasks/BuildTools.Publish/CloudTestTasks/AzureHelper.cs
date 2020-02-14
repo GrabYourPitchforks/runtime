@@ -307,7 +307,7 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
             string rscl = "",
             string rsct = "")
         {
-            // constructing string to sign based on spec in https://msdn.microsoft.com/en-us/library/azure/dn140255.aspx
+            // constructing string to sign based on spec in https://msdn.microsoft.com/library/azure/dn140255.aspx
             var stringToSign = string.Join(
                 "\n",
                 signedPermissions,

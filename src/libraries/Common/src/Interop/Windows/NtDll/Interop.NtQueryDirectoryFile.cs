@@ -9,8 +9,8 @@ internal partial class Interop
 {
     internal partial class NtDll
     {
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff556633.aspx
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff567047.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff556633.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff567047.aspx
         [DllImport(Libraries.NtDll, CharSet = CharSet.Unicode, ExactSpelling = true)]
         public static extern unsafe int NtQueryDirectoryFile(
             IntPtr FileHandle,

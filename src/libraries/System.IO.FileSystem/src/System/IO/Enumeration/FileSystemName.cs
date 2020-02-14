@@ -17,7 +17,7 @@ namespace System.IO.Enumeration
     public static class FileSystemName
     {
         // [MS - FSA] 2.1.4.4 Algorithm for Determining if a FileName Is in an Expression
-        // https://msdn.microsoft.com/en-us/library/ff469270.aspx
+        // https://msdn.microsoft.com/library/ff469270.aspx
         private static readonly char[] s_wildcardChars =
         {
             '\"', '<', '>', '*', '?'

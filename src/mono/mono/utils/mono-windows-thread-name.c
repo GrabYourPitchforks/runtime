@@ -19,7 +19,7 @@
 //  See https://randomascii.wordpress.com/2015/10/26/thread-naming-in-windows-time-for-something-better.
 //
 //  This is not called SetThreadName to avoid breaking compilation of C (but not C++)
-//  copied from http://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx.
+//  copied from http://msdn.microsoft.com/library/xcb2z8hs.aspx.
 //
 // Author:
 //  Jay Krell (jaykrell@microsoft.com)
@@ -57,7 +57,7 @@ mono_native_thread_set_name (MonoNativeThreadId tid, const char *name)
 {
 // This is compiler specific because of the use of __try / __except.
 #if _MSC_VER
-	// http://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx
+	// http://msdn.microsoft.com/library/xcb2z8hs.aspx
 	THREADNAME_INFO info = {0x1000, name, tid, 0};
 
 	// Checking for IsDebuggerPresent here would be reasonable, for

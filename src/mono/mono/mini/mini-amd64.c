@@ -475,14 +475,14 @@ allocate_storage_for_valuetype_win64 (ArgInfo *arg_info, MonoType *type, gboolea
 {
 	/* Windows x64 value type ABI.
 	*
-	* Parameters: https://msdn.microsoft.com/en-us/library/zthk2dkh.aspx
+	* Parameters: https://msdn.microsoft.com/library/zthk2dkh.aspx
 	*
 	* Integer/Float types smaller than or equals to 8 bytes or porperly sized struct/union (1,2,4,8)
 	*    Try pass in register using ArgValuetypeInReg/(ArgInIReg|ArgInFloatSSEReg|ArgInDoubleSSEReg) as storage and size of parameter(1,2,4,8), if no more registers, pass on stack using ArgOnStack as storage and size of parameter(1,2,4,8).
 	* Integer/Float types bigger than 8 bytes or struct/unions larger than 8 bytes or (3,5,6,7).
 	*    Try to pass pointer in register using ArgValuetypeAddrInIReg, if no more registers, pass pointer on stack using ArgValuetypeAddrOnStack as storage and parameter size of register (8 bytes).
 	*
-	* Return values:  https://msdn.microsoft.com/en-us/library/7572ztz4.aspx.
+	* Return values:  https://msdn.microsoft.com/library/7572ztz4.aspx.
 	*
 	* Integers/Float types smaller than or equal to 8 bytes
 	*    Return in corresponding register RAX/XMM0 using ArgValuetypeInReg/(ArgInIReg|ArgInFloatSSEReg|ArgInDoubleSSEReg) as storage and size of parameter(1,2,4,8).
@@ -851,7 +851,7 @@ add_valuetype (MonoMethodSignature *sig, ArgInfo *ainfo, MonoType *type,
  * For AMD64 System V, see the "System V ABI, x86-64 Architecture Processor Supplement
  * Draft Version 0.23" document for more information.
  * For AMD64 Windows, see "Overview of x64 Calling Conventions",
- * https://msdn.microsoft.com/en-us/library/ms235286.aspx
+ * https://msdn.microsoft.com/library/ms235286.aspx
  */
 static CallInfo*
 get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
@@ -6503,7 +6503,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				size = 4;
 
 			/* 
-			 * See http://msdn.microsoft.com/en-us/magazine/cc302329.aspx for
+			 * See http://msdn.microsoft.com/magazine/cc302329.aspx for
 			 * an explanation of how this works.
 			 */
 			g_assert (ins->sreg3 == AMD64_RAX);

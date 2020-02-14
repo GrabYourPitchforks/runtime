@@ -9,7 +9,7 @@ internal partial class Interop
 {
     internal partial class NtDll
     {
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff550671.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff550671.aspx
         [StructLayout(LayoutKind.Sequential)]
         public struct IO_STATUS_BLOCK
         {

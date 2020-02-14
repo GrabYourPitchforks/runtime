@@ -12,7 +12,7 @@ namespace System.ConfigurationTests
         [Fact]
         public void MsdnRootSample()
         {
-            // https://msdn.microsoft.com/en-us/library/system.configuration.keyvalueconfigurationcollection(v=vs.110).aspx
+            // https://msdn.microsoft.com/library/system.configuration.keyvalueconfigurationcollection(v=vs.110).aspx
             using (var temp = new TempConfig(TestData.EmptyConfig))
             {
                 var config = ConfigurationManager.OpenExeConfiguration(temp.ExePath);

@@ -13,8 +13,8 @@ namespace System.IO.Ports
         {
             // Hitting the registry for this isn't the only way to get the ports.
             //
-            // WMI: https://msdn.microsoft.com/en-us/library/aa394413.aspx
-            // QueryDosDevice: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365461.aspx
+            // WMI: https://msdn.microsoft.com/library/aa394413.aspx
+            // QueryDosDevice: https://msdn.microsoft.com/library/windows/desktop/aa365461.aspx
             //
             // QueryDosDevice involves finding any ports that map to \Device\Serialx (call with null to get all, then iterate to get the actual device name)
 

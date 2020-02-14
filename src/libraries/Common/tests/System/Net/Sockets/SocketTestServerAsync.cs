@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace System.Net.Sockets.Tests
 {
-    // Code taken from https://msdn.microsoft.com/en-us/library/system.net.sockets.socketasynceventargs.aspx
+    // Code taken from https://msdn.microsoft.com/library/system.net.sockets.socketasynceventargs.aspx
 
     // Implements the connection logic for the socket server.
     // After accepting a connection, all data read from the client

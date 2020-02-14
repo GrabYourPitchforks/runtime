@@ -230,7 +230,7 @@ namespace R2RDump
                     }
                 }
 
-                /* According to https://msdn.microsoft.com/en-us/library/ck9asaa9.aspx and src/vm/gcinfodecoder.cpp
+                /* According to https://msdn.microsoft.com/library/ck9asaa9.aspx and src/vm/gcinfodecoder.cpp
                  * UnwindCode and GcTransition CodeOffsets are encoded with a -1 adjustment (that is, it's the offset of the start of the next instruction)
                  */
                 _writer.Write(instr);

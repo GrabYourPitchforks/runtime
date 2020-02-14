@@ -16,7 +16,7 @@ https://github.com/dotnet/coreclr/issues/27231 was opened as a way to simply vie
 
 #### Terminology
 
-In order to follow some of the terminology used, there is an expected familiarity of Azure DevOps required. For an in depth guide with Azure DevOps pipeline definitions, please see: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema. 
+In order to follow some of the terminology used, there is an expected familiarity of Azure DevOps required. For an in depth guide with Azure DevOps pipeline definitions, please see: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema. 
 
 The most common terminology and most important are the different containers work happens in.
 

@@ -19,7 +19,7 @@ namespace System.Diagnostics.Tests
         }
 
         /// <summary>
-        /// This test was taken from System.Diagnostics.PerformanceData documentation https://msdn.microsoft.com/en-us/library/system.diagnostics.performancedata(v=vs.110).aspx
+        /// This test was taken from System.Diagnostics.PerformanceData documentation https://msdn.microsoft.com/library/system.diagnostics.performancedata(v=vs.110).aspx
         /// To create provider.res file we've used some tools:
         /// ctrpp.exe -legacy provider.man
         /// rc.exe /r /i "c:\Program Files\Microsoft SDKs\Windows\v6.0\Include" provider.rc

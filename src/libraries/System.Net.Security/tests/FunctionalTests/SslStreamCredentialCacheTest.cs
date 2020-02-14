@@ -44,7 +44,7 @@ namespace System.Net.Security.Tests
                 if (!PlatformDetection.IsWindows7 ||
                     Capability.IsTrustedRootCertificateInstalled())
                 {
-                    // https://technet.microsoft.com/en-us/library/hh831771.aspx#BKMK_Changes2012R2
+                    // https://technet.microsoft.com/library/hh831771.aspx#BKMK_Changes2012R2
                     // Starting with Windows 8, the "Management of trusted issuers for client authentication" has changed:
                     // The behavior to send the Trusted Issuers List by default is off.
                     //

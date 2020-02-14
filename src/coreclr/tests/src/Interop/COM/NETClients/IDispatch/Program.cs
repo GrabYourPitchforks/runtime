@@ -106,7 +106,7 @@ namespace NetClient
 
         static int GetErrorCodeFromHResult(int hresult)
         {
-            // https://msdn.microsoft.com/en-us/library/cc231198.aspx
+            // https://msdn.microsoft.com/library/cc231198.aspx
             return hresult & 0xffff;
         }
 

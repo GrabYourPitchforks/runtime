@@ -99,12 +99,12 @@ To make code migration from .NET Framework easier, we have exposed some of the `
 
 ### Code Access Security (CAS)
 
-**Justification**. Sandboxing, i.e. relying on the runtime or the framework to constrain which resources a managed application or library can run is [not supported on .NET Framework](https://msdn.microsoft.com/en-us/library/c5tk9z76(v=vs.110).aspx) and therefore is also not supported on .NET Core. We believe that there are simply too many pieces in the .NET Framework and runtime that can result in elevation of privileges. Thus we don't treat [CAS as security boundary](https://msdn.microsoft.com/en-us/library/c5tk9z76(v=vs.110).aspx) anymore. On top of that, it makes the implementation more complicated and often has correctness performance implications for applications that don’t intend to use it.
+**Justification**. Sandboxing, i.e. relying on the runtime or the framework to constrain which resources a managed application or library can run is [not supported on .NET Framework](https://msdn.microsoft.com/library/c5tk9z76(v=vs.110).aspx) and therefore is also not supported on .NET Core. We believe that there are simply too many pieces in the .NET Framework and runtime that can result in elevation of privileges. Thus we don't treat [CAS as security boundary](https://msdn.microsoft.com/library/c5tk9z76(v=vs.110).aspx) anymore. On top of that, it makes the implementation more complicated and often has correctness performance implications for applications that don’t intend to use it.
 
 **Replacement**. Use operating system provided security boundaries, such as virtualization, containers, or user accounts for running processes with the least set of privileges.
 
 ### Security Transparency
 
-**Justification**. Similar to CAS, this feature allows separating sandboxed code from security critical code in a declarative fashion, but is [no longer supported as a security boundary](https://msdn.microsoft.com/en-us/library/ee191569(v=vs.110).aspx). This feature was heavily used by Silverlight. 
+**Justification**. Similar to CAS, this feature allows separating sandboxed code from security critical code in a declarative fashion, but is [no longer supported as a security boundary](https://msdn.microsoft.com/library/ee191569(v=vs.110).aspx). This feature was heavily used by Silverlight. 
 
 **Replacement**. Use operating system provided security boundaries, such as virtualization, containers, or user accounts for running processes with the least set of privileges.

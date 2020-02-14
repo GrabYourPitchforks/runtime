@@ -54,7 +54,7 @@ namespace System.Drawing.Tests
                 case 0x4: // zh-TW (Traditional Chinese, Taiwan) or zh-CN (Simplified Chinese, PRC)
                     // Although the primary language ID is the same, the fonts are different
                     // So we have to determine by the full language ID
-                    // https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-lcid/70feba9f-294e-491e-b6eb-56532684c37f
+                    // https://docs.microsoft.com/openspecs/windows_protocols/ms-lcid/70feba9f-294e-491e-b6eb-56532684c37f
                     // Assuming this doc is correct AND the font only differs by whether it's traditional or not it should work
                     switch (userLangId & 0xFFFF)
                     {

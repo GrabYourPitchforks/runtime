@@ -54,7 +54,7 @@ internal partial class Interop
         // structure.  Note that all flag properties are encapsulated in the Flags field here,
         // and accessed/set through SerialStream's GetDcbFlag(...) and SetDcbFlag(...) methods.
         //
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa363214.aspx
+        // https://msdn.microsoft.com/library/windows/desktop/aa363214.aspx
         internal struct DCB
         {
             internal const byte EOFCHAR = 26;

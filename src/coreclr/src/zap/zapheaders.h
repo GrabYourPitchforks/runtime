@@ -241,7 +241,7 @@ class ZapWin32ResourceDirectory : public ZapNode
     // to other ZapWin32ResourceDirectory nodes), or point to actual resource data (RVAs to a number of IMAGE_RESOURCE_DATA_ENTRY entries
     // that immediately follow the IMAGE_RESOURCE_DIRECTORY_ENTRY entries).
     //
-    // Refer to the PE resources format for more information (https://docs.microsoft.com/en-us/windows/desktop/debug/pe-format#the-rsrc-section)
+    // Refer to the PE resources format for more information (https://docs.microsoft.com/windows/desktop/debug/pe-format#the-rsrc-section)
     //
 
     struct DataOrSubDirectoryEntry

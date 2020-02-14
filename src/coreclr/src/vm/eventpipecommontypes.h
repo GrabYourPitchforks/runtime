@@ -64,7 +64,7 @@ public:
 };
 
 // EVENT_FILTER_DESCRIPTOR (This type does not exist on non-Windows platforms.)
-//  https://docs.microsoft.com/en-us/windows/desktop/api/evntprov/ns-evntprov-_event_filter_descriptor
+//  https://docs.microsoft.com/windows/desktop/api/evntprov/ns-evntprov-_event_filter_descriptor
 //  The structure supplements the event provider, level, and keyword data that
 //  determines which events are reported and traced. The structure gives the
 //  event provider greater control over the selection of events for reporting

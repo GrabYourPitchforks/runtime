@@ -32,14 +32,14 @@ namespace System.IO
         // (essentially GetFullPathName()) and path length checks.
 
         // Windows Kernel-Mode Object Manager
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff565763.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff565763.aspx
         // https://channel9.msdn.com/Shows/Going+Deep/Windows-NT-Object-Manager
         //
         // Introduction to MS-DOS Device Names
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff548088.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff548088.aspx
         //
         // Local and Global MS-DOS Device Names
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff554302.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff554302.aspx
 
         internal const char DirectorySeparatorChar = '\\';
         internal const char AltDirectorySeparatorChar = '/';
@@ -182,7 +182,7 @@ namespace System.IO
             int startIndex = IsDevice(path) ? ExtendedPathPrefix.Length : 0;
 
             // [MS - FSA] 2.1.4.4 Algorithm for Determining if a FileName Is in an Expression
-            // https://msdn.microsoft.com/en-us/library/ff469270.aspx
+            // https://msdn.microsoft.com/library/ff469270.aspx
             for (int i = startIndex; i < path.Length; i++)
             {
                 char c = path[i];

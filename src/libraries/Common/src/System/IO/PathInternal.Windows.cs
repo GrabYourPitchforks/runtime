@@ -31,14 +31,14 @@ namespace System.IO
         // (essentially GetFullPathName()) and path length checks.
 
         // Windows Kernel-Mode Object Manager
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff565763.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff565763.aspx
         // https://channel9.msdn.com/Shows/Going+Deep/Windows-NT-Object-Manager
         //
         // Introduction to MS-DOS Device Names
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff548088.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff548088.aspx
         //
         // Local and Global MS-DOS Device Names
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff554302.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff554302.aspx
 
         internal const string ExtendedDevicePathPrefix = @"\\?\";
         internal const string UncPathPrefix = @"\\";

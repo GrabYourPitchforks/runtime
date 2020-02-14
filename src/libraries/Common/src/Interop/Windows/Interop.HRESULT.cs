@@ -4,7 +4,7 @@
 
 internal static partial class Interop
 {
-    // https://msdn.microsoft.com/en-us/library/cc231198.aspx
+    // https://msdn.microsoft.com/library/cc231198.aspx
     internal enum HRESULT : int
     {
         S_OK = 0,

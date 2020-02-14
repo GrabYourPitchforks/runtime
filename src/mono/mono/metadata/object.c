@@ -5034,7 +5034,7 @@ mono_unhandled_exception_checked (MonoObjectHandle exc, MonoError *error)
 	/*
 	 * AppDomainUnloadedException don't behave like unhandled exceptions unless thrown from 
 	 * a thread started in unmanaged world.
-	 * https://msdn.microsoft.com/en-us/library/system.appdomainunloadedexception(v=vs.110).aspx#Anchor_6
+	 * https://msdn.microsoft.com/library/system.appdomainunloadedexception(v=vs.110).aspx#Anchor_6
 	 */
 	gboolean no_event = (klass == mono_defaults.threadabortexception_class);
 #ifndef ENABLE_NETCORE

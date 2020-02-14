@@ -230,7 +230,7 @@ In the CLR model, managed code is distributed as CIL, not native code.  Translat
 
 ## Threading
 
-The CLR fully anticipated the need to support multi-threaded programs in managed code.  From the start, the CLR libraries contained the System.Threading.Thread class which is a 1-to-1 wrapper over the operating system notion of a thread of execution.  However, because it is just a wrapper over the operating system thread, creating a System.Threading.Thread is relatively expensive (it takes milliseconds to start).  While this is fine for many operations, one style of programming creates very small work items (taking only tens of milliseconds).  This is very common in server code (e.g., each task is serving just one web page) or in code that tries to take advantage of multi-processors (e.g., a multi-core sort algorithm).  To support this, the CLR has the notion of a ThreadPool which allows WorkItems to be queued.  In this scheme, the CLR is responsible for creating the necessary threads to do the work.  While the CLR does expose the ThreadPool directly as the System.Threading.Threadpool class, the preferred mechanism is to use the [Task Parallel Library](https://msdn.microsoft.com/en-us/library/dd460717(v=vs.110).aspx), which adds additional support for very common forms of concurrency control.
+The CLR fully anticipated the need to support multi-threaded programs in managed code.  From the start, the CLR libraries contained the System.Threading.Thread class which is a 1-to-1 wrapper over the operating system notion of a thread of execution.  However, because it is just a wrapper over the operating system thread, creating a System.Threading.Thread is relatively expensive (it takes milliseconds to start).  While this is fine for many operations, one style of programming creates very small work items (taking only tens of milliseconds).  This is very common in server code (e.g., each task is serving just one web page) or in code that tries to take advantage of multi-processors (e.g., a multi-core sort algorithm).  To support this, the CLR has the notion of a ThreadPool which allows WorkItems to be queued.  In this scheme, the CLR is responsible for creating the necessary threads to do the work.  While the CLR does expose the ThreadPool directly as the System.Threading.Threadpool class, the preferred mechanism is to use the [Task Parallel Library](https://msdn.microsoft.com/library/dd460717(v=vs.110).aspx), which adds additional support for very common forms of concurrency control.
 
 From an implementation perspective, the important innovation of the ThreadPool is that it is responsible for ensuring that the optimal number of threads are used to dispatch the work.  The CLR does this using a feedback system where it monitors the throughput rate and the number of threads and adjusts the number of threads to maximize the throughput.  This is very nice because now programmers can think mostly in terms of "exposing parallelism" (that is, creating work items), rather than the more subtle question of determining the right amount of parallelism (which depends on the workload and the hardware on which the program is run).
 
@@ -250,10 +250,10 @@ Phew!  The runtime does a lot! It has taken many pages just to describe _some_ o
 - [MSDN Entry for the CLR][clr]
 - [Wikipedia Entry for the CLR](http://en.wikipedia.org/wiki/Common_Language_Runtime)
 - [ECMA Standard for the Common Language Infrastructure (CLI)][ecma-spec]
-- [.NET Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx)
+- [.NET Framework Design Guidelines](http://msdn.microsoft.com/library/ms229042.aspx)
 - [CoreCLR Repo Documentation](README.md)
 
 [clr]: http://msdn.microsoft.com/library/8bs2ecf4.aspx
 [ecma-spec]: ../../../project/dotnet-standards.md
 [cil-spec]: http://download.microsoft.com/download/7/3/3/733AD403-90B2-4064-A81E-01035A7FE13C/MS%20Partition%20III.pdf
-[fx-design-guidelines]: http://msdn.microsoft.com/en-us/library/ms229042.aspx
+[fx-design-guidelines]: http://msdn.microsoft.com/library/ms229042.aspx

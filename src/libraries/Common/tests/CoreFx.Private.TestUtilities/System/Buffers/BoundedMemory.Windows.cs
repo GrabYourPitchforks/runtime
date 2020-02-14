@@ -296,7 +296,7 @@ namespace System.Buffers
         {
             private const string KERNEL32_LIB = "kernel32.dll";
 
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa366887(v=vs.85).aspx
+            // https://msdn.microsoft.com/library/windows/desktop/aa366887(v=vs.85).aspx
             [DllImport(KERNEL32_LIB, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
             public static extern VirtualAllocHandle VirtualAlloc(
                 [In] IntPtr lpAddress,
@@ -304,7 +304,7 @@ namespace System.Buffers
                 [In] VirtualAllocAllocationType flAllocationType,
                 [In] VirtualAllocProtection flProtect);
 
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa366892(v=vs.85).aspx
+            // https://msdn.microsoft.com/library/windows/desktop/aa366892(v=vs.85).aspx
             [DllImport(KERNEL32_LIB, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
             [return: MarshalAs(UnmanagedType.Bool)]
@@ -313,7 +313,7 @@ namespace System.Buffers
                 [In] IntPtr dwSize,
                 [In] VirtualAllocAllocationType dwFreeType);
 
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa366898(v=vs.85).aspx
+            // https://msdn.microsoft.com/library/windows/desktop/aa366898(v=vs.85).aspx
             [DllImport(KERNEL32_LIB, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool VirtualProtect(
@@ -322,7 +322,7 @@ namespace System.Buffers
                 [In] VirtualAllocProtection flNewProtect,
                 [Out] out VirtualAllocProtection lpflOldProtect);
 
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa366902(v=vs.85).aspx
+            // https://msdn.microsoft.com/library/windows/desktop/aa366902(v=vs.85).aspx
             [DllImport(KERNEL32_LIB, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
             public static extern IntPtr VirtualQuery(
                 [In] IntPtr lpAddress,

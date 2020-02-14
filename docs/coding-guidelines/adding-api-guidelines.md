@@ -97,4 +97,4 @@ project references across the projects. You also need to be sure to leave type-f
 where you removed types in order to maintain back-compat.
 
 
-[net-standard table]: https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support
+[net-standard table]: https://docs.microsoft.com/dotnet/standard/net-standard#net-implementation-support

@@ -13,8 +13,8 @@ using Xunit;
 namespace System.Security.Cryptography.Xml.Tests
 {
     // Implementation of MSDN samples:
-    // Signing: https://msdn.microsoft.com/en-us/library/ms229745(v=vs.110).aspx
-    // Verifying: https://msdn.microsoft.com/en-us/library/ms229745(v=vs.110).aspx
+    // Signing: https://msdn.microsoft.com/library/ms229745(v=vs.110).aspx
+    // Verifying: https://msdn.microsoft.com/library/ms229745(v=vs.110).aspx
     public class SigningAndVerifying
     {
         const string ExampleXml = @"<?xml version=""1.0""?>

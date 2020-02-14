@@ -13,7 +13,7 @@ namespace System.Text.RegularExpressions.Tests
         // These patterns come from the Regex documentation at docs.microsoft.com.
         //
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-example-scanning-for-hrefs
+        // https://docs.microsoft.com/dotnet/standard/base-types/regular-expression-example-scanning-for-hrefs
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -50,7 +50,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(m.Success);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-example-changing-date-formats
+        // https://docs.microsoft.com/dotnet/standard/base-types/regular-expression-example-changing-date-formats
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -61,7 +61,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("08-01-2020", result);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-extract-a-protocol-and-port-number-from-a-url
+        // https://docs.microsoft.com/dotnet/standard/base-types/how-to-extract-a-protocol-and-port-number-from-a-url
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -74,7 +74,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("http:8080", m.Result("${proto}${port}"));
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format
+        // https://docs.microsoft.com/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format
         [Theory]
         [InlineData("david.jones@proseware.com", true)]
         [InlineData("d.j@server1.proseware.com", true)]
@@ -142,7 +142,7 @@ namespace System.Text.RegularExpressions.Tests
             }
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#matched_subexpression
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#matched_subexpression
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -167,7 +167,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(match.NextMatch().Success);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -192,7 +192,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(match.NextMatch().Success);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#named-matched-subexpressions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -232,7 +232,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(expected, actual.ToString());
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#balancing-group-definitions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#balancing-group-definitions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -292,7 +292,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(expected, actual.ToString());
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#noncapturing-groups
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#noncapturing-groups
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -307,7 +307,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(1, match.Groups.Count);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#group-options
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#group-options
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -329,7 +329,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(match.NextMatch().Success);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-positive-lookahead-assertions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-positive-lookahead-assertions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -353,7 +353,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("Sunday", match.Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-negative-lookahead-assertions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-negative-lookahead-assertions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -369,7 +369,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("ultimate", matches[3].Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-positive-lookbehind-assertions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-positive-lookbehind-assertions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -383,7 +383,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("09", matches[1].Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-negative-lookbehind-assertions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#zero-width-negative-lookbehind-assertions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -398,7 +398,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("February 8, 2010", Regex.Match("Monday, February 8, 2010", Pattern, options).Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#nonbacktracking-subexpressions
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#nonbacktracking-subexpressions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -431,7 +431,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("aaaa", back.Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#grouping-constructs-and-regular-expression-objects
+        // https://docs.microsoft.com/dotnet/standard/base-types/grouping-constructs-in-regular-expressions#grouping-constructs-and-regular-expression-objects
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -472,7 +472,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(expected, actual.ToString());
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.capture?view=netcore-3.1#examples
+        // https://docs.microsoft.com/dotnet/api/system.text.regularexpressions.capture?view=netcore-3.1#examples
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -523,7 +523,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(expected, actual.ToString());
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.capture.value?view=netcore-3.1
+        // https://docs.microsoft.com/dotnet/api/system.text.regularexpressions.capture.value?view=netcore-3.1
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -612,7 +612,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(expected, actual.ToString());
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/backtracking-in-regular-expressions#linear-comparison-without-backtracking
+        // https://docs.microsoft.com/dotnet/standard/base-types/backtracking-in-regular-expressions#linear-comparison-without-backtracking
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -627,7 +627,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(11, matches[0].Index);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/backtracking-in-regular-expressions#backtracking-with-optional-quantifiers-or-alternation-constructs
+        // https://docs.microsoft.com/dotnet/standard/base-types/backtracking-in-regular-expressions#backtracking-with-optional-quantifiers-or-alternation-constructs
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -645,7 +645,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(m.NextMatch().Success);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/backtracking-in-regular-expressions#nonbacktracking-subexpression
+        // https://docs.microsoft.com/dotnet/standard/base-types/backtracking-in-regular-expressions#nonbacktracking-subexpression
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -656,7 +656,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(Regex.IsMatch(Input, "^((?>[0-9a-fA-F]{1,4}:)*(?>[0-9a-fA-F]{1,4}))*(::)$", options)); // non-backtracking
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/backtracking-in-regular-expressions#lookbehind-assertions
+        // https://docs.microsoft.com/dotnet/standard/base-types/backtracking-in-regular-expressions#lookbehind-assertions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -671,7 +671,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.True(Regex.IsMatch(Input, BehindPattern, RegexOptions.IgnoreCase | options));
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/backtracking-in-regular-expressions#lookahead-assertions
+        // https://docs.microsoft.com/dotnet/standard/base-types/backtracking-in-regular-expressions#lookahead-assertions
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -686,7 +686,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(Regex.IsMatch(Input, AheadPattern, RegexOptions.IgnoreCase | options));
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
+        // https://docs.microsoft.com/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -705,7 +705,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("107325", match.Groups[1].Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
+        // https://docs.microsoft.com/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -720,7 +720,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("comes", matches[2].Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
+        // https://docs.microsoft.com/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -736,7 +736,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("functional", matches[3].Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/alternation-constructs-in-regular-expressions#conditional-matching-with-an-expression
+        // https://docs.microsoft.com/dotnet/standard/base-types/alternation-constructs-in-regular-expressions#conditional-matching-with-an-expression
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -755,7 +755,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(22, matches[1].Index);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
+        // https://docs.microsoft.com/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -775,7 +775,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal("107325", match.Groups[1].Value);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
+        // https://docs.microsoft.com/dotnet/standard/base-types/details-of-regular-expression-behavior#net-framework-engine-capabilities
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -790,7 +790,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(Regex.IsMatch("me.myself!", Pattern, RegexOptions.IgnoreCase | options));
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/miscellaneous-constructs-in-regular-expressions#inline-options
+        // https://docs.microsoft.com/dotnet/standard/base-types/miscellaneous-constructs-in-regular-expressions#inline-options
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -838,7 +838,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.Equal(expected, actual.ToString());
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/miscellaneous-constructs-in-regular-expressions#inline-comment
+        // https://docs.microsoft.com/dotnet/standard/base-types/miscellaneous-constructs-in-regular-expressions#inline-comment
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]
@@ -862,7 +862,7 @@ namespace System.Text.RegularExpressions.Tests
             Assert.False(match.NextMatch().Success);
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/standard/base-types/miscellaneous-constructs-in-regular-expressions#end-of-line-comment
+        // https://docs.microsoft.com/dotnet/standard/base-types/miscellaneous-constructs-in-regular-expressions#end-of-line-comment
         [Theory]
         [InlineData(RegexOptions.None)]
         [InlineData(RegexOptions.Compiled)]

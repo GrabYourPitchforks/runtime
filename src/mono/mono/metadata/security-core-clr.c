@@ -244,7 +244,7 @@ get_default_ctor (MonoClass *klass)
  *	SafeCritical	SafeCritical, Critical
  *	Critical	Critical
  *
- *	Reference: http://msdn.microsoft.com/en-us/magazine/cc765416.aspx#id0190030
+ *	Reference: http://msdn.microsoft.com/magazine/cc765416.aspx#id0190030
  *
  *	Furthermore a class MUST have a default constructor if its base 
  *	class has a non-transparent, public or protected, default constructor. 
@@ -295,7 +295,7 @@ mono_security_core_clr_check_inheritance (MonoClass *klass)
  *	SafeCritical			Transparent, SafeCritical
  *	Critical			Critical
  *
- *	Reference: http://msdn.microsoft.com/en-us/magazine/cc765416.aspx#id0190030
+ *	Reference: http://msdn.microsoft.com/magazine/cc765416.aspx#id0190030
  */
 void
 mono_security_core_clr_check_override (MonoClass *klass, MonoMethod *override, MonoMethod *base)

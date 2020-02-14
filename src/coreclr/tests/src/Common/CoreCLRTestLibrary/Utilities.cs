@@ -322,7 +322,7 @@ namespace TestLibrary
             public const int PRODUCT_HOME_PREMIUM_N = 0x0000001A;
 
             /// <summary>
-            /// https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-getproductinfo
+            /// https://docs.microsoft.com/windows/desktop/api/sysinfoapi/nf-sysinfoapi-getproductinfo
             /// </summary>
             [DllImport(nameof(Kernel32), SetLastError = false)]
             public static extern bool GetProductInfo(
@@ -336,7 +336,7 @@ namespace TestLibrary
         private sealed class Advapi32
         {
             /// <summary>
-            /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms724884(v=vs.85).aspx
+            /// http://msdn.microsoft.com/library/windows/desktop/ms724884(v=vs.85).aspx
             /// </summary>
             public enum RFlags
             {
@@ -353,7 +353,7 @@ namespace TestLibrary
             }
 
             /// <summary>
-            /// http://msdn.microsoft.com/en-us/library/windows/desktop/ms724884(v=vs.85).aspx
+            /// http://msdn.microsoft.com/library/windows/desktop/ms724884(v=vs.85).aspx
             /// </summary>
             public enum RType
             {

@@ -9,7 +9,7 @@ internal partial class Interop
 {
     internal partial class NtDll
     {
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff728840.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff728840.aspx
         public enum FILE_INFORMATION_CLASS : uint
         {
             FileDirectoryInformation = 1,

@@ -23,7 +23,7 @@ Function EnableAD
     Write-Host -ForegroundColor Cyan "Installing Active Directory."
     CheckPreRebootMachineInfo
     
-    # From https://technet.microsoft.com/en-us/library/hh472162.aspx
+    # From https://technet.microsoft.com/library/hh472162.aspx
     Install-Windowsfeature -name AD-Domain-Services -IncludeManagementTools
    
     # Will prompt for SafeModeAdministratorPassword:

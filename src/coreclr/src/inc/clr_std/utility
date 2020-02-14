@@ -6,7 +6,7 @@
 // clr_std/utility
 //
 // Copy of some key Standard Template Library functionality
-// See http://msdn.microsoft.com/en-us/library/bb982077.aspx for documentation.
+// See http://msdn.microsoft.com/library/bb982077.aspx for documentation.
 //
 
 #ifdef _MSC_VER

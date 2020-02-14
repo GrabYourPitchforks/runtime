@@ -16,7 +16,7 @@ namespace System.PrivateUri.Tests
     /// </summary>
     public class IriTest
     {
-        // List built based on https://www.microsoft.com/en-us/download/details.aspx?id=55979
+        // List built based on https://www.microsoft.com/download/details.aspx?id=55979
         private string[] _testedLocales =
         {
             "en-us",

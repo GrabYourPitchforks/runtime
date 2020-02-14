@@ -10,7 +10,7 @@ You must install several components to build the dotnet/runtime repository. Thes
 
 ## Enable Long Paths
 
-The runtime repository requires long paths to be enabled. Follow the instructions provided here to modify the registry to opt into that feature: https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#enable-long-paths-in-windows-10-version-1607-and-later.
+The runtime repository requires long paths to be enabled. Follow the instructions provided here to modify the registry to opt into that feature: https://docs.microsoft.com/windows/win32/fileio/naming-a-file#enable-long-paths-in-windows-10-version-1607-and-later.
 
 If using msysgit (aka Git for Windows) you might need to also configure long paths there. Using an admin terminal simply type:
 ```powershell
@@ -25,7 +25,7 @@ Visual Studio 2019 installation process:
 * It's recommended to use 'Workloads' installation approach. The following are the minimum requirements:
   * .NET Desktop Development with all default components.
   * Desktop Development with C++ with all default components.
-* To build for Arm32 or Arm64, Make sure that you have the Windows 10 SDK installed (or selected to be installed as part of VS installation). To explicitly install Windows SDK, download it from here: [Windows SDK for Windows 10](https://developer.microsoft.com/en-us/windows/downloads).
+* To build for Arm32 or Arm64, Make sure that you have the Windows 10 SDK installed (or selected to be installed as part of VS installation). To explicitly install Windows SDK, download it from here: [Windows SDK for Windows 10](https://developer.microsoft.com/windows/downloads).
   * In addition, ensure you install the ARM tools. In the "Individual components" window, in the "Compilers, build tools, and runtimes" section, check the box for "MSVC v142 - VS 2019 C++ ARM build tools (v14.23)".
   * Also, ensure you install the ARM64 tools. In the "Individual components" window, in the "Compilers, build tools, and runtimes" section, check the box for "MSVC v142 - VS 2019 C++ ARM64 build tools (v14.23)".
 * To build the tests, you will need some additional components:

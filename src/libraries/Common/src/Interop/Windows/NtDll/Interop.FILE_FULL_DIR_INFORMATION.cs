@@ -11,9 +11,9 @@ internal partial class Interop
     internal partial class NtDll
     {
         /// <summary>
-        /// <a href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff540289.aspx">FILE_FULL_DIR_INFORMATION</a> structure.
+        /// <a href="https://msdn.microsoft.com/library/windows/hardware/ff540289.aspx">FILE_FULL_DIR_INFORMATION</a> structure.
         /// Used with GetFileInformationByHandleEx and FileIdBothDirectoryInfo/RestartInfo as well as NtQueryFileInformation.
-        /// Equivalent to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/hh447298.aspx">FILE_FULL_DIR_INFO</a> structure.
+        /// Equivalent to <a href="https://msdn.microsoft.com/library/windows/desktop/hh447298.aspx">FILE_FULL_DIR_INFO</a> structure.
         /// </summary>
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public unsafe struct FILE_FULL_DIR_INFORMATION

@@ -271,7 +271,7 @@ typedef DWORD (WINAPI *PRTL_RUN_ONCE_INIT_FN)(PRTL_RUN_ONCE, PVOID, PVOID *);
 #define CONDITION_VARIABLE_LOCKMODE_SHARED RTL_CONDITION_VARIABLE_LOCKMODE_SHARED
 #define SRWLOCK_INIT RTL_SRWLOCK_INIT
 
-/*Condition Variables http://msdn.microsoft.com/en-us/library/ms682052%28VS.85%29.aspx*/
+/*Condition Variables http://msdn.microsoft.com/library/ms682052%28VS.85%29.aspx*/
 typedef RTL_CONDITION_VARIABLE CONDITION_VARIABLE, *PCONDITION_VARIABLE;
 typedef RTL_SRWLOCK SRWLOCK, *PSRWLOCK;
 
@@ -281,7 +281,7 @@ WINBASEAPI WINBOOL WINAPI SleepConditionVariableSRW(PCONDITION_VARIABLE Conditio
 WINBASEAPI VOID WINAPI WakeAllConditionVariable(PCONDITION_VARIABLE ConditionVariable);
 WINBASEAPI VOID WINAPI WakeConditionVariable(PCONDITION_VARIABLE ConditionVariable);
 
-/*Slim Reader/Writer (SRW) Locks http://msdn.microsoft.com/en-us/library/aa904937%28VS.85%29.aspx*/
+/*Slim Reader/Writer (SRW) Locks http://msdn.microsoft.com/library/aa904937%28VS.85%29.aspx*/
 WINBASEAPI VOID WINAPI AcquireSRWLockExclusive(PSRWLOCK SRWLock);
 WINBASEAPI VOID WINAPI AcquireSRWLockShared(PSRWLOCK SRWLock);
 WINBASEAPI VOID WINAPI InitializeSRWLock(PSRWLOCK SRWLock);
@@ -291,7 +291,7 @@ WINBASEAPI VOID WINAPI ReleaseSRWLockShared(PSRWLOCK SRWLock);
 WINBASEAPI BOOLEAN TryAcquireSRWLockExclusive(PSRWLOCK SRWLock);
 WINBASEAPI BOOLEAN TryAcquireSRWLockShared(PSRWLOCK SRWLock);
 
-/*One-Time Initialization http://msdn.microsoft.com/en-us/library/aa363808(VS.85).aspx*/
+/*One-Time Initialization http://msdn.microsoft.com/library/aa363808(VS.85).aspx*/
 #define INIT_ONCE_ASYNC 0x00000002UL
 #define INIT_ONCE_INIT_FAILED 0x00000004UL
 
@@ -303,7 +303,7 @@ WINBASEAPI WINBOOL WINAPI InitOnceBeginInitialize(LPINIT_ONCE lpInitOnce, DWORD 
 WINBASEAPI WINBOOL WINAPI InitOnceComplete(LPINIT_ONCE lpInitOnce, DWORD dwFlags, LPVOID lpContext);
 WINBASEAPI WINBOOL WINAPI InitOnceExecuteOnce(PINIT_ONCE InitOnce, PINIT_ONCE_FN InitFn, PVOID Parameter, LPVOID *Context);
 
-/* https://msdn.microsoft.com/en-us/library/windows/desktop/ms683477(v=vs.85).aspx */
+/* https://msdn.microsoft.com/library/windows/desktop/ms683477(v=vs.85).aspx */
 WINBASEAPI BOOL WINAPI InitializeCriticalSectionEx(LPCRITICAL_SECTION lpCriticalSection, DWORD dwSpinCount, DWORD Flags);
 
 #define CRITICAL_SECTION_NO_DEBUG_INFO 0x01000000

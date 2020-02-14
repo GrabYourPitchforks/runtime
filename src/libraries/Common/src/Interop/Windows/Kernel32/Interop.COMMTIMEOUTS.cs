@@ -15,7 +15,7 @@ internal partial class Interop
         // Currently the only set fields are ReadTotalTimeoutConstant
         // and WriteTotalTimeoutConstant.
         //
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa363190.aspx
+        // https://msdn.microsoft.com/library/windows/desktop/aa363190.aspx
         internal struct COMMTIMEOUTS
         {
             public int ReadIntervalTimeout;

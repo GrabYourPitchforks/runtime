@@ -134,8 +134,8 @@ namespace System
                 // The max length should be 15 (domain) + 1 (separator) + 20 (name) + null. If for
                 // some reason it isn't, we'll grow the buffer.
 
-                // https://support.microsoft.com/en-us/help/909264/naming-conventions-in-active-directory-for-computers-domains-sites-and
-                // https://msdn.microsoft.com/en-us/library/ms679635.aspx
+                // https://support.microsoft.com/help/909264/naming-conventions-in-active-directory-for-computers-domains-sites-and
+                // https://msdn.microsoft.com/library/ms679635.aspx
 
                 var builder = new ValueStringBuilder(stackalloc char[40]);
                 GetUserName(ref builder);
@@ -199,7 +199,7 @@ namespace System
                 // always return what we need. Can't find any clues in the historical sources, however.
 
                 // Domain names aren't typically long.
-                // https://support.microsoft.com/en-us/help/909264/naming-conventions-in-active-directory-for-computers-domains-sites-and
+                // https://support.microsoft.com/help/909264/naming-conventions-in-active-directory-for-computers-domains-sites-and
                 var domainBuilder = new ValueStringBuilder(stackalloc char[64]);
                 uint length = (uint)domainBuilder.Capacity;
 

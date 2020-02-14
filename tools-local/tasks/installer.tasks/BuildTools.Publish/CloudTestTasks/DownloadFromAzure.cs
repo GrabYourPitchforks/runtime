@@ -17,7 +17,7 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
     {
         /// <summary>
         /// The name of the container to access.  The specified name must be in the correct format, see the
-        /// following page for more info.  https://msdn.microsoft.com/en-us/library/azure/dd135715.aspx
+        /// following page for more info.  https://msdn.microsoft.com/library/azure/dd135715.aspx
         /// </summary>
         [Required]
         public string ContainerName { get; set; }

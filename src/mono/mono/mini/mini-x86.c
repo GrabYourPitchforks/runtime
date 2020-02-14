@@ -259,9 +259,9 @@ add_valuetype (MonoMethodSignature *sig, ArgInfo *ainfo, MonoType *type,
 
 		/*
 		* Windows x86 ABI for returning structs of size 4 or 8 bytes (regardless of type) dictates that
-		* values are passed in EDX:EAX register pairs, https://msdn.microsoft.com/en-us/library/984x0h58.aspx.
+		* values are passed in EDX:EAX register pairs, https://msdn.microsoft.com/library/984x0h58.aspx.
 		* This is different compared to for example float or double return types (not in struct) that will be returned
-		* in ST(0), https://msdn.microsoft.com/en-us/library/ha59cbfz.aspx.
+		* in ST(0), https://msdn.microsoft.com/library/ha59cbfz.aspx.
 		*
 		* Apples OSX x86 ABI for returning structs of size 4 or 8 bytes uses a slightly different approach.
 		* If a struct includes only one scalar value, it will be handled with the same rules as scalar values.
@@ -320,7 +320,7 @@ add_valuetype (MonoMethodSignature *sig, ArgInfo *ainfo, MonoType *type,
  * For x86 ELF, see the "System V Application Binary Interface Intel386 
  * Architecture Processor Supplment, Fourth Edition" document for more
  * information.
- * For x86 win32, see https://msdn.microsoft.com/en-us/library/984x0h58.aspx.
+ * For x86 win32, see https://msdn.microsoft.com/library/984x0h58.aspx.
  */
 static CallInfo*
 get_call_info_internal (CallInfo *cinfo, MonoMethodSignature *sig)

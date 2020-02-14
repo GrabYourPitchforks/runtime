@@ -224,8 +224,8 @@ namespace System.IO
             //
             // See
             // https://github.com/dotnet/corefx/issues/24250
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365511.aspx
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365197.aspx
+            // https://msdn.microsoft.com/library/windows/desktop/aa365511.aspx
+            // https://msdn.microsoft.com/library/windows/desktop/aa365197.aspx
 
             return ((FileAttributes)data.dwFileAttributes & FileAttributes.ReparsePoint) != 0
                 && (data.dwReserved0 & 0x20000000) != 0; // IsReparseTagNameSurrogate

@@ -557,7 +557,7 @@ namespace System.Net.Sockets.Tests
                 int port = server.BindToAnonymousPort(IPAddress.Loopback);
                 server.Listen(1);
 
-                const int acceptBufferOverheadSize = 288; // see https://msdn.microsoft.com/en-us/library/system.net.sockets.socket.acceptasync(v=vs.110).aspx
+                const int acceptBufferOverheadSize = 288; // see https://msdn.microsoft.com/library/system.net.sockets.socket.acceptasync(v=vs.110).aspx
                 const int acceptBufferDataSize = 256;
                 const int acceptBufferSize = acceptBufferOverheadSize + acceptBufferDataSize;
 

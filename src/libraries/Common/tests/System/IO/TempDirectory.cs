@@ -50,7 +50,7 @@ namespace System.IO
         /// <summary>
         /// Generates a string with 255 random valid filename characters.
         /// 255 is the max file/folder name length in NTFS and FAT32:
-        // https://docs.microsoft.com/en-us/windows/win32/fileio/filesystem-functionality-comparison?redirectedfrom=MSDN#limits
+        // https://docs.microsoft.com/windows/win32/fileio/filesystem-functionality-comparison?redirectedfrom=MSDN#limits
         /// </summary>
         /// <returns>A 255 length string with random valid filename characters.</returns>
         public static string GetMaxLengthRandomName()

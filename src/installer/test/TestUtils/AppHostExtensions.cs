@@ -108,7 +108,7 @@ namespace Microsoft.DotNet.CoreSetup.Test
 
                 UInt16* subsystem = ((UInt16*)(bytes + peHeaderOffset + SubsystemOffset));
 
-                // https://docs.microsoft.com/en-us/windows/desktop/Debug/pe-format#windows-subsystem
+                // https://docs.microsoft.com/windows/desktop/Debug/pe-format#windows-subsystem
                 // The subsystem of the prebuilt apphost should be set to CUI
                 if (subsystem[0] != WindowsCUISubsystem)
                 {

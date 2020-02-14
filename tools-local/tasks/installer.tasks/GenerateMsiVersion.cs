@@ -7,7 +7,7 @@ using Microsoft.Build.Framework;
 namespace Microsoft.DotNet.Build.Tasks
 {
     // MSI versioning
-    // Encode the CLI version to fit into the MSI versioning scheme - https://msdn.microsoft.com/en-us/library/windows/desktop/aa370859(v=vs.85).aspx
+    // Encode the CLI version to fit into the MSI versioning scheme - https://msdn.microsoft.com/library/windows/desktop/aa370859(v=vs.85).aspx
     // MSI versions are 3 part
     //                           major.minor.build
     // Size(bits) of each part     8     8    16

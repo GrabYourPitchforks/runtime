@@ -10,7 +10,7 @@ For bugs that cannot be reproduced within Visual Studio (certain low-probability
 
 WinDBG free download:
 
-* [WDK and WinDBG downloads](https://msdn.microsoft.com/en-us/windows/hardware/hh852365.aspx)
+* [WDK and WinDBG downloads](https://msdn.microsoft.com/windows/hardware/hh852365.aspx)
 
 Note: You can select the Standalone Debugging Tools for Windows or download only WinDBG via the WDK.
 
@@ -57,7 +57,7 @@ The following commands will properly configure the debugging extension and fix s
 
 _Important_: Pass in the correct path to your SOS extension discovered during the Prerequisites, step 2.
 
-Documentation on how to use the SOS extension is available on [MSDN](https://msdn.microsoft.com/en-us/library/bb190764\(v=vs.110\).aspx).
+Documentation on how to use the SOS extension is available on [MSDN](https://msdn.microsoft.com/library/bb190764\(v=vs.110\).aspx).
 
 For quick reference, type the following in WinDBG:
 
@@ -70,7 +70,7 @@ For quick reference, type the following in WinDBG:
 In Windows, EventSource generated traces are collected via ETW using either logman or PerfView.
 
 ### Using Logman
-[Logman](https://technet.microsoft.com/en-us/library/bb490956.aspx) ships with Windows and doesn't need to be downloaded or installed.
+[Logman](https://technet.microsoft.com/library/bb490956.aspx) ships with Windows and doesn't need to be downloaded or installed.
 Given that the ETW providers are dynamically generated and registered by .Net, you need to use the GUIDs and not the names whenever logman is used.
 
 #### Trace a single provider

@@ -101,7 +101,7 @@ For x86, it contains only an encoded function length
 
 For x64, Arm and Arm64, it contains a bit field followed by an array of unwind codes ([_UNWIND_CODE](../../inc/win64unwind.h)) and finally padding to make it byte aligned
 
-The unwind data info structure is used to record the effects a function has on the stack pointer and where the nonvolatile registers are saved on the stack (see https://msdn.microsoft.com/en-us/library/0kd71y96.aspx)
+The unwind data info structure is used to record the effects a function has on the stack pointer and where the nonvolatile registers are saved on the stack (see https://msdn.microsoft.com/library/0kd71y96.aspx)
 
 ### GcInfo
 

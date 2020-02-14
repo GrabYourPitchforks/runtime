@@ -46,7 +46,7 @@ As I mentioned above, the safest way to do this is to build up your own map and 
 
 So how do you know a class has been fully loaded?
 
-Unfortunately, receiving the **ClassLoadFinished** callback does not necessarily mean that ClassID has been fully loaded yet, as the MSDN [documentation](http://msdn.microsoft.com/en-us/library/ms230794.aspx) warns us.
+Unfortunately, receiving the **ClassLoadFinished** callback does not necessarily mean that ClassID has been fully loaded yet, as the MSDN [documentation](http://msdn.microsoft.com/library/ms230794.aspx) warns us.
 
 Basically, the CLR type loader is one of the laziest things on this planet.  It doesn’t want to do anything unless it really, really has to.  The best guideline I can give you is this:  If the app is currently executing managed code that uses a type, then the type is loaded.  For example, if you do a stackwalk, and determine that the app is executing inside of
 
@@ -77,7 +77,7 @@ There is no way to just ask the CLR if a FunctionID or ClassID is valid.  Indeed
 
 You need to keep track of the unloads yourself.  You are notified when run-time IDs go out of scope (today, this happens at the level of an AppDomain unloading or a collectible assembly unloading—in both cases all IDs “contained” in the unloading thing are now invalid).  Once a run-time ID is out of scope, you are not allowed to pass that run-time ID back to the CLR.  In fact, you should consider whether thread synchronization will be necessary in your profiler to maintain this invariant.  For example, if a run-time ID gets unloaded on thread A, you’re still not allowed to pass that run-time ID back to the CLR on thread B.  So you may need to block on a critical section in thread A during the \*UnloadStarted / AppDomainShutdown\* callbacks, to prevent them from returning to the CLR until any uses of the contained IDs in thread B are finished.
 
-Take a look at the [docs](http://msdn.microsoft.com/en-us/library/bb384619.aspx) is for more info.
+Take a look at the [docs](http://msdn.microsoft.com/library/bb384619.aspx) is for more info.
 
 # TypeRefs
 
@@ -85,14 +85,14 @@ So far I’ve been talking about how to go from a typeDef to its run-time ID, an
 
 I’ll tell you what you _don’t_ do.  You don’t call the enticingly-named IMetaDataImport::ResolveTypeRef.  On the surface, it seems like ResolveTypeRef would do exactly what you want: starting from a typeRef, please find the referenced module and return an IMetaDataImport on that module, along with the typeDef in that target module to which the typeRef refers.  But the problem lies with how ResolveTypeRef determines the module to which a typeRef refers.
 
-I think ResolveTypeRef was originally designed for use at build-time (by language compilers), though I don’t know if it’s even used in that scenario anymore.  It is certainly not good for use at run-time, where the loader’s decision on how to locate a referenced assembly can be arbitrarily complex.  Different AppDomains in the same process may have different rules on how to locate the referenced assembly due to varying permission sets, host settings, or assembly versions.  In the limit, the CLR may even _call into the user’s managed code_ to dynamically influence the decision of where the referenced assembly exists (see [AppDomain.AssemblyResolve Event](http://msdn.microsoft.com/en-us/library/system.appdomain.assemblyresolve.aspx)).
+I think ResolveTypeRef was originally designed for use at build-time (by language compilers), though I don’t know if it’s even used in that scenario anymore.  It is certainly not good for use at run-time, where the loader’s decision on how to locate a referenced assembly can be arbitrarily complex.  Different AppDomains in the same process may have different rules on how to locate the referenced assembly due to varying permission sets, host settings, or assembly versions.  In the limit, the CLR may even _call into the user’s managed code_ to dynamically influence the decision of where the referenced assembly exists (see [AppDomain.AssemblyResolve Event](http://msdn.microsoft.com/library/system.appdomain.assemblyresolve.aspx)).
 
 ResolveTypeRef doesn’t know about any of this—it was never designed to be used in a running application with all these environmental factors.  It has an extremely simple (and inaccurate) algorithm to iterate through a set of “known modules”, in an arbitrary order, looking for the first one that matches the reference.  What does “known modules” mean?  It’s a set of modules that have been opened into the metadata system, which is NOT the same as the list of modules already loaded by the assembly loader (and thus notified to your profiler).  And it’s certainly not the same as the set of modules installed onto the disk.
 
 If you absolutely need to resolve refs to defs, your best bet may be to use your own algorithm which will be as accurate as you can make it, under the circumstances, and which will never try to locate a module that hasn’t been loaded yet.  That means that you shouldn’t try to resolve a ref to a def if that def hasn’t actually been loaded into a type by the CLR.  Consider using an algorithm similar to the following:
 
 1. Get the AssemblyRef from the TypeRef to get to the name, public key token and version of the assembly where the type should reside. 
-2. Enumerate all loaded modules that the Profiling API has notified you of (or via [EnumModules](http://msdn.microsoft.com/en-us/library/dd490890)) (you can filter out a specific AppDomain at this point if you want). 
+2. Enumerate all loaded modules that the Profiling API has notified you of (or via [EnumModules](http://msdn.microsoft.com/library/dd490890)) (you can filter out a specific AppDomain at this point if you want). 
 3. In each enumerated module, search for a TypeDef with the same name and namespace as the TypeRef (IMetaDataImport::FindTypeDefByName) 
 4. Pay attention to **type forwarding**!  Once you find the TypeDef, it may actually be an “exported” type, in which case you will need to follow the trail to the next module.  Read toward the bottom of [this post](Type Forwarding.md) for more info. 
 

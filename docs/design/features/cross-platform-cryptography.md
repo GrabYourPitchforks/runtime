@@ -143,7 +143,7 @@ ECDSA key curves are defined by the system libraries, and are subject to the lim
 | Export or import as explicit | :white_check_mark: | :x: | :white_check_mark: | :x: |
 
 Support for named curves was added to Windows CNG in Windows 10, and is not available in prior OSes, with the exception of the three curves which had special support in Windows 7.
-See [CNG Named Elliptic Curves](https://msdn.microsoft.com/en-us/library/windows/desktop/mt632245(v=vs.85).aspx) for the expected support.
+See [CNG Named Elliptic Curves](https://msdn.microsoft.com/library/windows/desktop/mt632245(v=vs.85).aspx) for the expected support.
 
 Not all Linux distributions have support for the same named curves.
 
@@ -187,7 +187,7 @@ ECDH key curves are defined by the system libraries, and are subject to the limi
 | Export or import as explicit | :white_check_mark: | :x: | :white_check_mark: | :x: |
 
 Support for named curves was added to Windows CNG in Windows 10, and is not available in prior OSes, with the exception of the three curves which had special support in Windows 7.
-See [CNG Named Elliptic Curves](https://msdn.microsoft.com/en-us/library/windows/desktop/mt632245(v=vs.85).aspx) for the expected support.
+See [CNG Named Elliptic Curves](https://msdn.microsoft.com/library/windows/desktop/mt632245(v=vs.85).aspx) for the expected support.
 
 Not all Linux distributions have support for the same named curves.
 

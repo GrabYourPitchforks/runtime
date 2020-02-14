@@ -290,7 +290,7 @@ namespace Internal.Cryptography.Pal
                         if (generalName.OtherName.HasValue && generalName.OtherName.Value.TypeId == otherOid)
                         {
                             // Currently only UPN is supported, which is a UTF8 string per
-                            // https://msdn.microsoft.com/en-us/library/ff842518.aspx
+                            // https://msdn.microsoft.com/library/ff842518.aspx
                             AsnReader nameReader = new AsnReader(generalName.OtherName.Value.Value, AsnEncodingRules.DER);
                             string udnName = nameReader.ReadCharacterString(UniversalTagNumber.UTF8String);
                             nameReader.ThrowIfNotEmpty();

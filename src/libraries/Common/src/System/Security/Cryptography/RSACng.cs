@@ -38,7 +38,7 @@ namespace System.Security.Cryptography
         {
             get
             {
-                // See https://msdn.microsoft.com/en-us/library/windows/desktop/bb931354(v=vs.85).aspx
+                // See https://msdn.microsoft.com/library/windows/desktop/bb931354(v=vs.85).aspx
                 return new KeySizes[]
                 {
                     // All values are in bits.

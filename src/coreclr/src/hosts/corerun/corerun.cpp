@@ -357,7 +357,7 @@ STARTUP_FLAGS CreateStartupFlags() {
 }
 
 // Class used to manage activation context.
-// See: https://docs.microsoft.com/en-us/windows/desktop/SbsCs/using-the-activation-context-api
+// See: https://docs.microsoft.com/windows/desktop/SbsCs/using-the-activation-context-api
 class ActivationContext
 {
 public:

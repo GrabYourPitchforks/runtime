@@ -54,7 +54,7 @@ Where is the version being consumed
 ===================================
 
 The version we produce by our calculations is mainly used in two places:
-- As the [Assembly File Version](https://msdn.microsoft.com/en-us/library/51ket42z(v=vs.110).aspx)
+- As the [Assembly File Version](https://msdn.microsoft.com/library/51ket42z(v=vs.110).aspx)
 - As the packages version number
 
 To get more information on where are we doing the calculations for the versioning, you can [click here](https://github.com/dotnet/buildtools/blob/master/src/Microsoft.DotNet.Build.Tasks/PackageFiles/versioning.targets) to find the targets file where we create the versioning assets, and [here](https://github.com/dotnet/buildtools/blob/master/src/Microsoft.DotNet.Build.Tasks/GenerateCurrentVersion.cs) to see the code on where we calculate BuildNumberMajor and BuildNumberMinor.

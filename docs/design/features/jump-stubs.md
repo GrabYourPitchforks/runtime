@@ -130,7 +130,7 @@ occurs.
 
 The `COMPlus_NGenReserveForjumpStubs` mitigation is described publicly
 here:
-https://support.microsoft.com/en-us/help/3152158/out-of-memory-exception-in-a-managed-application-that-s-running-on-the-64-bit-.net-framework.
+https://support.microsoft.com/help/3152158/out-of-memory-exception-in-a-managed-application-that-s-running-on-the-64-bit-.net-framework.
 (It also mentions, in passing, `COMPlus_CodeHeapReserveForJumpStubs`, but
 only to say not to use it.)
 

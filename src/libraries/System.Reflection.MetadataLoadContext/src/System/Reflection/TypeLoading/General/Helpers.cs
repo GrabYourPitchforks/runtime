@@ -73,7 +73,7 @@ namespace System.Reflection.TypeLoading
         }
 
         // Escape identifiers as described in "Specifying Fully Qualified Type Names" on msdn.
-        // Current link is http://msdn.microsoft.com/en-us/library/yfsftwz6(v=vs.110).aspx
+        // Current link is http://msdn.microsoft.com/library/yfsftwz6(v=vs.110).aspx
         public static string EscapeTypeNameIdentifier(this string identifier)
         {
             // Some characters in a type name need to be escaped

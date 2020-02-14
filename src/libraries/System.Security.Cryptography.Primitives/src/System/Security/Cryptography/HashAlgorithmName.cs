@@ -13,7 +13,7 @@ namespace System.Security.Cryptography
     /// <remarks>
     /// Asymmetric Algorithms implemented using Microsoft's CNG (Cryptography Next Generation) API
     /// will interpret the underlying string value as a CNG algorithm identifier:
-    ///   * https://msdn.microsoft.com/en-us/library/windows/desktop/aa375534(v=vs.85).aspx
+    ///   * https://msdn.microsoft.com/library/windows/desktop/aa375534(v=vs.85).aspx
     ///
     /// As with CNG, the names are case-sensitive.
     ///

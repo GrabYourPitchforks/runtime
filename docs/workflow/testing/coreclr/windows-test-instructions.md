@@ -81,7 +81,7 @@ For example using a checked build the location would be: `<repo_root>\artifacts\
 
 2. Next, run the failed test, the command to which is also present in the test report for a failed test. It will be something like `<repo_root>\artifacts\tests\coreclr\Windows_NT.x64.Checked\Exceptions\Finalization\Finalizer.cmd`.
 
-If you wish to run the test under a debugger (e.g. [WinDbg](http://msdn.microsoft.com/en-us/library/windows/hardware/ff551063(v=vs.85).aspx)), append `-debug <debuggerFullPath>` to the test command. For example:
+If you wish to run the test under a debugger (e.g. [WinDbg](http://msdn.microsoft.com/library/windows/hardware/ff551063(v=vs.85).aspx)), append `-debug <debuggerFullPath>` to the test command. For example:
 
 ```
      <repo_root>\artifacts\tests\coreclr\Windows_NT.x64.Checked\Exceptions\Finalization\Finalizer.cmd -debug <debuggerFullPath>

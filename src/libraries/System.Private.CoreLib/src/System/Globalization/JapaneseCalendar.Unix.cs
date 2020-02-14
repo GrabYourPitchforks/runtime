@@ -66,7 +66,7 @@ namespace System.Globalization
         private static string GetAbbreviatedEraName(string[] eraNames, int eraIndex)
         {
             // This matches the behavior on Win32 - only returning the first character of the era name.
-            // See Calendar.EraAsString(Int32) - https://msdn.microsoft.com/en-us/library/windows/apps/br206751.aspx
+            // See Calendar.EraAsString(Int32) - https://msdn.microsoft.com/library/windows/apps/br206751.aspx
             return eraNames[eraIndex].Substring(0, 1);
         }
 

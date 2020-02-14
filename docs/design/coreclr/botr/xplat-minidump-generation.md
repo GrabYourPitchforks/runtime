@@ -67,7 +67,7 @@ COMPlus_DbgMiniDumpType values:
 |3| MiniDumpFilterTriage                         | Include just the information necessary to capture stack traces for all existing threads in a process. Limited GC heap memory and information. |
 |4| MiniDumpWithFullMemory                       | Include all accessible memory in the process. The raw memory data is included at the end, so that the initial structures can be mapped directly without the raw memory information. This option can result in a very large file. |
 
-(Please refer to MSDN for the meaning of the [minidump enum values](https://msdn.microsoft.com/en-us/library/windows/desktop/ms680519(v=vs.85).aspx) reported above)
+(Please refer to MSDN for the meaning of the [minidump enum values](https://msdn.microsoft.com/library/windows/desktop/ms680519(v=vs.85).aspx) reported above)
 
 **Command Line Usage**
 

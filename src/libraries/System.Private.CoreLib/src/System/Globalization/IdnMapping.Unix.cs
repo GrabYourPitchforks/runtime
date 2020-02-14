@@ -133,7 +133,7 @@ namespace System.Globalization
                     char c = s[i];
 
                     // These characters are prohibited regardless of the UseStd3AsciiRules property.
-                    // See https://msdn.microsoft.com/en-us/library/system.globalization.idnmapping.usestd3asciirules(v=vs.110).aspx
+                    // See https://msdn.microsoft.com/library/system.globalization.idnmapping.usestd3asciirules(v=vs.110).aspx
                     if (c <= 0x1F || c == 0x7F)
                     {
                         throw new ArgumentException(SR.Argument_IdnIllegalName, paramName);

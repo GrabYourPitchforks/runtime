@@ -13,4 +13,4 @@ You can read [CoreCLR Performance Requirements](../project/performance-guideline
 
 # Asynchrony
 
-* **Best practices for async/await performance**.  The C# async/await feature makes it easy to write asynchronous code in the same manner that you'd write synchronous code, but it comes with its own set of costs, and understanding these costs can help you to avoid them.  This [presentation from Build](http://channel9.msdn.com/Events/BUILD/BUILD2011/TOOL-829T) and this [MSDN Magazine article](http://msdn.microsoft.com/en-us/magazine/hh456402.aspx) outline some best practices.
+* **Best practices for async/await performance**.  The C# async/await feature makes it easy to write asynchronous code in the same manner that you'd write synchronous code, but it comes with its own set of costs, and understanding these costs can help you to avoid them.  This [presentation from Build](http://channel9.msdn.com/Events/BUILD/BUILD2011/TOOL-829T) and this [MSDN Magazine article](http://msdn.microsoft.com/magazine/hh456402.aspx) outline some best practices.

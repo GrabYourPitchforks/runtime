@@ -302,10 +302,10 @@ public class Foo
 
 ## FxCop
 
-[FxCop](https://msdn.microsoft.com/en-us/library/bb429476.aspx) is a code analysis tool that checks managed code assemblies for
-conformance to the [Framework Design Guidelines][FDG] (also see [MSDN](https://msdn.microsoft.com/en-us/library/ms229042.aspx)).
+[FxCop](https://msdn.microsoft.com/library/bb429476.aspx) is a code analysis tool that checks managed code assemblies for
+conformance to the [Framework Design Guidelines][FDG] (also see [MSDN](https://msdn.microsoft.com/library/ms229042.aspx)).
 
 ## Presentations
 
-* [Overview of the Framework Design Guidelines](https://docs.microsoft.com/en-us/archive/blogs/kcwalina/online-lecture-on-api-design)
-* [TechEd 2007 Presentation about framework engineering](https://docs.microsoft.com/en-us/archive/blogs/kcwalina/video-recording-of-framework-engineering-architecting-designing-and-developing-reusable-libraries)
+* [Overview of the Framework Design Guidelines](https://docs.microsoft.com/archive/blogs/kcwalina/online-lecture-on-api-design)
+* [TechEd 2007 Presentation about framework engineering](https://docs.microsoft.com/archive/blogs/kcwalina/video-recording-of-framework-engineering-architecting-designing-and-developing-reusable-libraries)

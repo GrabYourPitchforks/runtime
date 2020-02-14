@@ -12,7 +12,7 @@ namespace System.Security.AccessControl
 {
     public class DirectoryObjectSecurityTests
     {
-        //https://msdn.microsoft.com/en-us/library/aa394063(v=vs.85).aspx
+        //https://msdn.microsoft.com/library/aa394063(v=vs.85).aspx
         private const int ReadWriteAccessMask = 0x01 | 0x02;
         private const int SynchronizeAccessMask = 0x100000;
         private const int ReadAccessMask = 0x01;

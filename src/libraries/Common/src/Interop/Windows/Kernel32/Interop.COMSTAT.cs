@@ -13,7 +13,7 @@ internal partial class Interop
         // a file handle to a serial communications resource.  SerialStream's
         // InBufferBytes and OutBufferBytes directly expose cbInQue and cbOutQue to reading, respectively.
         //
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa363200.aspx
+        // https://msdn.microsoft.com/library/windows/desktop/aa363200.aspx
         internal struct COMSTAT
         {
             public uint Flags;

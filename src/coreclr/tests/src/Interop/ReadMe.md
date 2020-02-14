@@ -14,7 +14,7 @@ A common pattern for testing is using the `Assert` utilities. This class is part
 
 ### Managed
 
-Managed tests should be designed to use the [SDK style project](https://docs.microsoft.com/en-us/dotnet/core/tools/csproj) system provided by [`dotnet-cli`](https://github.com/dotnet/cli). In addition to the using the SDK style project, all managed projects should include the following:
+Managed tests should be designed to use the [SDK style project](https://docs.microsoft.com/dotnet/core/tools/csproj) system provided by [`dotnet-cli`](https://github.com/dotnet/cli). In addition to the using the SDK style project, all managed projects should include the following:
 
 `<Import Project="$([MSBuild]::GetPathOfFileAbove(Interop.settings.targets))" />`
 
@@ -38,7 +38,7 @@ Interop testing is divided into several areas.
 
 ### P/Invoke
 
-The P/Invoke bucket represents tests that involve a [Platform Invoke](https://docs.microsoft.com/en-us/dotnet/standard/native-interop) scenario.
+The P/Invoke bucket represents tests that involve a [Platform Invoke](https://docs.microsoft.com/dotnet/standard/native-interop) scenario.
 
 Testing P/Invoke has two aspects:
 

@@ -14,7 +14,7 @@ internal partial class Interop
         // Currently the only fields used are dwMaxTxQueue, dwMaxRxQueue, and dwMaxBaud
         // to ensure that users provide appropriate settings to the SerialStream constructor.
         //
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa363189.aspx
+        // https://msdn.microsoft.com/library/windows/desktop/aa363189.aspx
         internal struct COMMPROP
         {
             public ushort wPacketLength;

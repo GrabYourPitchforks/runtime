@@ -249,7 +249,7 @@ namespace System.Globalization
         /// </summary>
         /// <remarks>
         /// see Date Field Symbol Table in http://userguide.icu-project.org/formatparse/datetime
-        /// and https://msdn.microsoft.com/en-us/library/8kb3ddd4(v=vs.110).aspx
+        /// and https://msdn.microsoft.com/library/8kb3ddd4(v=vs.110).aspx
         /// </remarks>
         private static string NormalizeDatePattern(string input)
         {

@@ -11078,7 +11078,7 @@ emit_library_info (MonoAotCompile *acfg)
 		emit_label (acfg, DLL_ENTRY_POINT);
 
 		// Simple implementation of DLLMain, just returning TRUE.
-		// For more information about DLLMain: https://msdn.microsoft.com/en-us/library/windows/desktop/ms682583(v=vs.85).aspx
+		// For more information about DLLMain: https://msdn.microsoft.com/library/windows/desktop/ms682583(v=vs.85).aspx
 		fprintf (acfg->fp, "movl $1, %%eax\n");
 		fprintf (acfg->fp, "ret\n");
 
@@ -11913,8 +11913,8 @@ emit_unwind_info_data_win32 (MonoAotCompile *acfg, PUNWIND_INFO unwind_info)
 
 // Emit unwind info sections for each function. Unwind info on Windows x64 is emitted into two different sections.
 // .pdata includes the serialized DWORD aligned RVA's of function start, end and address of serialized
-// UNWIND_INFO struct emitted into .xdata, see https://msdn.microsoft.com/en-us/library/ft9x1kdx.aspx.
-// .xdata section includes DWORD aligned serialized version of UNWIND_INFO struct, https://msdn.microsoft.com/en-us/library/ddssxxy8.aspx.
+// UNWIND_INFO struct emitted into .xdata, see https://msdn.microsoft.com/library/ft9x1kdx.aspx.
+// .xdata section includes DWORD aligned serialized version of UNWIND_INFO struct, https://msdn.microsoft.com/library/ddssxxy8.aspx.
 static void
 emit_unwind_info_sections_win32 (MonoAotCompile *acfg, const char *function_start, const char *function_end, GSList *unwind_ops)
 {

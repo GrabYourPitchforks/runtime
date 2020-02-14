@@ -65,5 +65,5 @@ Shared Source CLI (SSCLI)
 
 - [Wikipedia entry on SSCLI](http://en.wikipedia.org/wiki/Shared_Source_Common_Language_Infrastructure)
 - [The Microsoft Shared Source CLI Implementation](https://msdn.microsoft.com/library/ms973879.aspx)
-- [Shared Source Common Language Infrastructure 2.0 Release ](http://www.microsoft.com/en-us/download/details.aspx?id=4917)
+- [Shared Source Common Language Infrastructure 2.0 Release ](http://www.microsoft.com/download/details.aspx?id=4917)
 - [Shared Source CLI 2.0 Infrastructure 2.0 Release - 3rd party provided on GitHub](https://github.com/gbarnett/shared-source-cli-2.0)

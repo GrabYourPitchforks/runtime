@@ -9,8 +9,8 @@ internal partial class Interop
 {
     internal partial class NtDll
     {
-        // https://msdn.microsoft.com/en-us/library/bb432380.aspx
-        // https://msdn.microsoft.com/en-us/library/windows/hardware/ff566424.aspx
+        // https://msdn.microsoft.com/library/bb432380.aspx
+        // https://msdn.microsoft.com/library/windows/hardware/ff566424.aspx
         [DllImport(Libraries.NtDll, CharSet = CharSet.Unicode, ExactSpelling = true)]
         private static extern unsafe int NtCreateFile(
             out IntPtr FileHandle,
@@ -299,7 +299,7 @@ internal partial class Interop
             /// </summary>
             /// <remarks>
             /// More details can be found in Remote Storage documentation (see Basic Concepts).
-            /// https://technet.microsoft.com/en-us/library/cc938459.aspx
+            /// https://technet.microsoft.com/library/cc938459.aspx
             /// </remarks>
             FILE_OPEN_NO_RECALL = 0x00400000
 
@@ -312,13 +312,13 @@ internal partial class Interop
         /// </summary>
         /// <remarks>
         /// File Security and Access Rights
-        /// https://msdn.microsoft.com/en-us/library/windows/desktop/aa364399.aspx
+        /// https://msdn.microsoft.com/library/windows/desktop/aa364399.aspx
         /// </remarks>
         [Flags]
         public enum DesiredAccess : uint
         {
             // File Access Rights Constants
-            // https://msdn.microsoft.com/en-us/library/windows/desktop/gg258116.aspx
+            // https://msdn.microsoft.com/library/windows/desktop/gg258116.aspx
 
             /// <summary>
             /// For a file, the right to read data from the file.
