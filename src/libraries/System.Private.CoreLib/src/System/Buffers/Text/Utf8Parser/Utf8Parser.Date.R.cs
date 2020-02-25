@@ -15,7 +15,7 @@ namespace System.Buffers.Text
         //
         private static bool TryParseDateTimeOffsetR(ReadOnlySpan<byte> source, uint caseFlipXorMask, out DateTimeOffset dateTimeOffset, out int bytesConsumed)
         {
-            if (source.Length < 29)
+            if ((uint)28 >= (uint)source.Length)
             {
                 bytesConsumed = 0;
                 dateTimeOffset = default;

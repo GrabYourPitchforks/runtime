@@ -2,6 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 namespace System.Buffers.Text
 {
     public static partial class Utf8Parser
@@ -46,54 +50,59 @@ namespace System.Buffers.Text
         }
 
         // nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn (not very Guid-like, but the format is what it is...)
-        private static bool TryParseGuidN(ReadOnlySpan<byte> text, out Guid value, out int bytesConsumed)
+        private static unsafe bool TryParseGuidN(ReadOnlySpan<byte> text, out Guid value, out int bytesConsumed)
         {
-            if (text.Length < 32)
+            Span<byte> tempBytes = stackalloc byte[sizeof(Guid)];
+
+            ReadOnlySpan<sbyte> hexLookup = ParserHelpers.HexLookupSByte;
+
+            for (int i = 0; i < tempBytes.Length; i++)
             {
-                value = default;
-                bytesConsumed = 0;
-                return false;
+                if ((uint)1 >= (uint)text.Length)
+                {
+                    goto Error;
+                }
+
+                int nextByte = ((int)hexLookup[text[0]]) << 4;
+                nextByte |= (int)hexLookup[text[1]];
+
+                if (nextByte < 0)
+                {
+                    goto Error;
+                }
+
+                tempBytes[i] = (byte)nextByte;
+                text = text.Slice(2);
             }
 
-            if (!TryParseUInt32X(text.Slice(0, 8), out uint i1, out int justConsumed) || justConsumed != 8)
+            if (BitConverter.IsLittleEndian)
             {
-                value = default;
-                bytesConsumed = 0;
-                return false; // 8 digits
+                BinaryPrimitives.WriteUInt32LittleEndian(tempBytes, BinaryPrimitives.ReadUInt32BigEndian(tempBytes));
+                BinaryPrimitives.WriteUInt16LittleEndian(tempBytes.Slice(4), BinaryPrimitives.ReadUInt16BigEndian(tempBytes.Slice(4)));
+                BinaryPrimitives.WriteUInt16LittleEndian(tempBytes.Slice(6), BinaryPrimitives.ReadUInt16BigEndian(tempBytes.Slice(6)));
             }
 
-            if (!TryParseUInt16X(text.Slice(8, 4), out ushort i2, out justConsumed) || justConsumed != 4)
-            {
-                value = default;
-                bytesConsumed = 0;
-                return false; // next 4 digits
-            }
-
-            if (!TryParseUInt16X(text.Slice(12, 4), out ushort i3, out justConsumed) || justConsumed != 4)
-            {
-                value = default;
-                bytesConsumed = 0;
-                return false; // next 4 digits
-            }
-
-            if (!TryParseUInt16X(text.Slice(16, 4), out ushort i4, out justConsumed) || justConsumed != 4)
-            {
-                value = default;
-                bytesConsumed = 0;
-                return false; // next 4 digits
-            }
-
-            if (!TryParseUInt64X(text.Slice(20), out ulong i5, out justConsumed) || justConsumed != 12)
-            {
-                value = default;
-                bytesConsumed = 0;
-                return false; // next 4 digits
-            }
-
+            value = new Guid(tempBytes);
             bytesConsumed = 32;
-            value = new Guid((int)i1, (short)i2, (short)i3, (byte)(i4 >> 8), (byte)i4,
-                (byte)(i5 >> 40), (byte)(i5 >> 32), (byte)(i5 >> 24), (byte)(i5 >> 16), (byte)(i5 >> 8), (byte)i5);
             return true;
+
+        Error:
+
+            value = default;
+            bytesConsumed = 0;
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int ParseHexBytes(ReadOnlySpan<byte> source)
+        {
+            if ((uint)1 >= (uint)source.Length)
+            {
+                return -1;
+            }
+
+            return ((int)ParserHelpers.HexLookupSByte[source[0]] << 4)
+                | (int)ParserHelpers.HexLookupSByte[source[1]];
         }
 
         // {8-4-4-4-12}, where number is the number of hex digits, and {/} are ends.
@@ -238,6 +247,15 @@ namespace System.Buffers.Text
                 (byte)(i5 >> 40), (byte)(i5 >> 32), (byte)(i5 >> 24), (byte)(i5 >> 16), (byte)(i5 >> 8), (byte)i5);
 
             return true;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct GuidBuilder
+        {
+            internal uint a;
+            internal ushort b;
+            internal ushort c;
+            internal ulong defghijk;
         }
     }
 }

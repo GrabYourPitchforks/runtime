@@ -134,7 +134,7 @@ namespace System.Buffers.Text
                 case 'G':
                 case 'd':
                 case 'D':
-                    return TryParseInt32D(source, out value, out bytesConsumed);
+                    return TryParseInt32D(source, out value, out bytesConsumed, standardFormat);
 
                 case 'n':
                 case 'N':

@@ -19,7 +19,7 @@ namespace System.Buffers.Text
         //
         private static bool TryParseDateTimeOffsetO(ReadOnlySpan<byte> source, out DateTimeOffset value, out int bytesConsumed, out DateTimeKind kind)
         {
-            if (source.Length < 27)
+            if ((uint)26 >= (uint)source.Length)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -194,7 +194,7 @@ namespace System.Buffers.Text
                 fraction = (int)(digit1 * 1000000 + digit2 * 100000 + digit3 * 10000 + digit4 * 1000 + digit5 * 100 + digit6 * 10 + digit7);
             }
 
-            byte offsetChar = (source.Length <= 27) ? default : source[27];
+            byte offsetChar = ((uint)27 >= (uint)source.Length) ? default : source[27];
             if (offsetChar != 'Z' && offsetChar != Utf8Constants.Plus && offsetChar != Utf8Constants.Minus)
             {
                 if (!TryCreateDateTimeOffsetInterpretingDataAsLocalTime(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, out value))
@@ -226,7 +226,7 @@ namespace System.Buffers.Text
             }
 
             Debug.Assert(offsetChar == Utf8Constants.Plus || offsetChar == Utf8Constants.Minus);
-            if (source.Length < 33)
+            if ((uint)32 >= (uint)source.Length)
             {
                 value = default;
                 bytesConsumed = 0;

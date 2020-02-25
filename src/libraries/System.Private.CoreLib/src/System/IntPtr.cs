@@ -98,6 +98,8 @@ namespace System
 #endif
         }
 
+        internal unsafe int ToInt32Unchecked() => (int)_value;
+
         [NonVersionable]
         public unsafe long ToInt64() =>
             (nint)_value;
@@ -150,6 +152,10 @@ namespace System
         [NonVersionable]
         public static unsafe IntPtr operator +(IntPtr pointer, int offset) =>
             new IntPtr((nint)pointer._value + offset);
+
+        [NonVersionable]
+        public static unsafe IntPtr operator ++(IntPtr pointer) =>
+            new IntPtr((nint)pointer._value + 1);
 
         [NonVersionable]
         public static IntPtr Subtract(IntPtr pointer, int offset) =>

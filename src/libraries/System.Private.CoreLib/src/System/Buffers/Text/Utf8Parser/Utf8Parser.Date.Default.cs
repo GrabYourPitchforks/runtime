@@ -16,7 +16,7 @@ namespace System.Buffers.Text
         //
         private static bool TryParseDateTimeOffsetDefault(ReadOnlySpan<byte> source, out DateTimeOffset value, out int bytesConsumed)
         {
-            if (source.Length < 26)
+            if ((uint)25 >= (uint)source.Length)
             {
                 bytesConsumed = 0;
                 value = default;

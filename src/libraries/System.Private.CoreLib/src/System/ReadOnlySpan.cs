@@ -146,6 +146,21 @@ namespace System
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal unsafe bool TryGetElementAt(IntPtr index, out T value)
+        {
+            if ((nuint)(void*)index >= (uint)_length)
+            {
+                value = default!;
+                return false;
+            }
+            else
+            {
+                value = Unsafe.Add(ref _pointer.Value, index);
+                return true;
+            }
+        }
+
         /// <summary>
         /// The number of items in the read-only span.
         /// </summary>
