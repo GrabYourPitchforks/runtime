@@ -15,7 +15,7 @@ namespace System.Buffers.Text
         //
         private static bool TryParseDateTimeG(ReadOnlySpan<byte> source, out DateTime value, out DateTimeOffset valueAsOffset, out int bytesConsumed)
         {
-            if (source.Length < 19)
+            if ((uint)18 >= (uint)source.Length)
             {
                 bytesConsumed = 0;
                 value = default;
