@@ -127,22 +127,24 @@ namespace System.Buffers.Text
         /// </exceptions>
         public static bool TryParse(ReadOnlySpan<byte> source, out int value, out int bytesConsumed, char standardFormat = default)
         {
-            switch (standardFormat)
+        FastPath:
+            if (standardFormat == default)
             {
-                case default(char):
+                return TryParseInt32D(source, out value, out bytesConsumed);
+            }
+
+            switch (standardFormat | 0x20 /* convert to lowercase */)
+            {
                 case 'g':
-                case 'G':
                 case 'd':
-                case 'D':
-                    return TryParseInt32D(source, out value, out bytesConsumed);
+                    standardFormat = default;
+                    goto FastPath;
 
                 case 'n':
-                case 'N':
                     return TryParseInt32N(source, out value, out bytesConsumed);
 
                 case 'x':
-                case 'X':
-                    value = default;
+                    Unsafe.SkipInit(out value);
                     return TryParseUInt32X(source, out Unsafe.As<int, uint>(ref value), out bytesConsumed);
 
                 default:
