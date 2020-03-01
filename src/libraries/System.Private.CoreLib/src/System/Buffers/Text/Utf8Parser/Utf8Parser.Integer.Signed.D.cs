@@ -201,9 +201,9 @@ namespace System.Buffers.Text
             return true;
         }
 
-        private static bool TryParseInt32D(in ReadOnlySpan<byte> refToSource, out int value, out int bytesConsumed)
+        private static bool TryParseInt32D(in ReadOnlySpan<byte> rsource, out int value, out int bytesConsumed)
         {
-            ReadOnlySpan<byte> source = refToSource; // local copy to enregister span fields
+            var source = rsource;
 
             if (source.IsEmpty)
                 goto FalseExit;

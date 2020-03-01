@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
+using Internal.Runtime.CompilerServices;
 
 #pragma warning disable SA1121 // explicitly using type aliases instead of built-in types
 #if TARGET_64BIT
@@ -88,6 +89,14 @@ namespace System.Buffers.Text
             bytesConsumed = 0;
             ThrowHelper.ThrowFormatException_BadFormatSpecifier();
             return false;
+        }
+
+        public static bool TryParseThrowFormatException<T>(in ReadOnlySpan<byte> rsource, out T value, out int bytesConsumed) where T : struct
+        {
+            var source = rsource;
+
+            while (true)
+                ThrowHelper.ThrowFormatException_BadFormatSpecifier();
         }
 
         //

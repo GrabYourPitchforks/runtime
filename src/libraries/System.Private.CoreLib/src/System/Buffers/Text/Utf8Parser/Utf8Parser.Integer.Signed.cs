@@ -127,10 +127,12 @@ namespace System.Buffers.Text
         /// </exceptions>
         public static bool TryParse(ReadOnlySpan<byte> source, out int value, out int bytesConsumed, char standardFormat = default)
         {
+            ReadOnlySpan<byte> source2 = source;
+
         FastPath:
             if (standardFormat == default)
             {
-                return TryParseInt32D(source, out value, out bytesConsumed);
+                return TryParseInt32D(source2, out value, out bytesConsumed);
             }
 
             switch (standardFormat | 0x20 /* convert to lowercase */)
@@ -141,15 +143,16 @@ namespace System.Buffers.Text
                     goto FastPath;
 
                 case 'n':
-                    return TryParseInt32N(source, out value, out bytesConsumed);
+                    return TryParseInt32N(source2, out value, out bytesConsumed);
 
                 case 'x':
                     Unsafe.SkipInit(out value);
-                    return TryParseUInt32X(source, out Unsafe.As<int, uint>(ref value), out bytesConsumed);
+                    return TryParseUInt32X(source2, out Unsafe.As<int, uint>(ref value), out bytesConsumed);
 
                 default:
-                    ThrowHelper.ThrowFormatException_BadFormatSpecifier();
-                    goto FastPath; // will never get hit
+                    return ParserHelpers.TryParseThrowFormatException(source2, out value, out bytesConsumed);
+                    //ThrowHelper.ThrowFormatException_BadFormatSpecifier();
+                    //goto FastPath; // will never get hit
             }
         }
 
