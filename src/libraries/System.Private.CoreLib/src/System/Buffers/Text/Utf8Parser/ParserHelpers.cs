@@ -84,19 +84,23 @@ namespace System.Buffers.Text
         //
         // Enable use of ThrowHelper from TryParse() routines without introducing dozens of non-code-coveraged "value= default; bytesConsumed = 0; return false" boilerplate.
         //
-        public static bool TryParseThrowFormatException(out int bytesConsumed)
+        public static bool TryParseThrowFormatException<T>(ReadOnlySpan<byte> source, out T value, out int bytesConsumed) where T : struct
         {
-            bytesConsumed = 0;
-            ThrowHelper.ThrowFormatException_BadFormatSpecifier();
-            return false;
+            while (true)
+            {
+                ThrowHelper.ThrowFormatException_BadFormatSpecifier();
+            }
         }
 
-        public static bool TryParseThrowFormatException<T>(in ReadOnlySpan<byte> rsource, out T value, out int bytesConsumed) where T : struct
+        //
+        // Enable use of ThrowHelper from TryParse() routines without introducing dozens of non-code-coveraged "value= default; bytesConsumed = 0; return false" boilerplate.
+        //
+        public static bool TryParseThrowFormatException(out int bytesConsumed)
         {
-            var source = rsource;
-
             while (true)
+            {
                 ThrowHelper.ThrowFormatException_BadFormatSpecifier();
+            }
         }
 
         //
@@ -104,8 +108,10 @@ namespace System.Buffers.Text
         //
         public static bool TryParseThrowFormatException<T>(out T value, out int bytesConsumed) where T : struct
         {
-            value = default;
-            return TryParseThrowFormatException(out bytesConsumed);
+            while (true)
+            {
+                ThrowHelper.ThrowFormatException_BadFormatSpecifier();
+            }
         }
     }
 }

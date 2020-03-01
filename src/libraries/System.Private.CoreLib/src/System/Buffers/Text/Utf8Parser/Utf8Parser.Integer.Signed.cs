@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime.CompilerServices;
 using Internal.Runtime.CompilerServices;
 
 namespace System.Buffers.Text
@@ -125,14 +126,16 @@ namespace System.Buffers.Text
         /// <exceptions>
         /// <cref>System.FormatException</cref> if the format is not valid for this data type.
         /// </exceptions>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(ReadOnlySpan<byte> source, out int value, out int bytesConsumed, char standardFormat = default)
-        {
-            ReadOnlySpan<byte> source2 = source;
+            => TryParse(source, out value, out bytesConsumed, (int)standardFormat);
 
+        private static bool TryParse(ReadOnlySpan<byte> source, out int value, out int bytesConsumed, int standardFormat)
+        {
         FastPath:
             if (standardFormat == default)
             {
-                return TryParseInt32D(source2, out value, out bytesConsumed);
+                return TryParseInt32D(source, out value, out bytesConsumed);
             }
 
             switch (standardFormat | 0x20 /* convert to lowercase */)
@@ -143,16 +146,14 @@ namespace System.Buffers.Text
                     goto FastPath;
 
                 case 'n':
-                    return TryParseInt32N(source2, out value, out bytesConsumed);
+                    return TryParseInt32N(source, out value, out bytesConsumed);
 
                 case 'x':
                     Unsafe.SkipInit(out value);
-                    return TryParseUInt32X(source2, out Unsafe.As<int, uint>(ref value), out bytesConsumed);
+                    return TryParseUInt32X(source, out Unsafe.As<int, uint>(ref value), out bytesConsumed);
 
                 default:
-                    return ParserHelpers.TryParseThrowFormatException(source2, out value, out bytesConsumed);
-                    //ThrowHelper.ThrowFormatException_BadFormatSpecifier();
-                    //goto FastPath; // will never get hit
+                    return ParserHelpers.TryParseThrowFormatException(source, out value, out bytesConsumed);
             }
         }
 
