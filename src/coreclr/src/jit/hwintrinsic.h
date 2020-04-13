@@ -96,9 +96,16 @@ enum HWIntrinsicFlag : unsigned int
     // but may be table-driven in the front-end
     HW_Flag_SpecialCodeGen = 0x2000,
 
+#if defined(TARGET_XARCH)
     // No Read/Modify/Write Semantics
     // the intrinsic doesn't have read/modify/write semantics in two/three-operand form.
     HW_Flag_NoRMWSemantics = 0x4000,
+#elif defined(TARGET_ARM64)
+    // The intrinsic has read/modify/write semantics in multiple-operands form.
+    HW_Flag_HasRMWSemantics = 0x4000,
+#else
+#error Unsupported platform
+#endif
 
     // Special import
     // the intrinsics need special rules in importer,
@@ -113,15 +120,15 @@ enum HWIntrinsicFlag : unsigned int
 
 struct HWIntrinsicInfo
 {
-    NamedIntrinsic      id;
-    const char*         name;
-    InstructionSet      isa;
-    int                 ival;
-    unsigned            simdSize;
-    int                 numArgs;
-    instruction         ins[10];
-    HWIntrinsicCategory category;
-    HWIntrinsicFlag     flags;
+    NamedIntrinsic         id;
+    const char*            name;
+    CORINFO_InstructionSet isa;
+    int                    ival;
+    unsigned               simdSize;
+    int                    numArgs;
+    instruction            ins[10];
+    HWIntrinsicCategory    category;
+    HWIntrinsicFlag        flags;
 
     static const HWIntrinsicInfo& lookup(NamedIntrinsic id);
 
@@ -129,7 +136,7 @@ struct HWIntrinsicInfo
                                    const char* className,
                                    const char* methodName,
                                    const char* enclosingClassName);
-    static InstructionSet lookupIsa(const char* className, const char* enclosingClassName);
+    static CORINFO_InstructionSet lookupIsa(const char* className, const char* enclosingClassName);
 
     static unsigned lookupSimdSize(Compiler* comp, NamedIntrinsic id, CORINFO_SIG_INFO* sig);
     static int lookupNumArgs(const GenTreeHWIntrinsic* node);
@@ -138,8 +145,8 @@ struct HWIntrinsicInfo
 
     static bool isImmOp(NamedIntrinsic id, const GenTree* op);
     static bool isInImmRange(NamedIntrinsic id, int ival);
-    static bool isFullyImplementedIsa(InstructionSet isa);
-    static bool isScalarIsa(InstructionSet isa);
+    static bool isFullyImplementedIsa(CORINFO_InstructionSet isa);
+    static bool isScalarIsa(CORINFO_InstructionSet isa);
 
 #ifdef TARGET_XARCH
     static bool isAVX2GatherIntrinsic(NamedIntrinsic id);
@@ -157,7 +164,7 @@ struct HWIntrinsicInfo
         return lookup(id).name;
     }
 
-    static InstructionSet lookupIsa(NamedIntrinsic id)
+    static CORINFO_InstructionSet lookupIsa(NamedIntrinsic id)
     {
         return lookup(id).isa;
     }
@@ -292,7 +299,13 @@ struct HWIntrinsicInfo
     static bool HasRMWSemantics(NamedIntrinsic id)
     {
         HWIntrinsicFlag flags = lookupFlags(id);
+#if defined(TARGET_XARCH)
         return (flags & HW_Flag_NoRMWSemantics) == 0;
+#elif defined(TARGET_ARM64)
+        return (flags & HW_Flag_HasRMWSemantics) != 0;
+#else
+#error Unsupported platform
+#endif
     }
 
     static bool HasSpecialImport(NamedIntrinsic id)

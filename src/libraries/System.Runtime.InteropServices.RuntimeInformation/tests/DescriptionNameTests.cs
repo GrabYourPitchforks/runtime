@@ -22,7 +22,8 @@ namespace System.Runtime.InteropServices.RuntimeInformationTests
             string osd = RuntimeInformation.OSDescription.Trim();
             string osv = Environment.OSVersion.ToString();
             string osa = RuntimeInformation.OSArchitecture.ToString();
-            Console.WriteLine($"### OS: Distro={dvs} Description={osd} Version={osv} Arch={osa}");
+            string rid = RuntimeInformation.RuntimeIdentifier;
+            Console.WriteLine($"### OS: Distro={dvs} Description={osd} Version={osv} Arch={osa} Rid={rid}");
 
             string lcr = PlatformDetection.LibcRelease;
             string lcv = PlatformDetection.LibcVersion;
@@ -116,8 +117,8 @@ namespace System.Runtime.InteropServices.RuntimeInformationTests
 
             if (osd.Contains("Linux"))
             {
-                // Dump several procfs files
-                foreach (string path in new string[] { "/proc/self/mountinfo", "/proc/self/cgroup", "/proc/self/limits" })
+                // Dump several procfs files and /etc/os-release
+                foreach (string path in new string[] { "/proc/self/mountinfo", "/proc/self/cgroup", "/proc/self/limits", "/etc/os-release" })
                 {
                     Console.WriteLine($"### CONTENTS OF \"{path}\":");
                     try
@@ -139,7 +140,7 @@ namespace System.Runtime.InteropServices.RuntimeInformationTests
         [SkipOnTargetFramework(~TargetFrameworkMonikers.Netcoreapp)]
         public void VerifyRuntimeNameOnNetCoreApp()
         {
-            Assert.True(RuntimeInformation.FrameworkDescription.StartsWith(".NET Core"), RuntimeInformation.FrameworkDescription);
+            Assert.True(RuntimeInformation.FrameworkDescription.StartsWith(".NET"), RuntimeInformation.FrameworkDescription);
             Assert.Same(RuntimeInformation.FrameworkDescription, RuntimeInformation.FrameworkDescription);
         }
 
