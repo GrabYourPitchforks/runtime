@@ -21,6 +21,8 @@ enum NamedIntrinsic : unsigned short
     NI_System_GC_KeepAlive,
     NI_System_Type_get_IsValueType,
     NI_System_Type_IsAssignableFrom,
+    NI_System_String_OpEquality,
+    NI_System_String_OpInequality,
 
 #ifdef FEATURE_HW_INTRINSICS
     NI_IsSupported_True,

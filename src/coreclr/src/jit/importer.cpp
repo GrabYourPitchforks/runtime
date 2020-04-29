@@ -4440,6 +4440,17 @@ NamedIntrinsic Compiler::lookupNamedIntrinsic(CORINFO_METHOD_HANDLE method)
                 result = NI_System_Type_IsAssignableFrom;
             }
         }
+        else if (strcmp(className, "String") == 0)
+        {
+            if (strcmp(methodName, "op_Equality") == 0)
+            {
+                result = NI_System_String_OpEquality;
+            }
+            else if (strcmp(methodName, "op_Inequality") == 0)
+            {
+                result = NI_System_String_OpInequality;
+            }
+        }
     }
 #if defined(TARGET_XARCH) || defined(TARGET_ARM64)
     else if (strcmp(namespaceName, "System.Buffers.Binary") == 0)
