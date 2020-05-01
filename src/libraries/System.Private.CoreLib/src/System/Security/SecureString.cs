@@ -10,6 +10,10 @@ namespace System.Security
 {
     public sealed partial class SecureString : IDisposable
     {
+        private const string ObsoleteMessage = "SecureString does not provide any security guarantees and is not recommended for new development.";
+        private const string ObsoleteDiagnosticId = "BCL0001";
+        private const string ObsoleteUrlFormat = "https://github.com/dotnet/runtime/issues/33089"; // TODO: Change me
+
         private const int MaxLength = 65536;
         private readonly object _methodLock = new object();
         private UnmanagedBuffer? _buffer;
@@ -17,11 +21,13 @@ namespace System.Security
         private bool _encrypted;
         private bool _readOnly;
 
+        [Obsolete(ObsoleteMessage, DiagnosticId = ObsoleteDiagnosticId, UrlFormat = ObsoleteUrlFormat)]
         public SecureString()
         {
             Initialize(ReadOnlySpan<char>.Empty);
         }
 
+        [Obsolete(ObsoleteMessage, DiagnosticId = ObsoleteDiagnosticId, UrlFormat = ObsoleteUrlFormat)]
         [CLSCompliant(false)]
         public unsafe SecureString(char* value, int length)
         {
