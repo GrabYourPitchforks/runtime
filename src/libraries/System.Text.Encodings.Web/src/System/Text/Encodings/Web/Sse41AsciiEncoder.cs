@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -102,6 +103,14 @@ namespace System.Text.Encodings.Web
                    + BitOperations.TrailingZeroCount(encodingMask);
         }
 
+        public int FindIndexOfFirstCharToBeEncoded(ReadOnlySpan<char> value)
+        {
+            uint idx = FindIndexOfFirstCharToBeEncoded(ref MemoryMarshal.GetReference(value), (uint)value.Length);
+            Debug.Assert(idx <= value.Length);
+
+            return (idx < (uint)value.Length) ? (int)idx : -1;
+        }
+
         public uint FindIndexOfFirstCharToBeEncoded(ref char buffer, uint bufferLength)
         {
             int encodingMask;
@@ -181,6 +190,118 @@ namespace System.Text.Encodings.Web
             Debug.Assert(encodingMask != 0);
             return ((uint)(void*)Unsafe.ByteOffset(ref startOfBuffer, ref buffer)
                    + (uint)BitOperations.TrailingZeroCount(encodingMask)) / sizeof(char);
+        }
+
+        public bool WillEncode(uint value)
+        {
+            // The incoming value will encode if it's not ASCII or if it's
+            // explicitly marked in the array as something that will encode.
+
+            bool[] asciiBytesWhichNeedEncoding = _asciiBytesWhichNeedEncoding;
+            return value >= (uint)asciiBytesWhichNeedEncoding.Length
+                || asciiBytesWhichNeedEncoding[value];
+        }
+
+        public void Encode(ReadOnlySpan<char> value, TextWriter writer)
+        {
+            Debug.Assert(writer != null);
+
+            int idx = FindIndexOfFirstCharToBeEncoded(value);
+            if (idx == -1)
+            {
+                writer.Write(value);
+                return;
+            }
+
+            writer.Write(value.Slice(0, idx));
+            EncodeSlow(value.Slice(idx), writer);
+        }
+
+        private void EncodeSlow(ReadOnlySpan<char> input, TextWriter writer)
+        {
+            Debug.Assert(writer != null);
+
+            Span<char> scratchBuffer = stackalloc char[_encoder.MaxOutputCharsPerInputRune];
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                char thisChar = input[i];
+                if (!WillEncode(thisChar))
+                {
+                    writer.Write(thisChar); // no encoding needed
+                    continue;
+                }
+
+                // Try extracting a scalar value from this single char.
+                // Failing that, see if it's a surrogate pair.
+                // If we still fail (due to a standalone surrogate char), use U+FFFD.
+
+                if (!Rune.TryCreate(thisChar, out Rune rune))
+                {
+                    i++; // optimistically bump the index
+                    if ((uint)i >= (uint)input.Length || !Rune.TryCreate(thisChar, input[i], out rune))
+                    {
+                        i--; // standalone surrogate char; undo bump
+                        rune = Rune.ReplacementChar;
+                    }
+                }
+
+                // Now encode the Rune and writes its contents to the writer
+
+                int encodedCharsWritten = _encoder.EncodeToBuffer(rune, scratchBuffer);
+                writer.Write(scratchBuffer.Slice(0, encodedCharsWritten));
+            }
+        }
+
+        public string Encode(string value)
+        {
+            Debug.Assert(value != null);
+
+            int idx = FindIndexOfFirstCharToBeEncoded(value);
+            if (idx == -1)
+            {
+                return value; // unmodified
+            }
+
+            // worst case; let's say we're going to double the size of the input
+            ValueStringBuilder builder = new ValueStringBuilder(value.Length * 2);
+
+            builder.Append(value.AsSpan(0, idx));
+            EncodeSlow(value.AsSpan(idx), ref builder);
+            return builder.ToString(); // returns to pool
+        }
+
+        private void EncodeSlow(ReadOnlySpan<char> input, ref ValueStringBuilder builder)
+        {
+            for (int i = 0; i < input.Length; i++)
+            {
+                char thisChar = input[i];
+                if (!WillEncode(thisChar))
+                {
+                    builder.Append(thisChar); // no encoding needed
+                    continue;
+                }
+
+                // Try extracting a scalar value from this single char.
+                // Failing that, see if it's a surrogate pair.
+                // If we still fail (due to a standalone surrogate char), use U+FFFD.
+
+                if (!Rune.TryCreate(thisChar, out Rune rune))
+                {
+                    i++; // optimistically bump the index
+                    if ((uint)i >= (uint)input.Length || !Rune.TryCreate(thisChar, input[i], out rune))
+                    {
+                        i--; // standalone surrogate char; undo bump
+                        rune = Rune.ReplacementChar;
+                    }
+                }
+
+                // Now encode the Rune and writes its contents to the builder
+
+                Span<char> scratchBuffer = builder.AppendSpan(_encoder.MaxOutputCharsPerInputRune);
+                int encodedCharsWritten = _encoder.EncodeToBuffer(rune, scratchBuffer);
+                builder.Length -= _encoder.MaxOutputCharsPerInputRune - encodedCharsWritten;
+            }
         }
     }
 }

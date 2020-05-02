@@ -11,6 +11,8 @@ namespace System.Text.Encodings.Web
 {
     internal interface IEncoderImplementation
     {
+        int MaxOutputCharsPerInputRune { get; }
 
+        int EncodeToBuffer(Rune rune, Span<char> buffer);
     }
 }
