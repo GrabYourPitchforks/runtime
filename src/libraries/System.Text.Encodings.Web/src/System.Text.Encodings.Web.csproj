@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworks>netcoreapp3.0;netstandard2.1;netstandard2.0;$(NetCoreAppCurrent)</TargetFrameworks>
@@ -26,6 +26,8 @@
     <Compile Include="System\Text\Encodings\Web\Sse2Helper.cs" />
     <Compile Include="System\Text\Encodings\Web\Ssse3Helper.cs" />
     <Compile Include="System\Text\Encodings\Web\Sse41AsciiEncoder.cs" />
+    <Compile Include="System\Text\Encodings\Web\AsciiTextEncoder.cs" />
+    <Compile Include="System\Text\Encodings\Web\HtmlEncoderImplementation.cs" />
     <Compile Include="System\Text\Encodings\Web\IEncoderImplementation.cs" />
     <Compile Include="$(CommonPath)System\Text\ValueStringBuilder.cs"
          Link="CoreLib\System\Text\ValueStringBuilder.cs" />

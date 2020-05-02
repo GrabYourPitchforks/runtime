@@ -23,11 +23,12 @@ namespace System.Text.Encodings.Web
         internal static readonly Vector128<byte> LowNibble = Vector128.Create((byte)0x0F);
     }
 
-    internal unsafe readonly struct Sse41AsciiEncoder<TEncoder> where TEncoder : IEncoderImplementation
+    internal unsafe readonly struct Sse41AsciiEncoder<TEncoder>
+        where TEncoder : struct, IEncoderImplementation
     {
         private readonly Vector128<byte> _pshufbBitmask; // 0 = requires encoding, 1 = doesn't require encoding
         private readonly bool[] _asciiBytesWhichNeedEncoding;
-        private readonly TEncoder _encoder;
+        internal readonly TEncoder _encoder;
 
         internal Sse41AsciiEncoder(TEncoder encoder)
         {

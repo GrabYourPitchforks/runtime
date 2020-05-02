@@ -14,5 +14,7 @@ namespace System.Text.Encodings.Web
         int MaxOutputCharsPerInputRune { get; }
 
         int EncodeToBuffer(Rune rune, Span<char> buffer);
+
+        bool TryEncodeToBuffer(Rune rune, Span<char> buffer, out int charsWritten);
     }
 }
