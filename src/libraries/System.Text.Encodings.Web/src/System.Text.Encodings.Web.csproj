@@ -25,14 +25,13 @@
   <ItemGroup Condition="'$(TargetsNetCoreApp)' == 'true'">
     <Compile Include="System\Text\Encodings\Web\Sse2Helper.cs" />
     <Compile Include="System\Text\Encodings\Web\Ssse3Helper.cs" />
+    <Compile Include="System\Text\Encodings\Web\Sse41AsciiEncoder.cs" />
+    <Compile Include="System\Text\Encodings\Web\IEncoderImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(CoreLibSharedDir)System\Text\UnicodeDebug.cs"
-             Link="System\Text\UnicodeDebug.cs" />
-    <Compile Include="$(CoreLibSharedDir)System\Text\UnicodeUtility.cs"
-             Link="System\Text\UnicodeUtility.cs" />
-    <Compile Include="$(CommonPath)System\HexConverter.cs"
-             Link="Common\System\HexConverter.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\UnicodeDebug.cs" Link="System\Text\UnicodeDebug.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\UnicodeUtility.cs" Link="System\Text\UnicodeUtility.cs" />
+    <Compile Include="$(CommonPath)System\HexConverter.cs" Link="Common\System\HexConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Memory" />
@@ -41,6 +40,7 @@
   <ItemGroup Condition="'$(TargetsNetCoreApp)' == 'true'">
     <Reference Include="System.Diagnostics.Debug" />
     <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe" />
     <Reference Include="System.Runtime.Extensions" />
     <Reference Include="System.Runtime.Intrinsics" />
     <Reference Include="System.Threading" />
