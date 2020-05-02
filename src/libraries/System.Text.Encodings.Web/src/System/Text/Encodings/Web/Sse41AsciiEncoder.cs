@@ -14,6 +14,20 @@ using Statics = System.Text.Encodings.Web.Sse41AsciiEncoderStatics;
 
 namespace System.Text.Encodings.Web
 {
+    internal struct State
+    {
+        public Vector128<byte> BitmapMask;
+    }
+
+    internal static unsafe  class AsciiEncoder
+    {
+        public static nuint Foo(ref byte buffer, nuint bufferLength, in State state)
+        {
+            return default;
+        }
+
+    }
+
     internal static class Sse41AsciiEncoderStatics
     {
         internal static readonly Vector128<byte> PowersOfTwo = Vector128.Create(
