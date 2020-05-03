@@ -32,9 +32,7 @@ namespace System.Text.Encodings.Web
         }
 
         public override OperationStatus Encode(ReadOnlySpan<char> source, Span<char> destination, out int charsConsumed, out int charsWritten, bool isFinalBlock = true)
-        {
-#error not implemented
-        }
+            => AsciiEncoder.Encode(in _state, source, destination, out charsConsumed, out charsWritten, isFinalBlock);
 
         public override string Encode(string value)
         {
@@ -69,9 +67,9 @@ namespace System.Text.Encodings.Web
             }
 
             int idx = (int)AsciiEncoder.FindIndexOfFirstCharToEncode(
+                in _state,
                 ref Unsafe.AsRef<char>(text),
-                (uint)textLength,
-                in _state);
+                (uint)textLength);
 
             Debug.Assert(idx <= textLength);
             return (idx < textLength) ? idx : -1; // -1 signifies no data requires encoding
@@ -90,7 +88,17 @@ namespace System.Text.Encodings.Web
 
         public override unsafe bool TryEncodeUnicodeScalar(int unicodeScalar, char* buffer, int bufferLength, out int numberOfCharactersWritten)
         {
-#error not implemented
+            if ((buffer == null && bufferLength != 0) || (bufferLength < 0))
+            {
+                throw new ArgumentOutOfRangeException(paramName: nameof(bufferLength));
+            }
+
+            if (!Rune.TryCreate(unicodeScalar, out Rune rune))
+            {
+                rune = Rune.ReplacementChar;
+            }
+
+            return _encoder._encoder.TryEncodeToBuffer(rune, new Span<char>(buffer, bufferLength), out numberOfCharactersWritten);
         }
 
         public override bool WillEncode(int unicodeScalar)

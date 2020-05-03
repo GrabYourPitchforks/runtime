@@ -14,6 +14,7 @@ using Statics = System.Text.Encodings.Web.Sse41AsciiEncoderStatics;
 
 #pragma warning disable SA1121 // Use built-in type alias
 using nuint = System.UInt32; // TODO: Replace me when real nuint type comes online
+using System.Buffers;
 
 namespace System.Text.Encodings.Web
 {
@@ -27,6 +28,125 @@ namespace System.Text.Encodings.Web
 
     internal static unsafe class AsciiEncoder
     {
+        public static OperationStatus Encode(in State state, ReadOnlySpan<char> source, Span<char> destination, out int charsConsumed, out int charsWritten, bool isFinalBlock)
+        {
+            // First, figure out how many characters we can copy as-is.
+
+            int idxOfFirstCharToEncode = (int)FindIndexOfFirstCharToEncode(
+                in state,
+                ref MemoryMarshal.GetReference(source),
+                (uint)Math.Min(source.Length, destination.Length));
+
+            Debug.Assert(idxOfFirstCharToEncode >= 0 && idxOfFirstCharToEncode <= source.Length);
+            source.Slice(0, idxOfFirstCharToEncode).CopyTo(destination);
+
+            // Happy path: we consumed the entire input without error
+
+            if (idxOfFirstCharToEncode == source.Length)
+            {
+                charsConsumed = idxOfFirstCharToEncode;
+                charsWritten = idxOfFirstCharToEncode;
+                return OperationStatus.Done;
+            }
+
+            if (idxOfFirstCharToEncode == destination.Length)
+            {
+                charsConsumed = idxOfFirstCharToEncode;
+                charsWritten = idxOfFirstCharToEncode;
+                return OperationStatus.DestinationTooSmall;
+            }
+
+            // Slower path: we found a character that needs to be fixed up
+            // If there's a high surrogate at the end of the source buffer,
+            // remove it now and remember that fact for later.
+
+            source = source.Slice(idxOfFirstCharToEncode);
+            destination = destination.Slice(idxOfFirstCharToEncode);
+
+            bool strippedSurrogateAtEnd = false;
+            if (!isFinalBlock && char.IsHighSurrogate(source[source.Length - 1]))
+            {
+                strippedSurrogateAtEnd = true;
+                source = source[..^1];
+            }
+
+            OperationStatus innerStatus = EncodeSlow(in state, source, destination, out int innerCharsConsumed, out int innerCharsWritten);
+            charsConsumed = innerCharsConsumed + idxOfFirstCharToEncode;
+            charsWritten = innerCharsWritten + idxOfFirstCharToEncode;
+
+            if (innerStatus == OperationStatus.Done && strippedSurrogateAtEnd)
+            {
+                innerStatus = OperationStatus.NeedMoreData; // caller must provide remainder of surrogate pair
+            }
+
+            return innerStatus;
+        }
+
+        private static OperationStatus EncodeSlow(in State state, ReadOnlySpan<char> source, Span<char> destination, out int charsConsumed, out int charsWritten)
+        {
+            int srcIdx;
+            int destIdx = 0;
+
+            for (srcIdx = 0; srcIdx < source.Length; srcIdx++)
+            {
+                char thisChar = source[srcIdx];
+                if (!WillEncode(in state, thisChar))
+                {
+                    // Copy character as-is
+                    if ((uint)destIdx >= (uint)destination.Length) { goto DestTooSmall; }
+                    destination[destIdx++] = thisChar;
+                    continue;
+                }
+
+                if (!Rune.TryCreate(thisChar, out Rune rune))
+                {
+                    // Possibly a surrogate pair?
+                    if ((uint)(srcIdx + 1) >= (uint)source.Length || !Rune.TryCreate(thisChar, source[srcIdx + 1], out rune))
+                    {
+                        rune = Rune.ReplacementChar;
+                    }
+                }
+
+                if (!TryEncode(rune, destination.Slice(destIdx), out int runeEncodedCharCount))
+                {
+                    goto DestTooSmall;
+                }
+
+                destIdx += runeEncodedCharCount;
+                if (!rune.IsBmp)
+                {
+                    srcIdx++; // consumed one additional input char for the surrogate pair
+                }
+            }
+
+            // If we got to this point, we read the entire input buffer!
+
+            Debug.Assert(srcIdx == source.Length);
+            charsConsumed = srcIdx;
+            charsWritten = destination.Length;
+            return OperationStatus.Done;
+
+        DestTooSmall:
+            Debug.Assert(srcIdx < source.Length);
+            charsConsumed = srcIdx;
+            charsWritten = destIdx;
+            return OperationStatus.DestinationTooSmall;
+        }
+
+        private static bool TryEncode(Rune value, Span<char> buffer, out int charsWritten)
+        {
+            throw new NotImplementedException();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool WillEncode(in State state, uint value)
+        {
+            // The incoming value will encode if it's not ASCII or if it's
+            // explicitly marked in the array as something that will encode.
+
+            return (value >= State.CharsMustEncodeLength || state.CharsMustEncode[value]) ? true : false;
+        }
+
         public static nuint FindIndexOfFirstByteToEncode(ref byte buffer, nuint bufferLength, in State state)
         {
             nuint curOffset = 0;
@@ -140,7 +260,7 @@ namespace System.Text.Encodings.Web
             return curOffset;
         }
 
-        public static nuint FindIndexOfFirstCharToEncode(ref char buffer, nuint bufferLength, in State state)
+        public static nuint FindIndexOfFirstCharToEncode(in State state, ref char buffer, nuint bufferLength)
         {
             nuint curOffset = 0;
 
