@@ -28,6 +28,66 @@ namespace System.Text.Encodings.Web
 
     internal static unsafe class AsciiEncoder
     {
+        public static OperationStatus EncodeUtf8ToAscii(in State state, ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, bool isFinalBlock)
+        {
+            // First, figure out how many bytes we can copy as-is.
+
+            int idxOfFirstByteToEncode = (int)FindIndexOfFirstByteToEncode(
+                in state,
+                ref MemoryMarshal.GetReference(source),
+                (uint)Math.Min(source.Length, destination.Length));
+
+            Debug.Assert(idxOfFirstByteToEncode >= 0 && idxOfFirstByteToEncode <= source.Length);
+            source.Slice(0, idxOfFirstByteToEncode).CopyTo(destination);
+
+            // Happy path: we consumed the entire input without error
+
+            if (idxOfFirstByteToEncode == source.Length)
+            {
+                bytesConsumed = idxOfFirstByteToEncode;
+                bytesWritten = idxOfFirstByteToEncode;
+                return OperationStatus.Done;
+            }
+
+            if (idxOfFirstByteToEncode == destination.Length)
+            {
+                bytesConsumed = idxOfFirstByteToEncode;
+                bytesWritten = idxOfFirstByteToEncode;
+                return OperationStatus.DestinationTooSmall;
+            }
+
+            // Slower path: we found data that needs to be fixed up
+            // If there's a partial UTF-8 subsequence at the end of the buffer,
+            // strip it now and remember that fact for later.
+
+            source = source.Slice(idxOfFirstByteToEncode);
+            destination = destination.Slice(idxOfFirstByteToEncode);
+
+            bool strippedPartialDataAtEnd = false;
+            if (!isFinalBlock &&
+                Rune.DecodeLastFromUtf8(source, out _, out int countOfPartialBytesAtEndOfSource) == OperationStatus.NeedMoreData)
+            {
+                strippedPartialDataAtEnd = true;
+                source = source[..^countOfPartialBytesAtEndOfSource];
+            }
+
+            OperationStatus innerStatus = EncodeSlowUtf8AsAscii(in state, source, destination, out int innerBytesConsumed, out int innerBytesWritten);
+            bytesConsumed = innerBytesConsumed + idxOfFirstByteToEncode;
+            bytesWritten = innerBytesWritten + idxOfFirstByteToEncode;
+
+            if (innerStatus == OperationStatus.Done && strippedPartialDataAtEnd)
+            {
+                innerStatus = OperationStatus.NeedMoreData; // caller must provide remainder of partial data
+            }
+
+            return innerStatus;
+        }
+
+        private static OperationStatus EncodeSlowUtf8AsAscii(in State state, ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        {
+            throw new NotImplementedException();
+        }
+
         public static OperationStatus Encode(in State state, ReadOnlySpan<char> source, Span<char> destination, out int charsConsumed, out int charsWritten, bool isFinalBlock)
         {
             // First, figure out how many characters we can copy as-is.
@@ -147,7 +207,7 @@ namespace System.Text.Encodings.Web
             return (value >= State.CharsMustEncodeLength || state.CharsMustEncode[value]) ? true : false;
         }
 
-        public static nuint FindIndexOfFirstByteToEncode(ref byte buffer, nuint bufferLength, in State state)
+        public static nuint FindIndexOfFirstByteToEncode(in State state, ref byte buffer, nuint bufferLength)
         {
             nuint curOffset = 0;
 

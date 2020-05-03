@@ -55,9 +55,7 @@ namespace System.Text.Encodings.Web
         }
 
         public override OperationStatus EncodeUtf8(ReadOnlySpan<byte> utf8Source, Span<byte> utf8Destination, out int bytesConsumed, out int bytesWritten, bool isFinalBlock = true)
-        {
-#error not implemented
-        }
+            => AsciiEncoder.EncodeUtf8ToAscii(in _state, utf8Source, utf8Destination, out bytesConsumed, out bytesWritten, isFinalBlock);
 
         public override unsafe int FindFirstCharacterToEncode(char* text, int textLength)
         {
