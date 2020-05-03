@@ -12,20 +12,239 @@ using System.Runtime.Intrinsics.X86;
 
 using Statics = System.Text.Encodings.Web.Sse41AsciiEncoderStatics;
 
+#pragma warning disable SA1121 // Use built-in type alias
+using nuint = System.UInt32; // TODO: Replace me when real nuint type comes online
+
 namespace System.Text.Encodings.Web
 {
-    internal struct State
+    internal unsafe struct State
     {
+        public const int CharsMustEncodeLength = 128;
+
         public Vector128<byte> BitmapMask;
+        public fixed bool CharsMustEncode[CharsMustEncodeLength];
     }
 
-    internal static unsafe  class AsciiEncoder
+    internal static unsafe class AsciiEncoder
     {
-        public static nuint Foo(ref byte buffer, nuint bufferLength, in State state)
+        public static nuint FindIndexOfFirstByteToEncode(ref byte buffer, nuint bufferLength, in State state)
         {
-            return default;
+            nuint curOffset = 0;
+
+            //
+            // First try 128-bit reads
+            //
+
+            if (bufferLength >= (uint)Vector128<byte>.Count)
+            {
+                nuint lastOffsetWhereCanRead = bufferLength - (uint)Vector128<byte>.Count;
+
+            Loop:
+                do
+                {
+                    Vector128<byte> vector = Unsafe.ReadUnaligned<Vector128<byte>>(ref Unsafe.Add(ref buffer, (IntPtr)curOffset));
+
+                    // For each element in 'vector', we use the low nibble as the mask for the shuffle.
+                    // So given vector = [ 5A 20 39 7C ... ]
+                    //  and bitmapMask = [ 00 11 22 33 ... ],
+                    // we get shuffled = [ AA 00 99 CC ... ].
+                    //
+                    // Now we use the high nibble of each element of 'vector' to perform a bit check
+                    // of each element within the shuffled vector. So if 'vector' has an element [ 5A ],
+                    // this means "choose the element at index A from the bitmap, then determine whether
+                    // the bit at position 5 is set within this element."
+                    //
+                    // PAND (lowNibble, highNibble) != [ 00 ] => bit 5 of element at index A in the bitmap *IS SET*
+                    // PANDN(lowNibble, highNibble) != [ 00 ] => bit 5 of element at index A in the bitmap *IS NOT SET*
+                    //
+                    // We use "not set" to indicate that a particular value must be encoded. That is, if
+                    // the incoming byte is 0x5A, then it must be encoded if bit 5 of the element at index
+                    // A in the bitmap is not set.
+
+                    Vector128<byte> lowNibbleShuffled = Ssse3.Shuffle(state.BitmapMask, vector);
+                    Vector128<byte> highNibbleShuffled = Ssse3.Shuffle(Statics.PowersOfTwo, Sse2.And(Sse2.ShiftRightLogical(vector.AsInt16(), 4).AsByte(), Statics.LowNibble));
+
+                    // Use the PTEST instruction as a short-circuit.
+
+                    if (!Sse41.TestC(lowNibbleShuffled, highNibbleShuffled))
+                    {
+                        // We found a value that must be encoded. The bits of 'encodingMask'
+                        // which are set correspond to the elements of 'vector' which must be
+                        // encoded.
+
+                        int encodingmask = Sse2.MoveMask(Sse2.CompareEqual(Sse2.And(lowNibbleShuffled, highNibbleShuffled), default));
+                        Debug.Assert(encodingmask != 0);
+
+                        return curOffset + (uint)BitOperations.TrailingZeroCount(encodingmask);
+                    }
+
+                    // All values can pass through unencoded.
+                    curOffset += (uint)Vector128<byte>.Count;
+                } while (curOffset <= lastOffsetWhereCanRead);
+
+                if (lastOffsetWhereCanRead + (uint)Vector128<byte>.Count == curOffset)
+                {
+                    return curOffset; // processed the entire buffer
+                }
+
+                curOffset = lastOffsetWhereCanRead; // perform one final overlapping read from the end
+                goto Loop;
+            }
+
+            //
+            // Then try 64-bit reads
+            //
+
+            if (bufferLength >= (uint)Vector64<byte>.Count)
+            {
+            Loop:
+                Vector128<byte> vector = Vector128.CreateScalarUnsafe(Unsafe.ReadUnaligned<ulong>(ref Unsafe.Add(ref buffer, (IntPtr)curOffset))).AsByte();
+
+                // Same logic as above, but we can't use PTEST because the upper 8
+                // bytes of the vector will have incorrect values.
+
+                Vector128<byte> lowNibbleShuffled = Ssse3.Shuffle(state.BitmapMask, vector);
+                Vector128<byte> highNibbleShuffled = Ssse3.Shuffle(Statics.PowersOfTwo, Sse2.And(Sse2.ShiftRightLogical(vector.AsInt16(), 4).AsByte(), Statics.LowNibble));
+
+                int encodingmask = Sse2.MoveMask(Sse2.CompareEqual(Sse2.And(lowNibbleShuffled, highNibbleShuffled), default));
+                if ((byte)encodingmask != 0)
+                {
+                    return curOffset + (uint)BitOperations.TrailingZeroCount(encodingmask);
+                }
+
+                // All values can pass through unencoded.
+                curOffset += (uint)Vector64<byte>.Count;
+
+                if (curOffset == bufferLength)
+                {
+                    return curOffset; // processed the entire buffer
+                }
+
+                curOffset = bufferLength - (uint)Vector64<byte>.Count; // perform one final overlapping read from the end
+                goto Loop;
+            }
+
+            //
+            // Small buffers (fewer than 8 elements)
+            //
+
+            for (; curOffset < bufferLength; curOffset++)
+            {
+                nuint el = Unsafe.Add(ref buffer, (IntPtr)(void*)curOffset);
+                if (el >= State.CharsMustEncodeLength || state.CharsMustEncode[el])
+                {
+                    break;
+                }
+            }
+
+            return curOffset;
         }
 
+        public static nuint FindIndexOfFirstCharToEncode(ref char buffer, nuint bufferLength, in State state)
+        {
+            nuint curOffset = 0;
+
+            //
+            // First try 2x 128-bit reads
+            //
+
+            if (bufferLength >= (uint)Vector128<byte>.Count)
+            {
+                nuint lastOffsetWhereCanRead = bufferLength - (uint)Vector128<byte>.Count;
+
+            Loop:
+                do
+                {
+                    // We can get away with saturation in the below call because saturation will
+                    // normalize out-of-range values to [ 00 ] or [ 80 .. FF ], which we already
+                    // know are not present in the allow-list.
+
+                    Vector128<byte> vector = Sse2.PackUnsignedSaturate(
+                        Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.As<char, byte>(ref buffer)),
+                        Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.Add(ref Unsafe.As<char, byte>(ref buffer), Vector128<byte>.Count)));
+
+                    // From here, the logic is the same as the 'byte' case.
+
+                    Vector128<byte> lowNibbleShuffled = Ssse3.Shuffle(state.BitmapMask, vector);
+                    Vector128<byte> highNibbleShuffled = Ssse3.Shuffle(Statics.PowersOfTwo, Sse2.And(Sse2.ShiftRightLogical(vector.AsInt16(), 4).AsByte(), Statics.LowNibble));
+
+                    // Use the PTEST instruction as a short-circuit.
+
+                    if (!Sse41.TestC(lowNibbleShuffled, highNibbleShuffled))
+                    {
+                        // We found a value that must be encoded. The bits of 'encodingMask'
+                        // which are set correspond to the elements of 'vector' which must be
+                        // encoded.
+
+                        int encodingmask = Sse2.MoveMask(Sse2.CompareEqual(Sse2.And(lowNibbleShuffled, highNibbleShuffled), default));
+                        Debug.Assert(encodingmask != 0);
+
+                        return curOffset + (uint)BitOperations.TrailingZeroCount(encodingmask);
+                    }
+
+                    // All values can pass through unencoded.
+                    curOffset += (uint)Vector128<byte>.Count;
+                } while (curOffset <= lastOffsetWhereCanRead);
+
+                if (lastOffsetWhereCanRead + (uint)Vector128<byte>.Count == curOffset)
+                {
+                    return curOffset; // processed the entire buffer
+                }
+
+                curOffset = lastOffsetWhereCanRead; // perform one final overlapping read from the end
+                goto Loop;
+            }
+
+            //
+            // Then try 1x 128-bit reads
+            //
+
+            if (bufferLength >= (uint)Vector64<byte>.Count)
+            {
+            Loop:
+                Vector128<byte> vector = Sse2.PackUnsignedSaturate(
+                      Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.As<char, byte>(ref buffer)),
+                      default);
+
+                // Same logic as above, but we can't use PTEST because the upper 8
+                // bytes of the vector will have incorrect values.
+
+                Vector128<byte> lowNibbleShuffled = Ssse3.Shuffle(state.BitmapMask, vector);
+                Vector128<byte> highNibbleShuffled = Ssse3.Shuffle(Statics.PowersOfTwo, Sse2.And(Sse2.ShiftRightLogical(vector.AsInt16(), 4).AsByte(), Statics.LowNibble));
+
+                int encodingmask = Sse2.MoveMask(Sse2.CompareEqual(Sse2.And(lowNibbleShuffled, highNibbleShuffled), default));
+                if ((byte)encodingmask != 0)
+                {
+                    return curOffset + (uint)BitOperations.TrailingZeroCount(encodingmask);
+                }
+
+                // All values can pass through unencoded.
+                curOffset += (uint)Vector64<byte>.Count;
+
+                if (curOffset == bufferLength)
+                {
+                    return curOffset; // processed the entire buffer
+                }
+
+                curOffset = bufferLength - (uint)Vector64<byte>.Count; // perform one final overlapping read from the end
+                goto Loop;
+            }
+
+            //
+            // Small buffers (fewer than 8 elements)
+            //
+
+            for (; curOffset < bufferLength; curOffset++)
+            {
+                nuint el = Unsafe.Add(ref buffer, (IntPtr)(void*)curOffset);
+                if (el >= State.CharsMustEncodeLength || state.CharsMustEncode[el])
+                {
+                    break;
+                }
+            }
+
+            return curOffset;
+        }
     }
 
     internal static class Sse41AsciiEncoderStatics
