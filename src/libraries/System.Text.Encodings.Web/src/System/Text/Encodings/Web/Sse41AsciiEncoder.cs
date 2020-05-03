@@ -130,7 +130,7 @@ namespace System.Text.Encodings.Web
 
             for (; curOffset < bufferLength; curOffset++)
             {
-                nuint el = Unsafe.Add(ref buffer, (IntPtr)(void*)curOffset);
+                nuint el = Unsafe.Add(ref buffer, (IntPtr)curOffset);
                 if (el >= State.CharsMustEncodeLength || state.CharsMustEncode[el])
                 {
                     break;
@@ -160,8 +160,8 @@ namespace System.Text.Encodings.Web
                     // know are not present in the allow-list.
 
                     Vector128<byte> vector = Sse2.PackUnsignedSaturate(
-                        Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.As<char, byte>(ref buffer)),
-                        Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.Add(ref Unsafe.As<char, byte>(ref buffer), Vector128<byte>.Count)));
+                        Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.As<char, byte>(ref Unsafe.Add(ref buffer, (IntPtr)curOffset))),
+                        Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.Add(ref Unsafe.As<char, byte>(ref Unsafe.Add(ref buffer, (IntPtr)curOffset)), Vector128<byte>.Count)));
 
                     // From here, the logic is the same as the 'byte' case.
 
@@ -203,7 +203,7 @@ namespace System.Text.Encodings.Web
             {
             Loop:
                 Vector128<byte> vector = Sse2.PackUnsignedSaturate(
-                      Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.As<char, byte>(ref buffer)),
+                      Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.As<char, byte>(ref Unsafe.Add(ref buffer, (IntPtr)curOffset))),
                       default);
 
                 // Same logic as above, but we can't use PTEST because the upper 8
@@ -236,7 +236,7 @@ namespace System.Text.Encodings.Web
 
             for (; curOffset < bufferLength; curOffset++)
             {
-                nuint el = Unsafe.Add(ref buffer, (IntPtr)(void*)curOffset);
+                nuint el = Unsafe.Add(ref buffer, (IntPtr)curOffset);
                 if (el >= State.CharsMustEncodeLength || state.CharsMustEncode[el])
                 {
                     break;
