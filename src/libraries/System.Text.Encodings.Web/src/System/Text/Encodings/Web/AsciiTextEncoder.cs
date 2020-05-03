@@ -63,16 +63,9 @@ namespace System.Text.Encodings.Web
 
         public override unsafe int FindFirstCharacterToEncode(char* text, int textLength)
         {
-            if (text == null)
+            if ((text == null && textLength != 0) || (textLength < 0))
             {
-                if (textLength != 0)
-                {
-#error throw exception here
-                }
-            }
-            else if (textLength < 0)
-            {
-#error throw exception here
+                throw new ArgumentOutOfRangeException(paramName: nameof(textLength));
             }
 
             int idx = (int)AsciiEncoder.FindIndexOfFirstCharToEncode(
