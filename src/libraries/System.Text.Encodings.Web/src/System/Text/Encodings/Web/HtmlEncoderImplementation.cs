@@ -19,7 +19,7 @@ namespace System.Text.Encodings.Web
             if ((uint)MaxOutputCharsPerInputRune >= (uint)buffer.Length)
             {
                 Debug.Fail("Caller passed a bad scratch buffer.");
-                goto Fail; // this should never happen
+                buffer[-1] = default; // will throw IndexOutOfBoundsException
             }
 
             int i = 0;
@@ -68,20 +68,26 @@ namespace System.Text.Encodings.Web
             buffer[2] = 'x';
 
             uint value = (uint)rune.Value;
-            int nibblesToWrite = BitOperations.Log2(value) / 4;
-            for (i = 0; i <= nibblesToWrite; i++)
+            buffer = buffer.Slice(3, (BitOperations.Log2(value) / 4) + 2);
+
+            // This is essentially a reverse 'for' loop, but it's written to take
+            // advantage of JIT bounds check elision.
+
+            i = buffer.Length - 2;
+            while (true)
             {
+                if ((uint)i >= (uint)buffer.Length)
+                {
+                    break;
+                }
+
                 char upperHex = HexConverter.ToCharUpper((int)value);
-                buffer[3 + i] = upperHex;
+                buffer[i--] = upperHex;
                 value >>= 4;
             }
 
-            buffer[4 + nibblesToWrite] = ';';
-            return 5 + nibblesToWrite;
-
-        Fail:
-            buffer[-1] = '\0'; // will throw IndexOutOfBoundsException
-            return 0;
+            buffer[buffer.Length - 1] = ';'; // unfortunately can't elide bounds check
+            return buffer.Length + 3; // account for the "&#x" written previously
         }
     }
 }
