@@ -85,7 +85,54 @@ namespace System.Text.Encodings.Web
 
         private static OperationStatus EncodeSlowUtf8AsAscii(in State state, ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
-            throw new NotImplementedException();
+            int srcIdx;
+            int destIdx = 0;
+
+            for (srcIdx = 0; srcIdx < source.Length; srcIdx++)
+            {
+                byte thisByte = source[srcIdx];
+                if (!WillEncode(in state, thisByte))
+                {
+                    // Copy byte as-is
+                    if ((uint)destIdx >= (uint)destination.Length) { goto DestTooSmall; }
+                    destination[destIdx++] = thisByte;
+                    continue;
+                }
+
+                Rune rune;
+                int bytesConsumedForThisRune = 1;
+                if (thisByte <= 0x7F)
+                {
+                    rune = new Rune(thisByte); // ASCII
+                    Debug.Assert(rune.IsAscii);
+                }
+                else
+                {
+                    Rune.DecodeFromUtf8(source.Slice(srcIdx), out rune, out bytesConsumedForThisRune);
+                }
+
+                if (!TryEncodeAsAscii(rune, destination.Slice(destIdx), out int bytesWrittenForThisRune))
+                {
+                    goto DestTooSmall;
+                }
+
+                destIdx += bytesWrittenForThisRune;
+                srcIdx += bytesConsumedForThisRune;
+                srcIdx--; // account for srcIdx++ at loop
+            }
+
+            // If we got to this point, we read the entire input buffer!
+
+            Debug.Assert(srcIdx == source.Length);
+            bytesConsumed = srcIdx;
+            bytesWritten = destIdx;
+            return OperationStatus.Done;
+
+        DestTooSmall:
+            Debug.Assert(srcIdx < source.Length);
+            bytesConsumed = srcIdx;
+            bytesWritten = destIdx;
+            return OperationStatus.DestinationTooSmall;
         }
 
         public static OperationStatus Encode(in State state, ReadOnlySpan<char> source, Span<char> destination, out int charsConsumed, out int charsWritten, bool isFinalBlock)
@@ -183,7 +230,7 @@ namespace System.Text.Encodings.Web
 
             Debug.Assert(srcIdx == source.Length);
             charsConsumed = srcIdx;
-            charsWritten = destination.Length;
+            charsWritten = destIdx;
             return OperationStatus.Done;
 
         DestTooSmall:
@@ -194,6 +241,11 @@ namespace System.Text.Encodings.Web
         }
 
         private static bool TryEncode(Rune value, Span<char> buffer, out int charsWritten)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static bool TryEncodeAsAscii(Rune value, Span<byte> buffer, out int bytesWritten)
         {
             throw new NotImplementedException();
         }
