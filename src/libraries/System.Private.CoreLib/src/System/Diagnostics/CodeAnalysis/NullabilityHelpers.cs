@@ -17,7 +17,7 @@ namespace System.Diagnostics.CodeAnalysis
         public static void SuppressNonNullAssignmentWarning<T>([NotNull] ref T value)
             where T : class?
         {
-            Unsafe.SkipInit(out value!); // no-ops
+            Unsafe.SkipInit(out value!); // no-op
         }
     }
 }
