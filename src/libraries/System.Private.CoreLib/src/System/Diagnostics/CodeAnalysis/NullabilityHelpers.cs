@@ -13,7 +13,7 @@ namespace System.Diagnostics.CodeAnalysis
         /// Used when a method accepts a 'ref' parameter that should be non-null on
         /// method exit.
         /// </summary>
-        [Conditional("DEBUG")]
+        [Conditional("NEVER")]
         public static void SuppressNonNullAssignmentWarning<T>([NotNull] ref T value)
         {
             Unsafe.SkipInit(out value!);
