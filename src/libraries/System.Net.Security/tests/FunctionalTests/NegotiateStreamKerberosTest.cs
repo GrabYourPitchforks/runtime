@@ -14,8 +14,9 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Xunit;
+
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
 
 namespace System.Net.Security.Tests
 {

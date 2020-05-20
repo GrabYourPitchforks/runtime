@@ -19,6 +19,8 @@ using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 using Xunit;
 
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
+
 namespace System.Diagnostics.Tests
 {
     public class ProcessStartInfoTests : ProcessTestBase

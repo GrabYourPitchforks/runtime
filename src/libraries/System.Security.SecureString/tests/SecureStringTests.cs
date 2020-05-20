@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
+
 namespace System.Security.Tests
 {
     public static class SecureStringTests

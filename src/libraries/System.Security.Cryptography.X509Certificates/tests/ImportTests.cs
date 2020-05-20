@@ -5,6 +5,8 @@
 using System.Security;
 using Xunit;
 
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
+
 namespace System.Security.Cryptography.X509Certificates.Tests
 {
     public static class ImportTests

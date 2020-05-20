@@ -21,6 +21,14 @@ namespace Microsoft.Win32.SafeHandles
             return h;
         }
 
+        internal static SafeLocalAllocHandle LocalAlloc(nuint cb)
+        {
+            var h = new SafeLocalAllocHandle();
+            h.SetHandle(Marshal.AllocHGlobal(unchecked((nint)cb)));
+            h.Initialize(cb);
+            return h;
+        }
+
         // 0 is an Invalid Handle
         internal SafeLocalAllocHandle(IntPtr handle) : base(true)
         {

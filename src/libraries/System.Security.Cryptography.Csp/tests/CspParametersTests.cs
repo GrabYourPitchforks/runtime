@@ -4,6 +4,8 @@
 
 using Xunit;
 
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
+
 namespace System.Security.Cryptography.Csp.Tests
 {
     public static class CspParametersTests

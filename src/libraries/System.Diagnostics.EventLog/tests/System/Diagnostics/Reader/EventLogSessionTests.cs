@@ -8,6 +8,8 @@ using System.IO;
 using System.Security;
 using Xunit;
 
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
+
 namespace System.Diagnostics.Tests
 {
     public class EventLogSessionTests : FileCleanupTestBase

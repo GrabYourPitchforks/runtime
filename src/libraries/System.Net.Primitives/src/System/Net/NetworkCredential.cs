@@ -106,13 +106,8 @@ namespace System.Net
         {
             get
             {
-                string? str = _password as string;
-                if (str != null)
-                {
-                    return MarshalToSecureString(str);
-                }
-                SecureString? sstr = _password as SecureString;
-                return sstr != null ? sstr.Copy() : new SecureString();
+                return (_password as SecureString)?.Copy()
+                    ?? MarshalToSecureString(_password as string);
             }
             set
             {
@@ -175,8 +170,9 @@ namespace System.Net
             return result;
         }
 
-        private unsafe SecureString MarshalToSecureString(string str)
+        private unsafe SecureString MarshalToSecureString(string? str)
         {
+#pragma warning disable OBS0001 // SecureString ctor is obsolete
             if (string.IsNullOrEmpty(str))
             {
                 return new SecureString();
@@ -186,6 +182,7 @@ namespace System.Net
             {
                 return new SecureString(ptr, str.Length);
             }
+#pragma warning restore OBS0001
         }
     }
 }

@@ -5,6 +5,8 @@
 using System.ComponentModel;
 using System.Security;
 
+#pragma warning disable OBS0001 // SecureString ctor is obsolete
+
 namespace System.Management
 {
     /// <summary>

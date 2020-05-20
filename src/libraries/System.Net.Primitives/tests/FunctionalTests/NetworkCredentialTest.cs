@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.Security;
 using Xunit;
 
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
+
 namespace System.Net.Primitives.Functional.Tests
 {
     public static partial class NetworkCredentialTest

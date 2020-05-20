@@ -4,6 +4,8 @@
 
 using Test.Cryptography;
 
+#pragma warning disable OBS0001 // SecureString ctors are obsolete
+
 namespace System.Security.Cryptography.X509Certificates.Tests
 {
     internal static class TestData

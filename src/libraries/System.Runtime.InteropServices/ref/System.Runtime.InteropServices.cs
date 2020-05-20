@@ -1725,8 +1725,10 @@ namespace System.Security
 {
     public sealed partial class SecureString : System.IDisposable
     {
+        [System.ObsoleteAttribute("SecureString is deprecated and should not be used for new code.", DiagnosticId = "OBS0001", UrlFormat = "https://aka.ms/securestring")]
         public SecureString() { }
         [System.CLSCompliantAttribute(false)]
+        [System.ObsoleteAttribute("SecureString is deprecated and should not be used for new code.", DiagnosticId = "OBS0001", UrlFormat = "https://aka.ms/securestring")]
         public unsafe SecureString(char* value, int length) { }
         public int Length { get { throw null; } }
         public void AppendChar(char c) { }
