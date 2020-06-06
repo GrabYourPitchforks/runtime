@@ -22,7 +22,6 @@ jobs:
 - template: xplat-pipeline-job.yml
   parameters:
     buildConfig: ${{ parameters.buildConfig }}
-    _BuildConfig: ${{ parameters.buildConfig }}
     archType: ${{ parameters.archType }}
     osGroup: ${{ parameters.osGroup }}
     osSubgroup: ${{ parameters.osSubgroup }}
@@ -106,7 +105,7 @@ jobs:
     # and FreeBSD builds use a build agent with dependencies
     # preinstalled, so we only need this step for OSX and Windows.
     - ${{ if eq(parameters.osGroup, 'OSX') }}:
-      - script: sh $(Build.SourcesDirectory)/eng/install-native-dependencies.sh $(osGroup)
+      - script: $(Build.SourcesDirectory)/eng/install-native-dependencies.sh $(osGroup)
         displayName: Install native dependencies
     - ${{ if eq(parameters.osGroup, 'Windows_NT') }}:
       # Necessary to install python
@@ -149,8 +148,9 @@ jobs:
       displayName: Build managed product components and packages
 
     # Build native test components
-    - script: $(coreClrRepoRootDir)build-test$(scriptExt) skipmanaged $(buildConfig) $(archType) $(crossArg) $(osArg) $(priorityArg) $(compilerArg) skipgeneratelayout
-      displayName: Build native test components
+    - ${{ if ne(parameters.isOfficialBuild, true) }}:
+      - script: $(coreClrRepoRootDir)build-test$(scriptExt) skipstressdependencies skipmanaged skipgeneratelayout $(buildConfig) $(archType) $(crossArg) $(osArg) $(priorityArg) $(compilerArg)
+        displayName: Build native test components
 
     # Sign on Windows
     - ${{ if and(eq(parameters.osGroup, 'Windows_NT'), eq(parameters.signBinaries, 'true')) }}:
@@ -179,15 +179,16 @@ jobs:
           displayName: 'product build'
 
       # Publish test native components for consumption by test execution.
-      - template: /eng/pipelines/common/upload-artifact-step.yml
-        parameters:
-          rootFolder: $(nativeTestArtifactRootFolderPath)
-          includeRootFolder: false
-          archiveType: $(archiveType)
-          tarCompression: $(tarCompression)
-          archiveExtension: $(archiveExtension)
-          artifactName: $(nativeTestArtifactName)
-          displayName: 'native test components'
+      - ${{ if ne(parameters.isOfficialBuild, true) }}:
+        - template: /eng/pipelines/common/upload-artifact-step.yml
+          parameters:
+            rootFolder: $(nativeTestArtifactRootFolderPath)
+            includeRootFolder: false
+            archiveType: $(archiveType)
+            tarCompression: $(tarCompression)
+            archiveExtension: $(archiveExtension)
+            artifactName: $(nativeTestArtifactName)
+            displayName: 'native test components'
 
     # Get key vault secrets for publishing
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), ne(variables['Build.Reason'], 'PullRequest')) }}:

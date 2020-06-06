@@ -2548,6 +2548,9 @@ namespace System
         public static double Atan2(double y, double x) { throw null; }
         public static double Atanh(double d) { throw null; }
         public static long BigMul(int a, int b) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static ulong BigMul(ulong a, ulong b, out ulong low) { throw null; }
+        public static long BigMul(long a, long b, out long low) { throw null; }
         public static double BitDecrement(double x) { throw null; }
         public static double BitIncrement(double x) { throw null; }
         public static double Cbrt(double d) { throw null; }
@@ -5625,7 +5628,7 @@ namespace System.Diagnostics.CodeAnalysis
         public string? AssemblyName { get { throw null; } }
         public string? Condition { get { throw null; } set { } }
     }
-    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.GenericParameter | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, Inherited = false)]
+    [System.AttributeUsageAttribute(System.AttributeTargets.Field | System.AttributeTargets.GenericParameter | System.AttributeTargets.Method | System.AttributeTargets.Parameter | System.AttributeTargets.Property | System.AttributeTargets.ReturnValue, Inherited = false)]
     public sealed class DynamicallyAccessedMembersAttribute : System.Attribute
     {
         public DynamicallyAccessedMembersAttribute(DynamicallyAccessedMemberTypes memberTypes) { }
@@ -5636,7 +5639,7 @@ namespace System.Diagnostics.CodeAnalysis
     {
         All = -1,
         None = 0,
-        DefaultConstructor = 1,
+        PublicParameterlessConstructor = 1,
         PublicConstructors = 3,
         NonPublicConstructors = 4,
         PublicMethods = 8,
@@ -8124,6 +8127,8 @@ namespace System.Reflection
         public abstract System.Reflection.ICustomAttributeProvider ReturnTypeCustomAttributes { get; }
         public virtual System.Delegate CreateDelegate(System.Type delegateType) { throw null; }
         public virtual System.Delegate CreateDelegate(System.Type delegateType, object? target) { throw null; }
+        public T CreateDelegate<T>() where T : System.Delegate { throw null; }
+        public T CreateDelegate<T>(object? target) where T : System.Delegate { throw null; }
         public override bool Equals(object? obj) { throw null; }
         public abstract System.Reflection.MethodInfo GetBaseDefinition();
         public override System.Type[] GetGenericArguments() { throw null; }
@@ -9093,6 +9098,7 @@ namespace System.Runtime.CompilerServices
     public static partial class RuntimeFeature
     {
         public const string DefaultImplementationsOfInterfaces = "DefaultImplementationsOfInterfaces";
+        public const string CovariantReturnsOfClasses = "CovariantReturnsOfClasses";
         public const string PortablePdb = "PortablePdb";
         public static bool IsDynamicCodeCompiled { get { throw null; } }
         public static bool IsDynamicCodeSupported { get { throw null; } }
@@ -9246,6 +9252,11 @@ namespace System.Runtime.CompilerServices
             public void OnCompleted(System.Action continuation) { }
             public void UnsafeOnCompleted(System.Action continuation) { }
         }
+    }
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public sealed class PreserveBaseOverridesAttribute : Attribute
+    {
+        public PreserveBaseOverridesAttribute() {}
     }
 }
 namespace System.Runtime.ConstrainedExecution
@@ -10691,8 +10702,10 @@ namespace System.Threading.Tasks
         public static System.Threading.Tasks.Task<TResult[]> WhenAll<TResult>(System.Collections.Generic.IEnumerable<System.Threading.Tasks.Task<TResult>> tasks) { throw null; }
         public static System.Threading.Tasks.Task<TResult[]> WhenAll<TResult>(params System.Threading.Tasks.Task<TResult>[] tasks) { throw null; }
         public static System.Threading.Tasks.Task<System.Threading.Tasks.Task> WhenAny(System.Collections.Generic.IEnumerable<System.Threading.Tasks.Task> tasks) { throw null; }
+        public static System.Threading.Tasks.Task<System.Threading.Tasks.Task> WhenAny(System.Threading.Tasks.Task task1, System.Threading.Tasks.Task task2) { throw null; }
         public static System.Threading.Tasks.Task<System.Threading.Tasks.Task> WhenAny(params System.Threading.Tasks.Task[] tasks) { throw null; }
         public static System.Threading.Tasks.Task<System.Threading.Tasks.Task<TResult>> WhenAny<TResult>(System.Collections.Generic.IEnumerable<System.Threading.Tasks.Task<TResult>> tasks) { throw null; }
+        public static System.Threading.Tasks.Task<System.Threading.Tasks.Task<TResult>> WhenAny<TResult>(System.Threading.Tasks.Task<TResult> task1, System.Threading.Tasks.Task<TResult> task2) { throw null; }
         public static System.Threading.Tasks.Task<System.Threading.Tasks.Task<TResult>> WhenAny<TResult>(params System.Threading.Tasks.Task<TResult>[] tasks) { throw null; }
         public static System.Runtime.CompilerServices.YieldAwaitable Yield() { throw null; }
     }
@@ -10711,6 +10724,24 @@ namespace System.Threading.Tasks
         public TaskCanceledException(string? message, System.Exception? innerException, System.Threading.CancellationToken token) { }
         public TaskCanceledException(System.Threading.Tasks.Task? task) { }
         public System.Threading.Tasks.Task? Task { get { throw null; } }
+    }
+    public partial class TaskCompletionSource
+    {
+        public TaskCompletionSource() { }
+        public TaskCompletionSource(object? state) { }
+        public TaskCompletionSource(object? state, System.Threading.Tasks.TaskCreationOptions creationOptions) { }
+        public TaskCompletionSource(System.Threading.Tasks.TaskCreationOptions creationOptions) { }
+        public System.Threading.Tasks.Task Task { get { throw null; } }
+        public void SetCanceled() { }
+        public void SetCanceled(System.Threading.CancellationToken cancellationToken) { }
+        public void SetException(System.Collections.Generic.IEnumerable<System.Exception> exceptions) { }
+        public void SetException(System.Exception exception) { }
+        public void SetResult() { }
+        public bool TrySetCanceled() { throw null; }
+        public bool TrySetCanceled(System.Threading.CancellationToken cancellationToken) { throw null; }
+        public bool TrySetException(System.Collections.Generic.IEnumerable<System.Exception> exceptions) { throw null; }
+        public bool TrySetException(System.Exception exception) { throw null; }
+        public bool TrySetResult() { throw null; }
     }
     public partial class TaskCompletionSource<TResult>
     {

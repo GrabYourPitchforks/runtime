@@ -91,6 +91,10 @@ if !ENABLE_ILGEN
 ilgen_libraries = libmono-ilgen.la
 endif
 
+if ENABLE_PERFTRACING
+eventpipe_libs = $(top_builddir)/mono/eventpipe/libeventpipe.la
+endif
+
 BUNDLE_ZLIB_PATH=$(top_builddir)/mono/zlib/libz.la
 
 if HAVE_STATIC_ZLIB
@@ -140,7 +144,7 @@ if ENABLE_NETCORE
 if HAVE_SYS_ICU
 shim_libraries = libmonoruntime-shimglobalization.la
 
-libmonoruntime_shimglobalization_la_SOURCES = \
+nodist_libmonoruntime_shimglobalization_la_SOURCES = \
 									@ICU_SHIM_PATH@/pal_calendarData.c \
 									@ICU_SHIM_PATH@/pal_casing.c \
 									@ICU_SHIM_PATH@/pal_collation.c \
@@ -156,6 +160,10 @@ libmonoruntime_shimglobalization_la_CFLAGS = @ICU_CFLAGS@ -I$(top_srcdir)/../lib
 endif
 endif
 
+if !ENABLE_NETCORE
+culture_libraries = ../culture/libmono-culture.la
+endif
+
 #
 # This library contains the icall tables if the runtime was configured with --disable-icall-tables
 #
@@ -169,7 +177,7 @@ if BITCODE
 if WASM
 libmono_icall_table_la_LIBADD = # empty to avoid duplicate symbols when enabling dynamic linking
 else
-libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+libmono_icall_table_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la $(eventpipe_libs) libmonoruntimesgen.la
 endif
 endif
 endif
@@ -193,7 +201,7 @@ if BITCODE
 if WASM
 libmono_ilgen_la_LIBADD =  # empty to avoid duplicate symbols when enabling dynamic linking
 else
-libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la libmonoruntimesgen.la
+libmono_ilgen_la_LIBADD = $(glib_libs) ../utils/libmonoutils.la ../sgen/libmonosgen.la $(eventpipe_libs) libmonoruntimesgen.la
 endif
 endif
 endif
@@ -250,8 +258,6 @@ common_sources = \
 	coree.c 		\
 	coree.h 		\
 	coree-internals.h \
-	culture-info.h  	\
-	culture-info-tables.h	\
 	debug-helpers.c		\
 	debug-mono-symfile.h	\
 	debug-mono-symfile.c	\
@@ -260,6 +266,7 @@ common_sources = \
 	domain-internals.h	\
 	environment.c		\
 	environment.h		\
+	icall-eventpipe.c	\
 	exception.c		\
 	exception.h		\
 	exception-internals.h	\
@@ -287,7 +294,6 @@ common_sources = \
 	loaded-images.c		\
 	loaded-images-global.c	\
 	loaded-images-netcore.c	\
-	locales.c		\
 	locales.h		\
 	lock-tracer.c		\
 	lock-tracer.h		\
@@ -444,12 +450,12 @@ if !ENABLE_MSVC_ONLY
 libmonoruntime_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES) @CXX_ADD_CFLAGS@
-libmonoruntime_la_LIBADD = libmonoruntime-config.la $(support_libraries) $(shim_libraries)
+libmonoruntime_la_LIBADD = libmonoruntime-config.la $(culture_libraries) $(support_libraries) $(shim_libraries)
 
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(icall_tables_sources) $(ilgen_sources) $(gc_dependent_sources) $(sgen_sources)
 # Add CXX_ADD_CFLAGS per-library until/unless https://github.com/dotnet/corefx/pull/31342.
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES) @CXX_ADD_CFLAGS@
-libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(support_libraries) $(shim_libraries)
+libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(culture_libraries) $(support_libraries) $(shim_libraries)
 
 endif # !ENABLE_MSVC_ONLY
 
