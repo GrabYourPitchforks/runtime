@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 
 using Internal.Runtime.CompilerServices;
 
@@ -782,33 +783,102 @@ namespace System
         // or are otherwise mitigated
         internal unsafe int GetNonRandomizedHashCode()
         {
-            fixed (char* src = &_firstChar)
+            if (Sse42.X64.IsSupported)
             {
-                Debug.Assert(src[this.Length] == '\0', "src[this.Length] == '\\0'");
-                Debug.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
+                // String is laid out in memory as a 32-bit length, followed by
+                // a sequence of 16-bit code units, plus a 16-bit null terminator.
+                // The 32-bit length is the first field in the object, which means
+                // that it's always guaranteed aligned at an 8-byte boundary. We'll
+                // treat the length prefix as part of the character data, which will
+                // allow us to perform aligned 8-byte reads. We'll also *optionally*
+                // consume the null terminator.
+                //
+                // Examples, showing 32-bit reads as ---- and 64-bit reads as ====
+                //
+                // 0-char string => LL LL LL LL 00 00
+                //                  -----------
+                // 1-char string => LL LL LL LL AA AA 00 00
+                //                  =======================
+                // 2-char string => LL LL LL LL AA AA BB BB 00 00
+                //                  =======================
+                // 3-char string => LL LL LL LL AA AA BB BB CC CC 00 00
+                //                  ======================= -----------
+                // 4-char string => LL LL LL LL AA AA BB BB CC CC DD DD 00 00
+                //                  ======================= -----------
+                // 5-char string => LL LL LL LL AA AA BB BB CC CC DD DD EE EE 00 00
+                //                  ======================= =======================
+                // 6-char string => LL LL LL LL AA AA BB BB CC CC DD DD EE EE FF FF 00 00
+                //                  ======================= =======================
 
-                uint hash1 = (5381 << 16) + 5381;
-                uint hash2 = hash1;
+                int remainingLength = Length;
+                ref ulong data = ref Unsafe.As<int, ulong>(ref Unsafe.AsRef(in _stringLength));
+                Debug.Assert(((int)Unsafe.AsPointer(ref data) % 8) == 0, "Expected data ref to be 8-byte aligned.");
 
-                uint* ptr = (uint*)src;
-                int length = this.Length;
+                nuint byteOffset = 0;
+                ulong accum = uint.MaxValue;
 
-                while (length > 2)
+                while (remainingLength >= 1)
                 {
-                    length -= 4;
-                    // Where length is 4n-1 (e.g. 3,7,11,15,19) this additionally consumes the null terminator
-                    hash1 = (BitOperations.RotateLeft(hash1, 5) + hash1) ^ ptr[0];
-                    hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ ptr[1];
-                    ptr += 2;
+                    accum = Sse42.X64.Crc32(accum, Unsafe.AddByteOffset(ref data, byteOffset));
+                    byteOffset += 8;
+                    remainingLength -= 4;
                 }
 
-                if (length > 0)
+                // Narrowing the 64-bit register to 32 bits here prevents some
+                // unnecessary shuffling by the JIT later in the method.
+
+                uint retVal = (uint)accum;
+
+                // At this point, remainingLength has one of the following values:
+                //  0 => original length was 0, 4, 8, 12, ...
+                // -1 => original length was    3, 7, 11, ...
+                // -2 => original length was    2, 6, 10, ...
+                // -3 => original lemgth was    1, 5,  9, ...
+                //
+                // From the earlier examples, we care about when the original length
+                // was (3 .. 4), (7 .. 8), etc., as it means there remains some data
+                // that the 64-bit reads couldn't consume. So we'll perform one final
+                // 32-bit read to take care of it. If the original string was zero-
+                // length this ends up reading the length field, but since it's all-
+                // zero it should be fine.
+
+                if (remainingLength >= -1)
                 {
-                    // Where length is 4n-3 (e.g. 1,5,9,13,17) this additionally consumes the null terminator
-                    hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ ptr[0];
+                    retVal = Sse42.Crc32(retVal, Unsafe.As<ulong, uint>(ref Unsafe.AddByteOffset(ref data, byteOffset)));
                 }
 
-                return (int)(hash1 + (hash2 * 1566083941));
+                return (int)retVal;
+            }
+            else
+            {
+                fixed (char* src = &_firstChar)
+                {
+                    Debug.Assert(src[this.Length] == '\0', "src[this.Length] == '\\0'");
+                    Debug.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
+
+                    uint hash1 = (5381 << 16) + 5381;
+                    uint hash2 = hash1;
+
+                    uint* ptr = (uint*)src;
+                    int length = this.Length;
+
+                    while (length > 2)
+                    {
+                        length -= 4;
+                        // Where length is 4n-1 (e.g. 3,7,11,15,19) this additionally consumes the null terminator
+                        hash1 = (BitOperations.RotateLeft(hash1, 5) + hash1) ^ ptr[0];
+                        hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ ptr[1];
+                        ptr += 2;
+                    }
+
+                    if (length > 0)
+                    {
+                        // Where length is 4n-3 (e.g. 1,5,9,13,17) this additionally consumes the null terminator
+                        hash2 = (BitOperations.RotateLeft(hash2, 5) + hash2) ^ ptr[0];
+                    }
+
+                    return (int)(hash1 + (hash2 * 1566083941));
+                }
             }
         }
 
