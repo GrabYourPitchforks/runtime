@@ -263,6 +263,37 @@ namespace System.Text
             return _chars.Slice(origPos, length);
         }
 
+#if NETCOREAPP
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(Rune value)
+        {
+            if (value.IsBmp)
+            {
+                int pos = _pos;
+                if ((uint)pos < (uint)_chars.Length)
+                {
+                    _chars[pos] = (char)value.Value;
+                    _pos = pos + 1;
+                    return;
+                }
+            }
+
+            AppendSlow(value);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void AppendSlow(Rune value)
+        {
+            Span<char> valueAsUtf16 = stackalloc char[2]; // max 2 UTF-16 code units per scalar value
+            value.EncodeToUtf16(valueAsUtf16);
+            Append(valueAsUtf16[0]);
+            if (!value.IsBmp)
+            {
+                Append(valueAsUtf16[1]);
+            }
+        }
+#endif
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void GrowAndAppend(char c)
         {

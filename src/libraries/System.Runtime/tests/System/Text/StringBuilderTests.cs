@@ -606,6 +606,41 @@ namespace System.Text.Tests
         }
 
         [Theory]
+        [InlineData("Hello", '\0', "Hello\0")]
+        [InlineData("Hello", 'a', "Helloa")]
+        [InlineData("", 'b', "b")]
+        [InlineData("", 0x1F44D, "\U0001F44D")]
+        [InlineData("Hello", 0x1F453, "Hello\U0001F453")]
+        public static void Append_Rune(string original, int value, string expected)
+        {
+            StringBuilder builder = new StringBuilder(original);
+            builder.Append(new Rune(value));
+            Assert.Equal(expected, builder.ToString());
+        }
+
+        [Fact]
+        public static void Append_Rune_NoSpareCapacity_ThrowsArgumentOutOfRangeException()
+        {
+            var builder = new StringBuilder(0, 5);
+            builder.Append("Hello");
+
+            Rune bmpRune = new Rune('a');
+            Rune astralRune = new Rune(0x1F44D);
+
+            Assert.Throws<ArgumentOutOfRangeException>(s_noCapacityParamName, () => builder.Append(bmpRune));
+            Assert.Throws<ArgumentOutOfRangeException>(s_noCapacityParamName, () => builder.Append(astralRune));
+
+            // Now test the edge case where there's only 1 char of space left
+            // and we try to add a supplementary plane scalar value.
+
+            builder = new StringBuilder(0, 60);
+            builder.Append("Hello");
+
+            Assert.Throws<ArgumentOutOfRangeException>(s_noCapacityParamName, () => builder.Append(astralRune));
+            Assert.Equal(5, builder.Length); // high surrogate shouldn't have been written in isolation
+        }
+
+        [Theory]
         [InlineData("Hello", "abc", 0, 3, "Helloabc")]
         [InlineData("Hello", "def", 1, 2, "Helloef")]
         [InlineData("Hello", "def", 2, 1, "Hellof")]

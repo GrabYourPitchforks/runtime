@@ -56,6 +56,25 @@ namespace System.Text.Tests
             Assert.Equal(sb.ToString(), vsb.ToString());
         }
 
+        [Theory]
+        [InlineData('a')]
+        [InlineData(0x10FFFF)]
+        public void Append_Rune_MatchesStringBuilder(int scalarValue)
+        {
+            Rune rune = new Rune(scalarValue);
+
+            var sb = new StringBuilder();
+            var vsb = new ValueStringBuilder();
+            for (int i = 1; i <= 100; i++)
+            {
+                sb.Append(rune);
+                vsb.Append(rune);
+            }
+
+            Assert.Equal(sb.Length, vsb.Length);
+            Assert.Equal(sb.ToString(), vsb.ToString());
+        }
+
         [Fact]
         public void Append_String_MatchesStringBuilder()
         {

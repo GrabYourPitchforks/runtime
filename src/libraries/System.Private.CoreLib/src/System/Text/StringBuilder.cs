@@ -1248,6 +1248,24 @@ namespace System.Text
 
         public StringBuilder Append(ReadOnlyMemory<char> value) => Append(value.Span);
 
+        public StringBuilder Append(Rune value)
+        {
+            if (value.IsBmp)
+            {
+                return Append((char)value.Value);
+            }
+            else
+            {
+                // Append as ROS<char> rather than char-by-char so that we don't end up with
+                // a partial write in the event the capacity check fails halfway through.
+
+                Span<char> valueAsUtf16 = stackalloc char[Rune.MaxUtf16CharsPerRune];
+                int actualUtf16CharCount = value.EncodeToUtf16(valueAsUtf16);
+                Debug.Assert(actualUtf16CharCount == 2, "BMP case should've been handled earlier.");
+                return Append(valueAsUtf16);
+            }
+        }
+
         #region AppendJoin
 
         public unsafe StringBuilder AppendJoin(string? separator, params object?[] values)
