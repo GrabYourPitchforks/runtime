@@ -4,6 +4,7 @@
 
 using System.Buffers;
 using System.Globalization;
+using System.Tests;
 using System.Text.Unicode;
 using Xunit;
 using Xunit.Sdk;
@@ -268,6 +269,73 @@ namespace System.Text.Tests
             Assert.Equal(expected, a.Equals((object)b));
             Assert.Equal(expected, a == b);
             Assert.NotEqual(expected, a != b);
+        }
+
+        [Theory]
+        [InlineData('a', 'a', StringComparison.Ordinal, true)]
+        [InlineData('a', 'a', StringComparison.OrdinalIgnoreCase, true)]
+        [InlineData('a', 'a', StringComparison.CurrentCulture, true)]
+        [InlineData('a', 'a', StringComparison.CurrentCultureIgnoreCase, true)]
+        [InlineData('a', 'a', StringComparison.InvariantCulture, true)]
+        [InlineData('a', 'a', StringComparison.InvariantCultureIgnoreCase, true)]
+        [InlineData('a', 'A', StringComparison.Ordinal, false)]
+        [InlineData('a', 'A', StringComparison.OrdinalIgnoreCase, true)]
+        [InlineData('a', 'A', StringComparison.CurrentCulture, false)]
+        [InlineData('a', 'A', StringComparison.CurrentCultureIgnoreCase, true)]
+        [InlineData('a', 'A', StringComparison.InvariantCulture, false)]
+        [InlineData('a', 'A', StringComparison.InvariantCultureIgnoreCase, true)]
+        [InlineData(0x10FFFF, 0x10FFFF, StringComparison.Ordinal, true)]
+        [InlineData(0x10FFFF, 0x10FFFF, StringComparison.OrdinalIgnoreCase, true)]
+        [InlineData(0x10FFFF, 0x10FFFF, StringComparison.CurrentCulture, true)]
+        [InlineData(0x10FFFF, 0x10FFFF, StringComparison.CurrentCultureIgnoreCase, true)]
+        [InlineData(0x10FFFF, 0x10FFFF, StringComparison.InvariantCulture, true)]
+        [InlineData(0x10FFFF, 0x10FFFF, StringComparison.InvariantCultureIgnoreCase, true)]
+        public static void Equals_WithStringComparison(int first, int other, StringComparison comparisonType, bool expected)
+        {
+            Rune a = new Rune(first);
+            Rune b = new Rune(other);
+
+            Assert.Equal(expected, a.Equals(b, comparisonType));
+            Assert.Equal(expected, string.Equals(a.ToString(), b.ToString(), comparisonType)); // should match string.Equals
+        }
+
+        [Theory]
+        [InlineData('i', 'I', "tr-TR", false)]
+        [InlineData('i', 'I', "" /* invariant */, true)]
+        [InlineData('i', 'I', "en-US", true)]
+        [InlineData('i', '\u0130', "tr-TR", true)]
+        [InlineData('i', '\u0130', "" /* invariant */, false)]
+        [InlineData('i', '\u0130', "en-US", false)]
+        public static void Equals_CurrentCultureIgnoreCase_CultureAware(int first, int other, string cultureName, bool expectedCaseInsensitiveEquals)
+        {
+            Rune a = new Rune(first);
+            Rune b = new Rune(other);
+
+            if (cultureName == "")
+            {
+                Assert.Equal(expectedCaseInsensitiveEquals, a.Equals(b, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            bool actual;
+            using (new ThreadCultureChange(cultureName))
+            {
+                actual = a.Equals(b, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            Assert.Equal(expectedCaseInsensitiveEquals, actual); // assert outside the ThreadCultureChange to allow exception to be thrown correctly
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(6)]
+        [InlineData(int.MaxValue)]
+        public static void Equals_WithStringComparison_BadComparisonType(int comparisonType)
+        {
+            Rune a = new Rune('a');
+            Rune b = new Rune('b');
+
+            StringComparison comparisonTypeAsEnum = (StringComparison)comparisonType;
+            Assert.Throws<ArgumentException>("comparisonType", () => a.Equals(b, comparisonTypeAsEnum));
         }
 
         [Theory]

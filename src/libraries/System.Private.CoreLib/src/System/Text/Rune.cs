@@ -763,6 +763,24 @@ namespace System.Text
 
         public bool Equals(Rune other) => this == other;
 
+        public bool Equals(Rune other, StringComparison comparisonType)
+        {
+            if (comparisonType == StringComparison.Ordinal)
+            {
+                // fast-track common case
+                return this.Equals(other);
+            }
+            else
+            {
+                // fall back to MemoryExtensions
+                Span<char> thisAsUtf16 = stackalloc char[MaxUtf16CharsPerRune];
+                Span<char> otherAsUtf16 = stackalloc char[MaxUtf16CharsPerRune];
+                thisAsUtf16 = thisAsUtf16.Slice(0, this.EncodeToUtf16(thisAsUtf16));
+                otherAsUtf16 = otherAsUtf16.Slice(0, other.EncodeToUtf16(otherAsUtf16));
+                return MemoryExtensions.Equals(thisAsUtf16, otherAsUtf16, comparisonType);
+            }
+        }
+
         public override int GetHashCode() => Value;
 
         /// <summary>

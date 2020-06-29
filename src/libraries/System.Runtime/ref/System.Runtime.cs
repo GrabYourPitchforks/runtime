@@ -10548,6 +10548,7 @@ namespace System.Text
         public int EncodeToUtf8(System.Span<byte> destination) { throw null; }
         public override bool Equals(object? obj) { throw null; }
         public bool Equals(System.Text.Rune other) { throw null; }
+        public bool Equals(System.Text.Rune other, System.StringComparison comparisonType) { throw null; }
         public override int GetHashCode() { throw null; }
         public static double GetNumericValue(System.Text.Rune value) { throw null; }
         public static System.Text.Rune GetRuneAt(string input, int index) { throw null; }
