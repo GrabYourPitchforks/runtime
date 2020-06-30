@@ -198,42 +198,7 @@ namespace System.Text
         /// </summary>
         public int Value => (int)_value;
 
-#if SYSTEM_PRIVATE_CORELIB
-        private static Rune ChangeCaseCultureAware(Rune rune, TextInfo textInfo, bool toUpper)
-        {
-            Debug.Assert(!GlobalizationMode.Invariant, "This should've been checked by the caller.");
-            Debug.Assert(textInfo != null, "This should've been checked by the caller.");
-
-            Span<char> original = stackalloc char[MaxUtf16CharsPerRune];
-            Span<char> modified = stackalloc char[MaxUtf16CharsPerRune];
-
-            int charCount = rune.EncodeToUtf16(original);
-            original = original.Slice(0, charCount);
-            modified = modified.Slice(0, charCount);
-
-            if (toUpper)
-            {
-                textInfo.ChangeCaseToUpper(original, modified);
-            }
-            else
-            {
-                textInfo.ChangeCaseToLower(original, modified);
-            }
-
-            // We use simple case folding rules, which disallows moving between the BMP and supplementary
-            // planes when performing a case conversion. The helper methods which reconstruct a Rune
-            // contain debug asserts for this condition.
-
-            if (rune.IsBmp)
-            {
-                return UnsafeCreate(modified[0]);
-            }
-            else
-            {
-                return UnsafeCreate(UnicodeUtility.GetScalarFromUtf16SurrogatePair(modified[0], modified[1]));
-            }
-        }
-#else
+#if !SYSTEM_PRIVATE_CORELIB
         private static Rune ChangeCaseCultureAware(Rune rune, CultureInfo culture, bool toUpper)
         {
             Debug.Assert(!GlobalizationMode.Invariant, "This should've been checked by the caller.");
@@ -1372,7 +1337,7 @@ namespace System.Text
             }
 
 #if SYSTEM_PRIVATE_CORELIB
-            return ChangeCaseCultureAware(value, culture.TextInfo, toUpper: false);
+            return culture.TextInfo.ToLower(value);
 #else
             return ChangeCaseCultureAware(value, culture, toUpper: false);
 #endif
@@ -1400,7 +1365,7 @@ namespace System.Text
             // Non-ASCII data requires going through the case folding tables.
 
 #if SYSTEM_PRIVATE_CORELIB
-            return ChangeCaseCultureAware(value, TextInfo.Invariant, toUpper: false);
+            return TextInfo.Invariant.ToLower(value);
 #else
             return ChangeCaseCultureAware(value, CultureInfo.InvariantCulture, toUpper: false);
 #endif
@@ -1423,7 +1388,7 @@ namespace System.Text
             }
 
 #if SYSTEM_PRIVATE_CORELIB
-            return ChangeCaseCultureAware(value, culture.TextInfo, toUpper: true);
+            return culture.TextInfo.ToUpper(value);
 #else
             return ChangeCaseCultureAware(value, culture, toUpper: true);
 #endif
@@ -1451,7 +1416,7 @@ namespace System.Text
             // Non-ASCII data requires going through the case folding tables.
 
 #if SYSTEM_PRIVATE_CORELIB
-            return ChangeCaseCultureAware(value, TextInfo.Invariant, toUpper: true);
+            return TextInfo.Invariant.ToUpper(value);
 #else
             return ChangeCaseCultureAware(value, CultureInfo.InvariantCulture, toUpper: true);
 #endif

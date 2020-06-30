@@ -152,6 +152,20 @@ namespace System.Globalization
             return ChangeCase(c, toUpper: false);
         }
 
+        /// <summary>
+        /// Converts the Unicode scalar value to lower case. Certain locales
+        /// have different casing semantics from the file systems in Win32.
+        /// </summary>
+        public Rune ToLower(Rune value)
+        {
+            if (GlobalizationMode.Invariant || (value.IsAscii && IsAsciiCasingSameAsInvariant))
+            {
+                return ToLowerAsciiInvariant(value);
+            }
+
+            return ChangeCase(value, toUpper: false);
+        }
+
         internal static char ToLowerInvariant(char c)
         {
             if (GlobalizationMode.Invariant || UnicodeUtility.IsAsciiCodePoint(c))
@@ -184,6 +198,34 @@ namespace System.Globalization
             char dst = default;
             ChangeCaseCore(&c, 1, &dst, 1, toUpper);
             return dst;
+        }
+
+        private unsafe Rune ChangeCase(Rune value, bool toUpper)
+        {
+            Debug.Assert(!GlobalizationMode.Invariant);
+
+            // Convert the scalar value to UTF-16, run it through the case conversion
+            // routine, then reconstruct the scalar value from the destination UTF-16 buffer.
+            // We assume that the scalar value cannot jump Unicode planes when undergoing
+            // case conversion. That is, the destination length is expected to match the
+            // source length (in UTF-16 code units).
+
+            char* pSrc = stackalloc char[Rune.MaxUtf16CharsPerRune];
+            char* pDst = stackalloc char[Rune.MaxUtf16CharsPerRune];
+
+            int srcUtf16Length = value.EncodeToUtf16(new Span<char>(pSrc, Rune.MaxUtf16CharsPerRune));
+            ChangeCaseCore(pSrc, srcUtf16Length, pDst, Rune.MaxUtf16CharsPerRune, toUpper);
+
+            if (Rune.TryCreate(pDst[0], out Rune result))
+            {
+                Debug.Assert(value.IsBmp); // BMP input <=> BMP output
+                return result;
+            }
+            else
+            {
+                Debug.Assert(!value.IsBmp); // supplementary plane input <=> supplementary plane output
+                return new Rune(pDst[0], pDst[1]); // will validate input, just to be safe
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -542,6 +584,17 @@ namespace System.Globalization
             return c;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Rune ToLowerAsciiInvariant(Rune value)
+        {
+            uint scalarValue = (uint)value.Value;
+            if (UnicodeUtility.IsInRangeInclusive(scalarValue, 'A', 'Z'))
+            {
+                return Rune.UnsafeCreate(scalarValue | 0x20);
+            }
+            return value;
+        }
+
         /// <summary>
         /// Converts the character or string to upper case.  Certain locales
         /// have different casing semantics from the file systems in Win32.
@@ -554,6 +607,20 @@ namespace System.Globalization
             }
 
             return ChangeCase(c, toUpper: true);
+        }
+
+        /// <summary>
+        /// Converts the Unicode scalar value to upper case. Certain locales
+        /// have different casing semantics from the file systems in Win32.
+        /// </summary>
+        public Rune ToUpper(Rune value)
+        {
+            if (GlobalizationMode.Invariant || (value.IsAscii && IsAsciiCasingSameAsInvariant))
+            {
+                return ToUpperAsciiInvariant(value);
+            }
+
+            return ChangeCase(value, toUpper: true);
         }
 
         internal static char ToUpperInvariant(char c)
@@ -589,6 +656,17 @@ namespace System.Globalization
                 c = (char)(c & 0x5F); // = low 7 bits of ~0x20
             }
             return c;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Rune ToUpperAsciiInvariant(Rune value)
+        {
+            uint scalarValue = (uint)value.Value;
+            if (UnicodeUtility.IsInRangeInclusive(scalarValue, 'a', 'z'))
+            {
+                return Rune.UnsafeCreate(scalarValue & 0x5F); // = low 7 bits of ~0x20
+            }
+            return value;
         }
 
         private bool IsAsciiCasingSameAsInvariant

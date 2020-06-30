@@ -6671,10 +6671,12 @@ namespace System.Globalization
         void System.Runtime.Serialization.IDeserializationCallback.OnDeserialization(object? sender) { }
         public char ToLower(char c) { throw null; }
         public string ToLower(string str) { throw null; }
+        public System.Text.Rune ToLower(System.Text.Rune value) { throw null; }
         public override string ToString() { throw null; }
         public string ToTitleCase(string str) { throw null; }
         public char ToUpper(char c) { throw null; }
         public string ToUpper(string str) { throw null; }
+        public System.Text.Rune ToUpper(System.Text.Rune value) { throw null; }
     }
     public partial class ThaiBuddhistCalendar : System.Globalization.Calendar
     {

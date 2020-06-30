@@ -35,7 +35,9 @@ namespace System.Text.Tests
             var rune = new Rune(original);
             var cultureInfo = CultureInfo.GetCultureInfo(culture);
             Assert.Equal(new Rune(upper), Rune.ToUpper(rune, cultureInfo));
+            Assert.Equal(new Rune(upper), cultureInfo.TextInfo.ToUpper(rune));
             Assert.Equal(new Rune(lower), Rune.ToLower(rune, cultureInfo));
+            Assert.Equal(new Rune(lower), cultureInfo.TextInfo.ToLower(rune));
         }
 
         // Invariant ToUpper / ToLower doesn't modify Turkish I or majuscule Eszett
@@ -58,7 +60,9 @@ namespace System.Text.Tests
         {
             var rune = new Rune(original);
             Assert.Equal(new Rune(upper), Rune.ToUpperInvariant(rune));
+            Assert.Equal(new Rune(upper), CultureInfo.InvariantCulture.TextInfo.ToUpper(rune));
             Assert.Equal(new Rune(lower), Rune.ToLowerInvariant(rune));
+            Assert.Equal(new Rune(lower), CultureInfo.InvariantCulture.TextInfo.ToLower(rune));
         }
 
         [Theory]

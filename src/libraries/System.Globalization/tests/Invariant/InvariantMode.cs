@@ -1022,12 +1022,17 @@ namespace System.Globalization.Tests
         public void TestRune(int original, int expectedToUpper, int expectedToLower)
         {
             Rune originalRune = new Rune(original);
+            CultureInfo trCulture = CultureInfo.GetCultureInfo("tr-TR");
 
             Assert.Equal(expectedToUpper, Rune.ToUpperInvariant(originalRune).Value);
-            Assert.Equal(expectedToUpper, Rune.ToUpper(originalRune, CultureInfo.GetCultureInfo("tr-TR")).Value);
+            Assert.Equal(expectedToUpper, CultureInfo.InvariantCulture.TextInfo.ToUpper(originalRune).Value);
+            Assert.Equal(expectedToUpper, Rune.ToUpper(originalRune, trCulture).Value);
+            Assert.Equal(expectedToUpper, trCulture.TextInfo.ToUpper(originalRune).Value);
 
             Assert.Equal(expectedToLower, Rune.ToLowerInvariant(originalRune).Value);
-            Assert.Equal(expectedToLower, Rune.ToLower(originalRune, CultureInfo.GetCultureInfo("tr-TR")).Value);
+            Assert.Equal(expectedToLower, CultureInfo.InvariantCulture.TextInfo.ToLower(originalRune).Value);
+            Assert.Equal(expectedToLower, Rune.ToLower(originalRune, trCulture).Value);
+            Assert.Equal(expectedToLower, trCulture.TextInfo.ToLower(originalRune).Value);
         }
 
         private static byte[] GetExpectedInvariantOrdinalSortKey(ReadOnlySpan<char> input)
