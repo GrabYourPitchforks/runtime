@@ -13,6 +13,8 @@
 #include "stack.h"
 #include "crst.h"
 #include "callhelpers.h"
+#include "codeversion.h"
+#include "clr_std/type_traits"
 
 typedef SSIZE_T NativeInt;
 typedef SIZE_T NativeUInt;
@@ -88,8 +90,12 @@ bool CorInfoTypeIsIntegral(CorInfoType cit);
 // Returns true iff "cet" is an unsigned integral type.
 bool CorElemTypeIsUnsigned(CorElementType cet);
 
-// Returns true iff "cit" is an integral type.
+// Returns true iff "cit" is a floating-point type.
 bool CorInfoTypeIsFloatingPoint(CorInfoType cit);
+
+// Returns true iff "cihet" is a floating-point type (float or double).
+// TODO: Handle Vector64, Vector128?
+bool CorInfoTypeIsFloatingPoint(CorInfoHFAElemType cihet);
 
 // Returns true iff "cit" is a pointer type (mgd/unmgd pointer, or native int).
 bool CorInfoTypeIsPointer(CorInfoType cit);
@@ -700,7 +706,7 @@ struct InterpreterMethodInfo
     void SetPinningBit(unsigned locNum);
     bool GetPinningBit(unsigned locNum);
 
-    CORINFO_METHOD_HANDLE GetPreciseGenericsContext(Object* thisArg, void* genericsCtxtArg);
+    CORINFO_CONTEXT_HANDLE GetPreciseGenericsContext(Object* thisArg, void* genericsCtxtArg);
 
 #ifndef DACCESS_COMPILE
     // Gets the proper cache for a call to a method with the current InterpreterMethodInfo, with the given
@@ -1767,12 +1773,13 @@ private:
     void DoByReferenceCtor();
     void DoByReferenceValue();
     void DoSIMDHwAccelerated();
+    void DoGetIsSupported();
 
     // Returns the proper generics context for use in resolving tokens ("precise" in the sense of including generic instantiation
     // information).
-    CORINFO_METHOD_HANDLE m_preciseGenericsContext;
+    CORINFO_CONTEXT_HANDLE m_preciseGenericsContext;
 
-    CORINFO_METHOD_HANDLE GetPreciseGenericsContext()
+    CORINFO_CONTEXT_HANDLE GetPreciseGenericsContext()
     {
         if (m_preciseGenericsContext == NULL)
         {
