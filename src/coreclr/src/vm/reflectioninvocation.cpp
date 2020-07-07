@@ -568,11 +568,12 @@ FCIMPLEND
  * throws an exception. If TypeHandle is a value type, the NEWOBJ helper will create
  * a boxed zero-inited instance of the value type.
  */
-PVOID QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHandle)
+void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHandle, PCODE* ppNewobjHelper, MethodTable** ppMT, BOOL fUnwrapNullable)
 {
     QCALL_CONTRACT;
 
-    void* retVal = NULL;
+    _ASSERTE(ppNewobjHelper != NULL && *ppNewobjHelper == NULL);
+    _ASSERTE(ppMT != NULL && *ppMT == NULL);
 
     BEGIN_QCALL;
 
@@ -622,6 +623,13 @@ PVOID QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(QCall::TypeHandle pTypeH
     }
 #endif // FEATURE_COMINTEROP
 
+    // If the caller passed Nullable<T> but asked us to unwrap nullable types,
+    // instead pretend they had passed the 'T' directly.
+    if (fUnwrapNullable && Nullable::IsNullableType(pMT))
+    {
+        pMT = pMT->GetInstantiation()[0].GetMethodTable();
+    }
+
     // Ensure the type's cctor has run
     Assembly* pAssem = pMT->GetAssembly();
     if (!pMT->IsClassInited())
@@ -632,30 +640,11 @@ PVOID QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(QCall::TypeHandle pTypeH
     }
 
     // And we're done!
-    retVal = (void*)CEEJitInfo::getHelperFtnStatic(CEEInfo::getNewHelperStatic(pMT));
-    _ASSERTE(retVal != NULL);
+    PCODE pNewobjFn = (PCODE)CEEJitInfo::getHelperFtnStatic(CEEInfo::getNewHelperStatic(pMT));
+    _ASSERTE(pNewobjFn != NULL);
 
-    END_QCALL;
-
-    return retVal;
-}
-
-/*
- * Given a TypeHandle, if that handle represents a closed Nullable<T>,
- * returns the RuntimeType corresponding to the T; else null.
- */
-void QCALLTYPE RuntimeTypeHandle::GetNullableUnderlyingType(QCall::TypeHandle pTypeHandle, QCall::ObjectHandleOnStack pUnderlyingType)
-{
-    QCALL_CONTRACT;
-    BEGIN_QCALL;
-
-    TypeHandle typeHandle = pTypeHandle.AsTypeHandle();
-
-    if (Nullable::IsNullableType(typeHandle))
-    {
-        GCX_COOP();
-        pUnderlyingType.Set(typeHandle.GetInstantiation()[0].GetManagedClassObject());
-    }
+    *ppNewobjHelper = pNewobjFn;
+    *ppMT = pMT;
 
     END_QCALL;
 }

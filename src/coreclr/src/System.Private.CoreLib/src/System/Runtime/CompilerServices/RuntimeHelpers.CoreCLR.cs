@@ -143,13 +143,11 @@ namespace System.Runtime.CompilerServices
             Debug.Assert(rt != null);
 
             // If somebody asks us to create a Nullable<T>, create a T instead.
-
-            rt = RuntimeTypeHandle.GetNullableUnderlyingType(rt) ?? rt;
-
-            delegate*<MethodTable*, object> newobjHelper = RuntimeTypeHandle.GetNewobjHelperFnPtr(rt);
+            delegate*<MethodTable*, object> newobjHelper = RuntimeTypeHandle.GetNewobjHelperFnPtr(rt, out MethodTable* pMT, unwrapNullable: true);
             Debug.Assert(newobjHelper != null);
+            Debug.Assert(pMT != null);
 
-            object retVal = newobjHelper(RuntimeTypeHandle.GetMethodTable(rt));
+            object retVal = newobjHelper(pMT);
             GC.KeepAlive(rt); // don't allow the type to be collected before the object is instantiated
 
             return retVal;

@@ -209,14 +209,26 @@ namespace System
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern object CreateInstanceForAnotherGenericParameter(RuntimeType type, RuntimeType genericParameter);
 
-        internal static delegate*<MethodTable*, object> GetNewobjHelperFnPtr(RuntimeType type)
+        /// <summary>
+        /// Given a RuntimeType, returns both the address of the JIT's newobj helper for that type and the
+        /// MethodTable* corresponding to that type. If the type is <see cref="Nullable{T}"/> closed over
+        /// some T and <paramref name="unwrapNullable"/> is true, then returns the values for the 'T'.
+        /// </summary>
+        internal static delegate*<MethodTable*, object> GetNewobjHelperFnPtr(RuntimeType type, out MethodTable* pMT, bool unwrapNullable)
         {
             Debug.Assert(type != null);
-            return GetNewobjHelperFnPtr(new QCallTypeHandle(ref type));
+
+            delegate*<MethodTable*, object> pNewobjHelperTemp = null;
+            MethodTable* pMTTemp = null;
+
+            GetNewobjHelperFnPtr(new QCallTypeHandle(ref type), &pNewobjHelperTemp, &pMTTemp, (unwrapNullable) ? Interop.BOOL.TRUE : Interop.BOOL.FALSE);
+
+            pMT = pMTTemp;
+            return pNewobjHelperTemp;
         }
 
         [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
-        private static extern delegate*<MethodTable*, object> GetNewobjHelperFnPtr(QCallTypeHandle typeHandle);
+        private static extern void GetNewobjHelperFnPtr(QCallTypeHandle typeHandle, delegate*<MethodTable*, object>* ppNewobjHelper, MethodTable** ppMT, Interop.BOOL fUnwrapNullable);
 
         internal RuntimeType GetRuntimeType()
         {
@@ -257,9 +269,6 @@ namespace System
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern RuntimeMethodHandleInternal GetMethodAt(RuntimeType type, int slot);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static unsafe extern MethodTable* GetMethodTable(RuntimeType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern RuntimeMethodHandleInternal GetDefaultConstructor(RuntimeType type);
@@ -502,22 +511,6 @@ namespace System
                 return type!;
             }
         }
-
-        /// <summary>
-        /// If <paramref name="type"/> is <see cref="Nullable{T}"/> over a closed T, returns the
-        /// <see cref="RuntimeType"/> corresponding to T; else null.
-        /// </summary>
-        internal static RuntimeType? GetNullableUnderlyingType(RuntimeType type)
-        {
-            Debug.Assert(type != null);
-
-            RuntimeType? underlyingType = null;
-            GetNullableUnderlyingType(new QCallTypeHandle(ref type), ObjectHandleOnStack.Create(ref underlyingType));
-            return underlyingType;
-        }
-
-        [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
-        private static extern void GetNullableUnderlyingType(QCallTypeHandle type, ObjectHandleOnStack underlyingType);
 
         [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
         private static extern void MakeArray(QCallTypeHandle handle, int rank, ObjectHandleOnStack type);

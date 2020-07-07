@@ -3907,20 +3907,21 @@ namespace System
                 // No synchronization is needed in this method since we have marked the _pfnNewobj
                 // field as volatile, and if there's multi-threaded access all threads will agree
                 // on the values to write anyway.
+                //
+                // !! IMPORTANT !!
+                // Don't assign the function pointer return value of GetNewobjHelperFnPtr directly
+                // to the backing field, as setting the field marks initialization as complete.
+                // Be sure to perform any last-minute checks *before* setting the backing field.
 
-                _pMT = RuntimeTypeHandle.GetMethodTable(type);
-
-                if (type.IsValueType && _pMT->IsNullable)
+                delegate*<MethodTable*, object?> pfnNewobj = RuntimeTypeHandle.GetNewobjHelperFnPtr(type, out _pMT, unwrapNullable: false);
+                if (_pMT->IsNullable)
                 {
                     static object? GetNull(MethodTable* _) => null; // Activator.CreateInstance(typeof(Nullable<T>)) => null
-                    _pfnNewobj = &GetNull;
-                }
-                else
-                {
-                    _pfnNewobj = RuntimeTypeHandle.GetNewobjHelperFnPtr(type);
+                    pfnNewobj = &GetNull;
                 }
 
-                Debug.Assert(_pfnNewobj != null);
+                Debug.Assert(pfnNewobj != null);
+                _pfnNewobj = pfnNewobj; // setting this field marks the instance as fully initialized
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

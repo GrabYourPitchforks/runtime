@@ -118,13 +118,6 @@ namespace System
             }
 #endif
 
-#if CORECLR
-            if (nullableType is RuntimeType rt)
-            {
-                return RuntimeTypeHandle.GetNullableUnderlyingType(rt);
-            }
-#endif
-
             if (nullableType.IsGenericType && !nullableType.IsGenericTypeDefinition)
             {
                 // instantiated generic type only

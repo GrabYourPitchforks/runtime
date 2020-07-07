@@ -638,22 +638,6 @@ FCIMPL2(MethodDesc *, RuntimeTypeHandle::GetMethodAt, ReflectClassBaseObject *pT
 }
 FCIMPLEND
 
-FCIMPL1(MethodTable *, RuntimeTypeHandle::GetMethodTable, ReflectClassBaseObject *pTypeUNSAFE) {
-    CONTRACTL {
-        FCALL_CHECK;
-    }
-    CONTRACTL_END;
-
-    REFLECTCLASSBASEREF refType = (REFLECTCLASSBASEREF)ObjectToOBJECTREF(pTypeUNSAFE);
-
-    if (refType == NULL)
-        FCThrowRes(kArgumentNullException, W("Arg_InvalidHandle"));
-
-    TypeHandle typeHandle = refType->GetType();
-    return typeHandle.GetMethodTable();
-}
-FCIMPLEND
-
 FCIMPL1(MethodDesc *, RuntimeTypeHandle::GetDefaultConstructor, ReflectClassBaseObject *pTypeUNSAFE) {
     CONTRACTL {
         FCALL_CHECK;
