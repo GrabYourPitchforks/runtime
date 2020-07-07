@@ -137,14 +137,7 @@ namespace System.Runtime.CompilerServices
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool TryEnsureSufficientExecutionStack();
 
-        private static unsafe object GetUninitializedObjectInternal(
-            // This API doesn't call any constructors, but the type needs to be seen as constructed.
-            // A type is seen as constructed if a constructor is kept.
-            // This obviously won't cover a type with no constructor. Reference types with no
-            // constructor are an academic problem. Valuetypes with no constructors are a problem,
-            // but IL Linker currently treats them as always implicitly boxed.
-            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-            Type type)
+        private static unsafe object GetUninitializedObjectInternal(Type type)
         {
             RuntimeType rt = (RuntimeType)type;
             Debug.Assert(rt != null);
