@@ -209,6 +209,15 @@ namespace System
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern object CreateInstanceForAnotherGenericParameter(RuntimeType type, RuntimeType genericParameter);
 
+        internal static delegate*<MethodTable*, object> GetNewobjHelperFnPtr(RuntimeType type)
+        {
+            Debug.Assert(type != null);
+            return GetNewobjHelperFnPtr(new QCallTypeHandle(ref type));
+        }
+
+        [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
+        private static extern delegate*<MethodTable*, object> GetNewobjHelperFnPtr(QCallTypeHandle typeHandle);
+
         internal RuntimeType GetRuntimeType()
         {
             return m_type;
@@ -493,6 +502,22 @@ namespace System
                 return type!;
             }
         }
+
+        /// <summary>
+        /// If <paramref name="type"/> is <see cref="Nullable{T}"/> over a closed T, returns the
+        /// <see cref="RuntimeType"/> corresponding to T; else null.
+        /// </summary>
+        internal static RuntimeType? GetNullableUnderlyingType(RuntimeType type)
+        {
+            Debug.Assert(type != null);
+
+            RuntimeType? underlyingType = null;
+            GetNullableUnderlyingType(new QCallTypeHandle(ref type), ObjectHandleOnStack.Create(ref underlyingType));
+            return underlyingType;
+        }
+
+        [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
+        private static extern void GetNullableUnderlyingType(QCallTypeHandle type, ObjectHandleOnStack underlyingType);
 
         [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
         private static extern void MakeArray(QCallTypeHandle handle, int rank, ObjectHandleOnStack type);

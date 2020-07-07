@@ -561,6 +561,105 @@ FCIMPL2(Object*, RuntimeTypeHandle::CreateInstanceForGenericType, ReflectClassBa
 }
 FCIMPLEND
 
+
+/*
+ * Given a TypeHandle, returns the address of the NEWOBJ helper function that creates
+ * a zero-inited instance of this type. If NEWOBJ is not supported on this TypeHandle,
+ * throws an exception. If TypeHandle is a value type, the NEWOBJ helper will create
+ * a boxed zero-inited instance of the value type.
+ */
+PVOID QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHandle)
+{
+    QCALL_CONTRACT;
+
+    void* retVal = NULL;
+
+    BEGIN_QCALL;
+
+    TypeHandle typeHandle = pTypeHandle.AsTypeHandle();
+
+    // Don't allow arrays, pointers, byrefs, or function pointers.
+    if (typeHandle.IsTypeDesc() || typeHandle.IsArray())
+    {
+        COMPlusThrow(kArgumentException, W("Argument_InvalidValue"));
+    }
+
+    MethodTable* pMT = typeHandle.AsMethodTable();
+    PREFIX_ASSUME(pMT != NULL);
+
+    // Don't allow string or string-like (variable length) types.
+    if (pMT->HasComponentSize())
+    {
+        COMPlusThrow(kArgumentException, W("Argument_NoUninitializedStrings"));
+    }
+
+    // Don't allow abstract classes or interface types
+    if (pMT->IsAbstract()) {
+        COMPlusThrow(kMemberAccessException, W("Acc_CreateAbst"));
+    }
+
+    // Don't allow open generics or generics instantiated over __Canon
+    if (pMT->ContainsGenericVariables()) {
+        COMPlusThrow(kMemberAccessException, W("Acc_CreateGeneric"));
+    }
+    if (pMT->IsSharedByGenericInstantiations()) {
+        COMPlusThrow(kNotSupportedException, W("NotSupported_Type"));
+    }
+
+    // Don't allow ref structs
+    if (pMT->IsByRefLike()) {
+        COMPlusThrow(kNotSupportedException, W("NotSupported_ByRefLike"));
+    }
+
+    // Never allow the allocation of an unitialized ContextBoundObject derived type, these must always be created with a paired
+    // transparent proxy or the jit will get confused.
+
+#ifdef FEATURE_COMINTEROP
+    // Also do not allow allocation of uninitialized RCWs (COM objects).
+    if (pMT->IsComObjectType())
+    {
+        COMPlusThrow(kNotSupportedException, W("NotSupported_ManagedActivation"));
+    }
+#endif // FEATURE_COMINTEROP
+
+    // Ensure the type's cctor has run
+    Assembly* pAssem = pMT->GetAssembly();
+    if (!pMT->IsClassInited())
+    {
+        pMT->CheckRestore();
+        pMT->EnsureInstanceActive();
+        pMT->CheckRunClassInitThrowing();
+    }
+
+    // And we're done!
+    retVal = (void*)CEEJitInfo::getHelperFtnStatic(CEEInfo::getNewHelperStatic(pMT));
+    _ASSERTE(retVal != NULL);
+
+    END_QCALL;
+
+    return retVal;
+}
+
+/*
+ * Given a TypeHandle, if that handle represents a closed Nullable<T>,
+ * returns the RuntimeType corresponding to the T; else null.
+ */
+void QCALLTYPE RuntimeTypeHandle::GetNullableUnderlyingType(QCall::TypeHandle pTypeHandle, QCall::ObjectHandleOnStack pUnderlyingType)
+{
+    QCALL_CONTRACT;
+    BEGIN_QCALL;
+
+    TypeHandle typeHandle = pTypeHandle.AsTypeHandle();
+
+    if (Nullable::IsNullableType(typeHandle))
+    {
+        GCX_COOP();
+        pUnderlyingType.Set(typeHandle.GetInstantiation()[0].GetManagedClassObject());
+    }
+
+    END_QCALL;
+}
+
 NOINLINE FC_BOOL_RET IsInstanceOfTypeHelper(OBJECTREF obj, REFLECTCLASSBASEREF refType)
 {
     FCALL_CONTRACT;
@@ -2276,209 +2375,6 @@ FCIMPL2(void, ReflectionInvocation::GetGUID, ReflectClassBaseObject* refThisUNSA
 lExit: ;
     GCPROTECT_END();
     HELPER_METHOD_FRAME_END();
-}
-FCIMPLEND
-
-//*************************************************************************************************
-//*************************************************************************************************
-//*************************************************************************************************
-//      ReflectionSerialization
-//*************************************************************************************************
-//*************************************************************************************************
-//*************************************************************************************************
-FCIMPL1(Object*, ReflectionSerialization::GetUninitializedObject, ReflectClassBaseObject* objTypeUNSAFE) {
-    FCALL_CONTRACT;
-
-    OBJECTREF           retVal  = NULL;
-    REFLECTCLASSBASEREF objType = (REFLECTCLASSBASEREF) objTypeUNSAFE;
-
-    HELPER_METHOD_FRAME_BEGIN_RET_NOPOLL();
-
-    TypeHandle type = objType->GetType();
-
-    // Don't allow arrays, pointers, byrefs or function pointers.
-    if (type.IsTypeDesc() || type.IsArray())
-        COMPlusThrow(kArgumentException, W("Argument_InvalidValue"));
-
-    MethodTable *pMT = type.AsMethodTable();
-    PREFIX_ASSUME(pMT != NULL);
-
-    //We don't allow unitialized Strings or Utf8Strings.
-    if (pMT == g_pStringClass
-#ifdef FEATURE_UTF8STRING
-        || pMT == g_pUtf8StringClass
-#endif // FEATURE_UTF8STRING
-        ) {
-        COMPlusThrow(kArgumentException, W("Argument_NoUninitializedStrings"));
-    }
-
-    // if this is an abstract class or an interface type then we will
-    //  fail this
-    if (pMT->IsAbstract()) {
-        COMPlusThrow(kMemberAccessException,W("Acc_CreateAbst"));
-    }
-
-    if (pMT->ContainsGenericVariables()) {
-        COMPlusThrow(kMemberAccessException,W("Acc_CreateGeneric"));
-    }
-
-    if (pMT->IsByRefLike()) {
-        COMPlusThrow(kNotSupportedException, W("NotSupported_ByRefLike"));
-    }
-
-    // Never allow allocation of generics actually instantiated over __Canon
-    if (pMT->IsSharedByGenericInstantiations()) {
-        COMPlusThrow(kNotSupportedException, W("NotSupported_Type"));
-    }
-
-    // Never allow the allocation of an unitialized ContextBoundObject derived type, these must always be created with a paired
-    // transparent proxy or the jit will get confused.
-
-#ifdef FEATURE_COMINTEROP
-    // Also do not allow allocation of uninitialized RCWs (COM objects).
-    if (pMT->IsComObjectType())
-        COMPlusThrow(kNotSupportedException, W("NotSupported_ManagedActivation"));
-#endif // FEATURE_COMINTEROP
-
-    // If it is a nullable, return the underlying type instead.
-    if (Nullable::IsNullableType(pMT))
-        pMT = pMT->GetInstantiation()[0].GetMethodTable();
-
-    retVal = pMT->Allocate();
-
-    HELPER_METHOD_FRAME_END();
-    return OBJECTREFToObject(retVal);
-}
-FCIMPLEND
-
-FCIMPL1(void*, ReflectionSerialization::GetNewobjHelper, ReflectClassBaseObject* objTypeUNSAFE) {
-    FCALL_CONTRACT;
-
-    void*               retVal = NULL;
-    REFLECTCLASSBASEREF objType = (REFLECTCLASSBASEREF)objTypeUNSAFE;
-
-    HELPER_METHOD_FRAME_BEGIN_RET_NOPOLL();
-
-    TypeHandle type = objType->GetType();
-
-    // Don't allow arrays, pointers, byrefs or function pointers.
-    if (type.IsTypeDesc() || type.IsArray())
-        COMPlusThrow(kArgumentException, W("Argument_InvalidValue"));
-
-    MethodTable* pMT = type.AsMethodTable();
-    PREFIX_ASSUME(pMT != NULL);
-
-    //We don't allow unitialized Strings or Utf8Strings.
-    if (pMT->HasComponentSize())
-    {
-        COMPlusThrow(kArgumentException, W("Argument_NoUninitializedStrings"));
-    }
-
-    // if this is an abstract class or an interface type then we will
-    //  fail this
-    if (pMT->IsAbstract()) {
-        COMPlusThrow(kMemberAccessException, W("Acc_CreateAbst"));
-    }
-
-    if (pMT->ContainsGenericVariables()) {
-        COMPlusThrow(kMemberAccessException, W("Acc_CreateGeneric"));
-    }
-
-    if (pMT->IsByRefLike()) {
-        COMPlusThrow(kNotSupportedException, W("NotSupported_ByRefLike"));
-    }
-
-    // Never allow allocation of generics actually instantiated over __Canon
-    if (pMT->IsSharedByGenericInstantiations()) {
-        COMPlusThrow(kNotSupportedException, W("NotSupported_Type"));
-    }
-
-    // Never allow the allocation of an unitialized ContextBoundObject derived type, these must always be created with a paired
-    // transparent proxy or the jit will get confused.
-
-#ifdef FEATURE_COMINTEROP
-    // Also do not allow allocation of uninitialized RCWs (COM objects).
-    if (pMT->IsComObjectType())
-        COMPlusThrow(kNotSupportedException, W("NotSupported_ManagedActivation"));
-#endif // FEATURE_COMINTEROP
-
-    Assembly* pAssem = pMT->GetAssembly();
-
-    if (!pMT->IsClassInited())
-    {
-        pMT->CheckRestore();
-        pMT->EnsureInstanceActive();
-        pMT->CheckRunClassInitThrowing();
-    }
-
-    // TODO: Don't use a void* cast below.
-
-    retVal = (void*)CEEJitInfo::getHelperFtnStatic(CEEInfo::getNewHelperStatic(pMT));
-
-    HELPER_METHOD_FRAME_END();
-    return retVal;
-}
-FCIMPLEND
-
-FCIMPL1(FC_BOOL_RET, ReflectionSerialization::IsFastInstantiable, ReflectClassBaseObject* objTypeUNSAFE) {
-    FCALL_CONTRACT;
-
-    BOOL retVal = FALSE;
-    REFLECTCLASSBASEREF objType = (REFLECTCLASSBASEREF)objTypeUNSAFE;
-
-    HELPER_METHOD_FRAME_BEGIN_RET_NOPOLL();
-
-    TypeHandle type = objType->GetType();
-
-    // Don't allow arrays, pointers, byrefs or function pointers.
-    if (type.IsTypeDesc() || type.IsArray())
-        goto Return;
-
-    MethodTable* pMT = type.AsMethodTable();
-    PREFIX_ASSUME(pMT != NULL);
-
-    //We don't allow unitialized Strings or Utf8Strings.
-    if (pMT->HasComponentSize())
-    {
-        goto Return;
-    }
-
-    // if this is an abstract class or an interface type then we will
-    //  fail this
-    if (pMT->IsAbstract()) {
-        goto Return;
-    }
-
-    if (pMT->ContainsGenericVariables()) {
-        goto Return;
-    }
-
-    if (pMT->IsByRefLike()) {
-        goto Return;
-    }
-
-    // Never allow allocation of generics actually instantiated over __Canon
-    if (pMT->IsSharedByGenericInstantiations()) {
-        goto Return;
-    }
-
-    // Never allow the allocation of an unitialized ContextBoundObject derived type, these must always be created with a paired
-    // transparent proxy or the jit will get confused.
-
-#ifdef FEATURE_COMINTEROP
-    // Also do not allow allocation of uninitialized RCWs (COM objects).
-    if (pMT->IsComObjectType())
-        goto Return;
-#endif // FEATURE_COMINTEROP
-
-    retVal = TRUE; // all checks succeeded
-
-Return:
-
-    do { /* dummy required for macro below to compile */ } while (0);
-
-    HELPER_METHOD_FRAME_END();
-    FC_RETURN_BOOL(retVal);
 }
 FCIMPLEND
 

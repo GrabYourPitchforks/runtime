@@ -132,6 +132,12 @@ public:
                                             CLR_BOOL *pbHasNoDefaultCtor);
 
     static
+    PVOID QCALLTYPE GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHandle);
+
+    static
+    void QCALLTYPE GetNullableUnderlyingType(QCall::TypeHandle pTypeHandle, QCall::ObjectHandleOnStack pUnderlyingType);
+
+    static
     void QCALLTYPE MakeByRef(QCall::TypeHandle pTypeHandle, QCall::ObjectHandleOnStack retType);
 
     static
