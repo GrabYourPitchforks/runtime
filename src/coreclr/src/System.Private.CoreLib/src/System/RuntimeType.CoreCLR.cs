@@ -3901,7 +3901,8 @@ namespace System
 
                 // If we reached this point, we already know that the construction information
                 // can be cached, so all of the runtime reflection checks succeeded. We just
-                // need to special-case Nullable<T>.
+                // need to special-case Nullable<T> (to return null) and COM objects (which
+                // need to go through a special allocator).
                 //
                 // No synchronization is needed in this method since we have marked the _pfnNewobj
                 // field as volatile, and if there's multi-threaded access all threads will agree

@@ -218,7 +218,6 @@ namespace System.Runtime.CompilerServices.Tests
             yield return new[] { GetFnPtrType(), typeof(ArgumentException) }; // function pointer typedesc
 
             yield return new[] { typeof(ReadOnlySpan<int>), typeof(ArgumentException) }; // byref type
-            yield return new[] { canonType, typeof(ArgumentException) }; // canon forbidden
             yield return new[] { typeof(List<>).MakeGenericType(canonType), typeof(ArgumentException) }; // shared by generic instantiations
 
             yield return new[] { comObjType, typeof(NotSupportedException) }; // COM type
