@@ -3895,7 +3895,6 @@ namespace System
                 Debug.Assert(_pfnCtor != null);
             }
 
-            [MethodImpl(MethodImplOptions.NoInlining)]
             private void Initialize(RuntimeType type)
             {
                 Debug.Assert(type != null);
@@ -3916,8 +3915,7 @@ namespace System
                 delegate*<MethodTable*, object?> pfnNewobj = RuntimeTypeHandle.GetNewobjHelperFnPtr(type, out _pMT, unwrapNullable: false);
                 if (_pMT->IsNullable)
                 {
-                    static object? GetNull(MethodTable* _) => null; // Activator.CreateInstance(typeof(Nullable<T>)) => null
-                    pfnNewobj = &GetNull;
+                    pfnNewobj = &GetNull; // Activator.CreateInstance(typeof(Nullable<T>)) => null
                 }
 
                 Debug.Assert(pfnNewobj != null);
@@ -3932,6 +3930,8 @@ namespace System
                     Initialize(type);
                 }
             }
+
+            private static object? GetNull(MethodTable* _) => null;
         }
 
         /// <summary>
