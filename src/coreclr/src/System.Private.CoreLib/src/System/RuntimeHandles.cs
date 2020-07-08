@@ -207,6 +207,9 @@ namespace System
         internal static extern object Allocate(RuntimeType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern object AllocateFromMethodTable(MethodTable* pMT);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern object CreateInstanceForAnotherGenericParameter(RuntimeType type, RuntimeType genericParameter);
 
         /// <summary>
@@ -214,21 +217,26 @@ namespace System
         /// MethodTable* corresponding to that type. If the type is <see cref="Nullable{T}"/> closed over
         /// some T and <paramref name="unwrapNullable"/> is true, then returns the values for the 'T'.
         /// </summary>
-        internal static delegate*<MethodTable*, object> GetNewobjHelperFnPtr(RuntimeType type, out MethodTable* pMT, bool unwrapNullable)
+        internal static delegate*<MethodTable*, object> GetNewobjHelperFnPtr(RuntimeType type, out MethodTable* pMT, bool unwrapNullable, bool allowCom)
         {
             Debug.Assert(type != null);
 
             delegate*<MethodTable*, object> pNewobjHelperTemp = null;
             MethodTable* pMTTemp = null;
 
-            GetNewobjHelperFnPtr(new QCallTypeHandle(ref type), &pNewobjHelperTemp, &pMTTemp, (unwrapNullable) ? Interop.BOOL.TRUE : Interop.BOOL.FALSE);
+            GetNewobjHelperFnPtr(
+                new QCallTypeHandle(ref type),
+                &pNewobjHelperTemp,
+                &pMTTemp,
+                (unwrapNullable) ? Interop.BOOL.TRUE : Interop.BOOL.FALSE,
+                (allowCom) ? Interop.BOOL.TRUE : Interop.BOOL.FALSE);
 
             pMT = pMTTemp;
             return pNewobjHelperTemp;
         }
 
         [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
-        private static extern void GetNewobjHelperFnPtr(QCallTypeHandle typeHandle, delegate*<MethodTable*, object>* ppNewobjHelper, MethodTable** ppMT, Interop.BOOL fUnwrapNullable);
+        private static extern void GetNewobjHelperFnPtr(QCallTypeHandle typeHandle, delegate*<MethodTable*, object>* ppNewobjHelper, MethodTable** ppMT, Interop.BOOL fUnwrapNullable, Interop.BOOL fAllowCom);
 
         internal RuntimeType GetRuntimeType()
         {

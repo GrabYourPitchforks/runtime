@@ -3912,11 +3912,19 @@ namespace System
                 // to the backing field, as setting the field marks initialization as complete.
                 // Be sure to perform any last-minute checks *before* setting the backing field.
 
-                delegate*<MethodTable*, object?> pfnNewobj = RuntimeTypeHandle.GetNewobjHelperFnPtr(type, out _pMT, unwrapNullable: false);
+                delegate*<MethodTable*, object?> pfnNewobj = RuntimeTypeHandle.GetNewobjHelperFnPtr(type, out _pMT, unwrapNullable: false, allowCom: true);
                 if (_pMT->IsNullable)
                 {
                     pfnNewobj = &GetNull; // Activator.CreateInstance(typeof(Nullable<T>)) => null
                 }
+#if FEATURE_COMINTEROP
+#if FEATURE_COMINTEROP_UNMANAGED_ACTIVATION
+                else if (_pMT->IsComObject)
+                {
+                    pfnNewobj = &RuntimeTypeHandle.AllocateFromMethodTable; // special-cases COM CreateInstance
+                }
+#endif // FEATURE_COMINTEROP_UNMANAGED_ACTIVATION
+#endif // FEATURE_COMINTEROP
 
                 Debug.Assert(pfnNewobj != null);
                 _pfnNewobj = pfnNewobj; // setting this field marks the instance as fully initialized
@@ -3931,7 +3939,7 @@ namespace System
                 }
             }
 
-            private static object? GetNull(MethodTable* _) => null;
+            private static object? GetNull(MethodTable* pMT) => null;
         }
 
         /// <summary>

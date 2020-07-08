@@ -143,7 +143,7 @@ namespace System.Runtime.CompilerServices
             Debug.Assert(rt != null);
 
             // If somebody asks us to create a Nullable<T>, create a T instead.
-            delegate*<MethodTable*, object> newobjHelper = RuntimeTypeHandle.GetNewobjHelperFnPtr(rt, out MethodTable* pMT, unwrapNullable: true);
+            delegate*<MethodTable*, object> newobjHelper = RuntimeTypeHandle.GetNewobjHelperFnPtr(rt, out MethodTable* pMT, unwrapNullable: true, allowCom: false);
             Debug.Assert(newobjHelper != null);
             Debug.Assert(pMT != null);
 
@@ -355,6 +355,7 @@ namespace System.Runtime.CompilerServices
         private const uint enum_flag_Category_ValueType = 0x00040000;
         private const uint enum_flag_Category_ValueType_Mask = 0x000C0000;
         private const uint enum_flag_ContainsPointers = 0x01000000;
+        private const uint enum_flag_ComObject = 0x40000000;
         private const uint enum_flag_HasComponentSize = 0x80000000;
         private const uint enum_flag_HasDefaultCtor = 0x00000200;
         private const uint enum_flag_HasTypeEquivalence = 0x00004000; // TODO: shouldn't this be 0x02000000?
@@ -419,6 +420,14 @@ namespace System.Runtime.CompilerServices
             get
             {
                 return (Flags & enum_flag_HasDefaultCtor) != 0;
+            }
+        }
+
+        public bool IsComObject
+        {
+            get
+            {
+                return (Flags & enum_flag_ComObject) != 0;
             }
         }
 

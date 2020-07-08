@@ -124,6 +124,7 @@ public:
 
     // Static method on RuntimeTypeHandle
     static FCDECL1(Object*, Allocate, ReflectClassBaseObject *refType) ; //A.CI work
+    static FCDECL1(Object*, AllocateFromMethodTable, MethodTable* pMT) ; //A.CI work
     static FCDECL6(Object*, CreateInstance, ReflectClassBaseObject* refThisUNSAFE,
                                             CLR_BOOL publicOnly,
                                             CLR_BOOL wrapExceptions,
@@ -132,7 +133,7 @@ public:
                                             CLR_BOOL *pbHasNoDefaultCtor);
 
     static
-    void QCALLTYPE GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHandle, PCODE* ppNewobjHelper, MethodTable** ppMT, BOOL fUnwrapNullable);
+    void QCALLTYPE GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHandle, PCODE* ppNewobjHelper, MethodTable** ppMT, BOOL fUnwrapNullable, BOOL fAllowCom);
 
     static
     void QCALLTYPE MakeByRef(QCall::TypeHandle pTypeHandle, QCall::ObjectHandleOnStack retType);

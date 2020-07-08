@@ -360,6 +360,21 @@ FCIMPL1(Object*, RuntimeTypeHandle::Allocate, ReflectClassBaseObject* pTypeUNSAF
 }//Allocate
 FCIMPLEND
 
+//A.CI work
+FCIMPL1(Object*, RuntimeTypeHandle::AllocateFromMethodTable, MethodTable* pMT)
+{
+    CONTRACTL {
+        FCALL_CHECK;
+        PRECONDITION(CheckPointer(pMT));
+    }
+    CONTRACTL_END
+
+    rv = AllocateObject(pMT);
+    return OBJECTREFToObject(rv);
+
+}//AllocateFromMethodTable
+FCIMPLEND
+
 FCIMPL6(Object*, RuntimeTypeHandle::CreateInstance, ReflectClassBaseObject* refThisUNSAFE,
                                                     CLR_BOOL publicOnly,
                                                     CLR_BOOL wrapExceptions,
@@ -568,12 +583,21 @@ FCIMPLEND
  * throws an exception. If TypeHandle is a value type, the NEWOBJ helper will create
  * a boxed zero-inited instance of the value type.
  */
-void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHandle, PCODE* ppNewobjHelper, MethodTable** ppMT, BOOL fUnwrapNullable)
+void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(
+    QCall::TypeHandle pTypeHandle,
+    PCODE* ppNewobjHelper,
+    MethodTable** ppMT,
+    BOOL fUnwrapNullable,
+    BOOL fAllowCom)
 {
-    QCALL_CONTRACT;
-
-    _ASSERTE(ppNewobjHelper != NULL && *ppNewobjHelper == NULL);
-    _ASSERTE(ppMT != NULL && *ppMT == NULL);
+    CONTRACTL{
+        QCALL_CHECK;
+        PRECONDITION(CheckPointer(ppNewobjHelper));
+        PRECONDITION(CheckPointer(ppMT));
+        PRECONDITION(*ppNewobjHelper == NULL);
+        PRECONDITION(*ppMT == NULL);
+    }
+    CONTRACTL_END;
 
     BEGIN_QCALL;
 
@@ -617,7 +641,7 @@ void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(QCall::TypeHandle pTypeHa
 
 #ifdef FEATURE_COMINTEROP
     // Also do not allow allocation of uninitialized RCWs (COM objects).
-    if (pMT->IsComObjectType())
+    if (!fAllowCom && pMT->IsComObjectType())
     {
         COMPlusThrow(kNotSupportedException, W("NotSupported_ManagedActivation"));
     }

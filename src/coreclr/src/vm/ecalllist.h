@@ -259,6 +259,7 @@ FCFuncStart(gCOMTypeHandleFuncs)
     FCFuncElement("ContainsGenericVariables", RuntimeTypeHandle::ContainsGenericVariables)
     FCFuncElement("SatisfiesConstraints", RuntimeTypeHandle::SatisfiesConstraints)
     FCFuncElement("Allocate", RuntimeTypeHandle::Allocate) //for A.CI
+    FCFuncElement("AllocateFromMethodTable", RuntimeTypeHandle::AllocateFromMethodTable) //for A.CI
     QCFuncElement("GetNewobjHelperFnPtr", RuntimeTypeHandle::GetNewobjHelperFnPtr)
     FCFuncElement("CompareCanonicalHandles", RuntimeTypeHandle::CompareCanonicalHandles)
     FCIntrinsic("GetValueInternal", RuntimeTypeHandle::GetValueInternal, CORINFO_INTRINSIC_RTH_GetValueInternal)
