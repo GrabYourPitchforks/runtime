@@ -3927,7 +3927,7 @@ namespace System
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void EnsureInitialized(RuntimeType type)
             {
-                if (_pfnNewobj != null) // use this field's value as the indicator of whether initialization is finished
+                if (_pfnNewobj == null) // use this field's value as the indicator of whether initialization is finished
                 {
                     Initialize(type);
                 }
