@@ -369,7 +369,10 @@ FCIMPL1(Object*, RuntimeTypeHandle::AllocateFromMethodTable, MethodTable* pMT)
     }
     CONTRACTL_END
 
+    OBJECTREF rv = NULL;
+    HELPER_METHOD_FRAME_BEGIN_RET_0();
     rv = AllocateObject(pMT);
+    HELPER_METHOD_FRAME_END();
     return OBJECTREFToObject(rv);
 
 }//AllocateFromMethodTable
