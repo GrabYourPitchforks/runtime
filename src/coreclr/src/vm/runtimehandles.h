@@ -124,7 +124,6 @@ public:
 
     // Static method on RuntimeTypeHandle
     static FCDECL1(Object*, Allocate, ReflectClassBaseObject *refType) ; //A.CI work
-    static FCDECL1(Object*, AllocateFromMethodTable, MethodTable* pMT) ; //A.CI work
     static FCDECL6(Object*, CreateInstance, ReflectClassBaseObject* refThisUNSAFE,
                                             CLR_BOOL publicOnly,
                                             CLR_BOOL wrapExceptions,

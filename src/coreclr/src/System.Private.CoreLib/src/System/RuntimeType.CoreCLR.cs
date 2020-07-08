@@ -3901,8 +3901,7 @@ namespace System
 
                 // If we reached this point, we already know that the construction information
                 // can be cached, so all of the runtime reflection checks succeeded. We just
-                // need to special-case Nullable<T> (to return null) and COM objects (which
-                // need to go through a special allocator).
+                // need to special-case Nullable<T> (to return null).
                 //
                 // No synchronization is needed in this method since we have marked the _pfnNewobj
                 // field as volatile, and if there's multi-threaded access all threads will agree
@@ -3918,14 +3917,6 @@ namespace System
                 {
                     pfnNewobj = &GetNull; // Activator.CreateInstance(typeof(Nullable<T>)) => null
                 }
-#if FEATURE_COMINTEROP
-#if FEATURE_COMINTEROP_UNMANAGED_ACTIVATION
-                else if (_pMT->IsComObject)
-                {
-                    pfnNewobj = &RuntimeTypeHandle.AllocateFromMethodTable; // special-cases COM CreateInstance
-                }
-#endif // FEATURE_COMINTEROP_UNMANAGED_ACTIVATION
-#endif // FEATURE_COMINTEROP
 
                 Debug.Assert(pfnNewobj != null);
                 _pfnNewobj = pfnNewobj; // setting this field marks the instance as fully initialized

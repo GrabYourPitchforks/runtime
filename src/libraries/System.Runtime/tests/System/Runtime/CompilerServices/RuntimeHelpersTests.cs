@@ -194,33 +194,48 @@ namespace System.Runtime.CompilerServices.Tests
 
         public static IEnumerable<object[]> GetUninitializedObject_NegativeTestCases()
         {
-            static Type GetFnPtrType() => typeof(delegate*<void>);
+            // TODO: Test actual function pointer types when typeof(delegate*<...>) support is available
 
             Type comObjType = typeof(object).Assembly.GetType("System.__ComObject", throwOnError: true);
             Type canonType = typeof(object).Assembly.GetType("System.__Canon", throwOnError: true);
 
             yield return new[] { typeof(string), typeof(ArgumentException) }; // variable-length type
             yield return new[] { typeof(int[]), typeof(ArgumentException) }; // variable-length type
-            yield return new[] { typeof(Array), typeof(ArgumentException) }; // variable-length type
+            yield return new[] { typeof(int[,]), typeof(ArgumentException) }; // variable-length type
+            yield return new[] { Array.CreateInstance(typeof(int), new[] { 1 }, new [] { 1 }).GetType(), typeof(ArgumentException) }; // variable-length type (non-szarray)
+            yield return new[] { typeof(Array), typeof(MemberAccessException) }; // abstract type
+            yield return new[] { typeof(Enum), typeof(MemberAccessException) }; // abstract type
 
             yield return new[] { typeof(Stream), typeof(MemberAccessException) }; // abstract type
-            yield return new[] { typeof(IDisposable), typeof(MemberAccessException) }; // abstract type
+            yield return new[] { typeof(IDisposable), typeof(MemberAccessException) }; // interface type
 
             yield return new[] { typeof(List<>), typeof(MemberAccessException) }; // open generic type
             yield return new[] { typeof(List<>).GetGenericArguments()[0], typeof(ArgumentException) }; // 'T' placeholder typedesc
 
-            yield return new[] { typeof(Delegate), typeof(ArgumentException) }; // abstract type
-            yield return new[] { typeof(Action), typeof(ArgumentException) }; // delegate typedesc
+            yield return new[] { typeof(Delegate), typeof(MemberAccessException) }; // abstract type
+            yield return new[] { typeof(Action), typeof(ArgumentException) }; // delegate type
 
-            yield return new[] { typeof(void), typeof(ArgumentException) }; // cannot be constructed
+            yield return new[] { typeof(void), typeof(ArgumentException) }; // explicit block in place
             yield return new[] { typeof(int).MakePointerType(), typeof(ArgumentException) }; // pointer typedesc
             yield return new[] { typeof(int).MakeByRefType(), typeof(ArgumentException) }; // byref typedesc
-            yield return new[] { GetFnPtrType(), typeof(ArgumentException) }; // function pointer typedesc
 
-            yield return new[] { typeof(ReadOnlySpan<int>), typeof(ArgumentException) }; // byref type
-            yield return new[] { typeof(List<>).MakeGenericType(canonType), typeof(ArgumentException) }; // shared by generic instantiations
+            yield return new[] { typeof(ReadOnlySpan<int>), typeof(NotSupportedException) }; // byref type
+            yield return new[] { typeof(ArgIterator), typeof(NotSupportedException) }; // byref type
+            yield return new[] { typeof(List<>).MakeGenericType(canonType), typeof(NotSupportedException) }; // shared by generic instantiations
 
             yield return new[] { comObjType, typeof(NotSupportedException) }; // COM type
+            if (PlatformDetection.IsWindows)
+            {
+                yield return new[] { typeof(WbemContext), typeof(NotSupportedException) }; // COM type
+            }
+        }
+
+        // This type definition is lifted from System.Management, just for testing purposes
+        [ClassInterface((short)0x0000)]
+        [Guid("674B6698-EE92-11D0-AD71-00C04FD8FDFF")]
+        [ComImport]
+        internal class WbemContext
+        {
         }
 
         [Theory]

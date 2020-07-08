@@ -360,24 +360,6 @@ FCIMPL1(Object*, RuntimeTypeHandle::Allocate, ReflectClassBaseObject* pTypeUNSAF
 }//Allocate
 FCIMPLEND
 
-//A.CI work
-FCIMPL1(Object*, RuntimeTypeHandle::AllocateFromMethodTable, MethodTable* pMT)
-{
-    CONTRACTL {
-        FCALL_CHECK;
-        PRECONDITION(CheckPointer(pMT));
-    }
-    CONTRACTL_END
-
-    OBJECTREF rv = NULL;
-    HELPER_METHOD_FRAME_BEGIN_RET_0();
-    rv = AllocateObject(pMT);
-    HELPER_METHOD_FRAME_END();
-    return OBJECTREFToObject(rv);
-
-}//AllocateFromMethodTable
-FCIMPLEND
-
 FCIMPL6(Object*, RuntimeTypeHandle::CreateInstance, ReflectClassBaseObject* refThisUNSAFE,
                                                     CLR_BOOL publicOnly,
                                                     CLR_BOOL wrapExceptions,
@@ -586,12 +568,12 @@ FCIMPLEND
  * throws an exception. If TypeHandle is a value type, the NEWOBJ helper will create
  * a boxed zero-inited instance of the value type.
  */
-void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(
-    QCall::TypeHandle pTypeHandle,
-    PCODE* ppNewobjHelper,
-    MethodTable** ppMT,
-    BOOL fUnwrapNullable,
-    BOOL fAllowCom)
+    void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(
+        QCall::TypeHandle pTypeHandle,
+        PCODE* ppNewobjHelper,
+        MethodTable** ppMT,
+        BOOL fUnwrapNullable,
+        BOOL fAllowCom)
 {
     CONTRACTL{
         QCALL_CHECK;
@@ -614,6 +596,12 @@ void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(
 
     MethodTable* pMT = typeHandle.AsMethodTable();
     PREFIX_ASSUME(pMT != NULL);
+
+    // Don't allow creating instances of void or delegates
+    if (pMT == MscorlibBinder::GetElementType(ELEMENT_TYPE_VOID) || pMT->IsDelegate())
+    {
+        COMPlusThrow(kArgumentException, W("Argument_InvalidValue"));
+    }
 
     // Don't allow string or string-like (variable length) types.
     if (pMT->HasComponentSize())
@@ -643,7 +631,8 @@ void QCALLTYPE RuntimeTypeHandle::GetNewobjHelperFnPtr(
     // transparent proxy or the jit will get confused.
 
 #ifdef FEATURE_COMINTEROP
-    // Also do not allow allocation of uninitialized RCWs (COM objects).
+    // Unless caller allows, do not allow allocation of uninitialized RCWs (COM objects).
+    // If the caller allows this, getNewHelperStatic will return an appropriate allocator.
     if (!fAllowCom && pMT->IsComObjectType())
     {
         COMPlusThrow(kNotSupportedException, W("NotSupported_ManagedActivation"));

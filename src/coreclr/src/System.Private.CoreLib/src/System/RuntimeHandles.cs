@@ -207,9 +207,6 @@ namespace System
         internal static extern object Allocate(RuntimeType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern object AllocateFromMethodTable(MethodTable* pMT);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern object CreateInstanceForAnotherGenericParameter(RuntimeType type, RuntimeType genericParameter);
 
         /// <summary>
