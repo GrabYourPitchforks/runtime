@@ -25,15 +25,18 @@ namespace System.ComponentModel.Design
         /// </summary>
         public static void Serialize(Stream o, string cryptoKey, DesigntimeLicenseContext context)
         {
+            // TODO_LEVIB: Generate a tracking issue for this
             IFormatter formatter = new BinaryFormatter();
             formatter.Serialize(o, new object[] { cryptoKey, context._savedLicenseKeys });
         }
 
         internal static void Deserialize(Stream o, string cryptoKey, RuntimeLicenseContext context)
         {
+#pragma warning disable MSLIB0003 // TODO_LEVIB: Generate a tracking issue for this
             IFormatter formatter = new BinaryFormatter();
 
             object obj = formatter.Deserialize(o);
+#pragma warning restore MSLIB0003
 
             if (obj is object[] value)
             {
