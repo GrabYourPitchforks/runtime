@@ -20,6 +20,7 @@ namespace System.Runtime.Serialization
             m_idGenerator = new ObjectIDGenerator();
         }
 
+        [Obsolete(Obsoletions.InsecureSerializationMessage, DiagnosticId = Obsoletions.InsecureSerializationDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         public abstract object Deserialize(Stream serializationStream);
 
         protected virtual object? GetNext(out long objID)

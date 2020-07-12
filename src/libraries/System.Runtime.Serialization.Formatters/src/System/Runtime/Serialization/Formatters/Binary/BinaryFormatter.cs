@@ -37,6 +37,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
             _context = context;
         }
 
+        [Obsolete(Obsoletions.InsecureSerializationMessage, DiagnosticId = Obsoletions.InsecureSerializationDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         public object Deserialize(Stream serializationStream) => Deserialize(serializationStream, true);
 
         internal object Deserialize(Stream serializationStream, bool check)

@@ -15,6 +15,7 @@ namespace System.Runtime.Serialization
         public abstract System.Runtime.Serialization.SerializationBinder? Binder { get; set; }
         public abstract System.Runtime.Serialization.StreamingContext Context { get; set; }
         public abstract System.Runtime.Serialization.ISurrogateSelector? SurrogateSelector { get; set; }
+        [System.ObsoleteAttribute("BinaryFormatter and related types are insecure and should not be used. Consider using an alternative instead.", DiagnosticId = "MSLIB0003", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public abstract object Deserialize(System.IO.Stream serializationStream);
         protected virtual object? GetNext(out long objID) { throw null; }
         protected virtual long Schedule(object? obj) { throw null; }
@@ -85,6 +86,7 @@ namespace System.Runtime.Serialization
         System.Runtime.Serialization.SerializationBinder? Binder { get; set; }
         System.Runtime.Serialization.StreamingContext Context { get; set; }
         System.Runtime.Serialization.ISurrogateSelector? SurrogateSelector { get; set; }
+        [System.ObsoleteAttribute("BinaryFormatter and related types are insecure and should not be used. Consider using an alternative instead.", DiagnosticId = "MSLIB0003", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         object Deserialize(System.IO.Stream serializationStream);
         void Serialize(System.IO.Stream serializationStream, object graph);
     }
@@ -179,6 +181,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
         public System.Runtime.Serialization.Formatters.TypeFilterLevel FilterLevel { get { throw null; } set { } }
         public System.Runtime.Serialization.ISurrogateSelector? SurrogateSelector { get { throw null; } set { } }
         public System.Runtime.Serialization.Formatters.FormatterTypeStyle TypeFormat { get { throw null; } set { } }
+        [System.ObsoleteAttribute("BinaryFormatter and related types are insecure and should not be used. Consider using an alternative instead.", DiagnosticId = "MSLIB0003", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public object Deserialize(System.IO.Stream serializationStream) { throw null; }
         public void Serialize(System.IO.Stream serializationStream, object graph) { }
     }

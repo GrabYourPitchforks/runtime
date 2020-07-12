@@ -11,6 +11,9 @@
 
     <TestAssemblies Condition="'$(TestAssemblies)' == ''">true</TestAssemblies>
     <TestTrimming Condition="'$(TestTrimming)' == ''">false</TestTrimming>
+
+    <!-- Don't warn on BinaryFormatter usage within our test projects. -->
+    <NoWarn>$(NoWarn);MSLIB0003</NoWarn>
   </PropertyGroup>
   
   <!-- Projects that don't support code coverage measurement. -->
