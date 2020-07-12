@@ -7,7 +7,7 @@ namespace System
     {
         internal const string SharedUrlFormat = "https://aka.ms/dotnet-warnings/{0}";
 
-        internal const string InsecureSerializationMessage = "The Deserialize method is insecure and should not be used. Consider using an alternative instead.";
+        internal const string InsecureSerializationMessage = "The Deserialize method is insecure and should not be used. See https://aka.ms/binaryformatter for more information.";
         internal const string InsecureSerializationDiagId = "MSLIB0003";
     }
 }
