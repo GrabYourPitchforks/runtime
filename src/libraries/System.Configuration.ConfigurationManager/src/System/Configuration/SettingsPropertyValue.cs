@@ -98,7 +98,7 @@ namespace System.Configuration
                     {
                         using (MemoryStream ms = new MemoryStream((byte[])SerializedValue))
                         {
-                            // TODO_LEVIB: Generate a tracking issue for this
+                            // Issue https://github.com/dotnet/runtime/issues/39295 tracks finding an alternative to BinaryFormatter
                             value = (new BinaryFormatter()).Deserialize(ms);
                         }
                     }
@@ -196,7 +196,7 @@ namespace System.Configuration
                     byte[] buffer = Convert.FromBase64String(serializedValue);
                     using (MemoryStream ms = new MemoryStream(buffer))
                     {
-                        // TODO_LEVIB: Generate a tracking issue for this
+                        // Issue https://github.com/dotnet/runtime/issues/39295 tracks finding an alternative to BinaryFormatter
                         return (new BinaryFormatter()).Deserialize(ms);
                     }
                 case SettingsSerializeAs.Xml:
@@ -223,7 +223,7 @@ namespace System.Configuration
 
             using (MemoryStream ms = new MemoryStream())
             {
-                // TODO_LEVIB: Generate a tracking issue for this
+                // Issue https://github.com/dotnet/runtime/issues/39295 tracks finding an alternative to BinaryFormatter
                 BinaryFormatter bf = new BinaryFormatter();
                 bf.Serialize(ms, _value);
                 return ms.ToArray();

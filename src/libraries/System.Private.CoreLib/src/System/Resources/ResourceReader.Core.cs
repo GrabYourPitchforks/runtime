@@ -18,7 +18,6 @@ namespace System.Resources
         // statics used to dynamically call into BinaryFormatter
         // When successfully located s_binaryFormatterType will point to the BinaryFormatter type
         // and s_deserializeMethod will point to an unbound delegate to the deserialize method.
-        // TODO_LEVIB: Generate a tracking issue for this
         private static Type? s_binaryFormatterType;
         private static Func<object?, Stream, object>? s_deserializeMethod;
 
@@ -65,6 +64,7 @@ namespace System.Resources
             return graph;
         }
 
+        // Issue https://github.com/dotnet/runtime/issues/39290 tracks finding an alternative to BinaryFormatter
         private void InitializeBinaryFormatter()
         {
             LazyInitializer.EnsureInitialized(ref s_binaryFormatterType, () =>
