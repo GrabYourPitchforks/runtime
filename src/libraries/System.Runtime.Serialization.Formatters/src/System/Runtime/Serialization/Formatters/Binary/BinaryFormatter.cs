@@ -78,6 +78,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
             }
         }
 
+        [Obsolete(Obsoletions.InsecureSerializationMessage, DiagnosticId = Obsoletions.InsecureSerializationDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         public void Serialize(Stream serializationStream, object graph) =>
             Serialize(serializationStream, graph, true);
 

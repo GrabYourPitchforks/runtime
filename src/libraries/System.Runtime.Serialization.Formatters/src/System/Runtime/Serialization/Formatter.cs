@@ -60,6 +60,7 @@ namespace System.Runtime.Serialization
             return id;
         }
 
+        [Obsolete(Obsoletions.InsecureSerializationMessage, DiagnosticId = Obsoletions.InsecureSerializationDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         public abstract void Serialize(Stream serializationStream, object graph);
 
         protected abstract void WriteArray(object obj, string name, Type memberType);

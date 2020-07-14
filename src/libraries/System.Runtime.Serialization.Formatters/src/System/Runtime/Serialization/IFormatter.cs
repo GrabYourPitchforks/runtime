@@ -9,6 +9,7 @@ namespace System.Runtime.Serialization
     {
         [Obsolete(Obsoletions.InsecureSerializationMessage, DiagnosticId = Obsoletions.InsecureSerializationDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         object Deserialize(Stream serializationStream);
+        [Obsolete(Obsoletions.InsecureSerializationMessage, DiagnosticId = Obsoletions.InsecureSerializationDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         void Serialize(Stream serializationStream, object graph);
         ISurrogateSelector? SurrogateSelector { get; set; }
         SerializationBinder? Binder { get; set; }
