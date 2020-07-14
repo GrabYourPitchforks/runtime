@@ -142,8 +142,8 @@ namespace System.Runtime.Serialization.Formatters.Tests
             public override ISurrogateSelector SurrogateSelector { get; set; }
 #pragma warning disable CS0672 // Member overrides obsolete member
             public override object Deserialize(Stream serializationStream) => null;
-#pragma warning restore CS0672 // Member overrides obsolete member
             public override void Serialize(Stream serializationStream, object graph) { }
+#pragma warning restore CS0672 // Member overrides obsolete member
         }
     }
 }

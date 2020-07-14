@@ -27,7 +27,9 @@ namespace System.ComponentModel.Design
         {
             // Issue https://github.com/dotnet/runtime/issues/39293 tracks finding an alternative to BinaryFormatter
             IFormatter formatter = new BinaryFormatter();
+#pragma warning disable MSLIB0003 // Issue https://github.com/dotnet/runtime/issues/39293 tracks finding an alternative to BinaryFormatter
             formatter.Serialize(o, new object[] { cryptoKey, context._savedLicenseKeys });
+#pragma warning restore MSLIB0003
         }
 
         internal static void Deserialize(Stream o, string cryptoKey, RuntimeLicenseContext context)
