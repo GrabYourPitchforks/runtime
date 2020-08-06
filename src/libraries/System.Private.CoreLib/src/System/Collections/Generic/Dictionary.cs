@@ -334,8 +334,84 @@ namespace System.Collections.Generic
             }
         }
 
+        private ref TValue FindValue_ValueTypeDefaultComparer(TKey key)
+        {
+            Debug.Assert(typeof(TKey).IsValueType);
+
+            var buckets = _buckets; // deref at beginning of method to avoid unneeded "is 'this' null?" check
+
+            // JIT turns below into a const
+            bool useSimpleBucketing = typeof(TKey).IsValueType && key is ISimpleIntegerHash;
+
+            ref Entry entry = ref Unsafe.NullRef<Entry>();
+
+            if (buckets != null)
+            {
+                Debug.Assert(_entries != null, "expected entries to be != null");
+                uint hashCode = (useSimpleBucketing) ? ((ISimpleIntegerHash)key).GetSimpleHashCode() : (uint)key.GetHashCode();
+                int i = GetBucket(hashCode);
+                Entry[]? entries = _entries;
+                uint collisionCount = 0;
+
+                // ValueType: Devirtualize with EqualityComparer<TValue>.Default intrinsic
+
+                i--; // Value in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
+                do
+                {
+                    // Should be a while loop https://github.com/dotnet/runtime/issues/9422
+                    // Test in if to drop range check for following array access
+                    if ((uint)i >= (uint)entries.Length)
+                    {
+                        goto ReturnNotFound;
+                    }
+
+                    entry = ref entries[i];
+                    if ((useSimpleBucketing || entry.hashCode == hashCode) && EqualityComparer<TKey>.Default.Equals(entry.key, key))
+                    {
+                        goto ReturnFound;
+                    }
+
+                    i = entry.next;
+
+                    collisionCount++;
+                } while (collisionCount <= (uint)entries.Length);
+
+                // The chain of entries forms a loop; which means a concurrent update has happened.
+                // Break out of the loop and throw, rather than looping forever.
+                goto ConcurrentOperation;
+            }
+
+            goto ReturnNotFound;
+
+        ConcurrentOperation:
+            ThrowHelper.ThrowInvalidOperationException_ConcurrentOperationsNotSupported();
+        ReturnFound:
+            ref TValue value = ref entry.value;
+        Return:
+            return ref value;
+        ReturnNotFound:
+            value = ref Unsafe.NullRef<TValue>();
+            goto Return;
+        }
+
+        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ref TValue FindValue(TKey key)
         {
+            if (typeof(TKey).IsValueType && _comparer is null)
+            {
+                return ref FindValue_ValueTypeDefaultComparer(key);
+            }
+            else
+            {
+                return ref FindValue2(key);
+            }
+        }
+
+        private ref TValue FindValue2(TKey key)
+        {
+            // JIT turns below into a const
+            bool useSimpleBucketing = typeof(TKey).IsValueType && key is ISimpleIntegerHash;
+
             if (key == null)
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
@@ -348,7 +424,7 @@ namespace System.Collections.Generic
                 IEqualityComparer<TKey>? comparer = _comparer;
                 if (comparer == null)
                 {
-                    uint hashCode = (uint)key.GetHashCode();
+                    uint hashCode = (useSimpleBucketing) ? ((ISimpleIntegerHash)key).GetSimpleHashCode() : (uint)key.GetHashCode();
                     int i = GetBucket(hashCode);
                     Entry[]? entries = _entries;
                     uint collisionCount = 0;
@@ -367,7 +443,7 @@ namespace System.Collections.Generic
                             }
 
                             entry = ref entries[i];
-                            if (entry.hashCode == hashCode && EqualityComparer<TKey>.Default.Equals(entry.key, key))
+                            if ((useSimpleBucketing || entry.hashCode == hashCode) && EqualityComparer<TKey>.Default.Equals(entry.key, key))
                             {
                                 goto ReturnFound;
                             }
@@ -479,6 +555,9 @@ namespace System.Collections.Generic
 
         private bool TryInsert(TKey key, TValue value, InsertionBehavior behavior)
         {
+            // JIT turns below into a const
+            bool useSimpleBucketing = typeof(TKey).IsValueType && key is ISimpleIntegerHash;
+
             if (key == null)
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.key);
@@ -494,7 +573,15 @@ namespace System.Collections.Generic
             Debug.Assert(entries != null, "expected entries to be non-null");
 
             IEqualityComparer<TKey>? comparer = _comparer;
-            uint hashCode = (uint)((comparer == null) ? key.GetHashCode() : comparer.GetHashCode(key));
+            uint hashCode;
+            if (comparer == null)
+            {
+                hashCode = (useSimpleBucketing) ? ((ISimpleIntegerHash)key).GetSimpleHashCode() : (uint)key.GetHashCode();
+            }
+            else
+            {
+                hashCode = (uint)comparer.GetHashCode(key);
+            }
 
             uint collisionCount = 0;
             ref int bucket = ref GetBucket(hashCode);
@@ -514,7 +601,7 @@ namespace System.Collections.Generic
                             break;
                         }
 
-                        if (entries[i].hashCode == hashCode && EqualityComparer<TKey>.Default.Equals(entries[i].key, key))
+                        if ((useSimpleBucketing || entries[i].hashCode == hashCode) && EqualityComparer<TKey>.Default.Equals(entries[i].key, key))
                         {
                             if (behavior == InsertionBehavior.OverwriteExisting)
                             {

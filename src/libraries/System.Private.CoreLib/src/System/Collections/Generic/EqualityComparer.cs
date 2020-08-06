@@ -46,7 +46,7 @@ namespace System.Collections.Generic
         {
             if (x != null)
             {
-                if (y != null) return x.Equals(y);
+                if (y != null && x.Equals(y)) return true;
                 return false;
             }
             if (y != null) return false;
