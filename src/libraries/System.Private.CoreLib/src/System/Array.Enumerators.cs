@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System
 {
@@ -156,7 +157,7 @@ namespace System
     internal sealed class SZGenericArrayEnumerator<T> : IEnumerator<T>
     {
         private readonly T[] _array;
-        private int _index;
+        private nint _index;
 
         // Array.Empty is intentionally omitted here, since we don't want to pay for generic instantiations that
         // wouldn't have otherwise been used.
@@ -174,7 +175,7 @@ namespace System
 
         public bool MoveNext()
         {
-            int index = _index + 1;
+            nint index = _index + 1;
             if ((uint)index >= (uint)_array.Length)
             {
                 _index = _array.Length;
@@ -188,15 +189,15 @@ namespace System
         {
             get
             {
-                int index = _index;
+                nint index = _index;
                 T[] array = _array;
 
                 if ((uint)index >= (uint)array.Length)
                 {
-                    ThrowHelper.ThrowInvalidOperationException_EnumCurrent(index);
+                    ThrowHelper.ThrowInvalidOperationException_EnumCurrent((int)index);
                 }
 
-                return array[index];
+                return RuntimeHelpers.GetArrayElementNoBoundsCheck(array, (nuint)index);
             }
         }
 
