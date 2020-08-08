@@ -37,6 +37,7 @@ enum NamedIntrinsic : unsigned short
     NI_System_Collections_Generic_EqualityComparer_get_Default,
     NI_System_Buffers_Binary_BinaryPrimitives_ReverseEndianness,
     NI_System_GC_KeepAlive,
+    NI_System_Runtime_CompilerServices_RuntimeHelpers_GetArrayElementNoBoundsCheck,
     NI_System_Type_get_IsValueType,
     NI_System_Type_IsAssignableFrom,
 

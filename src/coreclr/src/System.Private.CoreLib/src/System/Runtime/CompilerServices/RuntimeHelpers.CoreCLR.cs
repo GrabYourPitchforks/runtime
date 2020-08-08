@@ -208,6 +208,13 @@ namespace System.Runtime.CompilerServices
             // See comment on RawArrayData for details
             ref Unsafe.AddByteOffset(ref Unsafe.As<RawData>(array).Data, (nuint)GetMethodTable(array)->BaseSize - (nuint)(2 * sizeof(IntPtr)));
 
+        [Intrinsic]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static T GetArrayElementNoBoundsCheck<T>(T[] array, nuint index)
+        {
+            return GetArrayElementNoBoundsCheck(array, index);
+        }
+
         internal static unsafe ushort GetElementSize(this Array array)
         {
             Debug.Assert(ObjectHasComponentSize(array));

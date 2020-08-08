@@ -4310,6 +4310,19 @@ GenTree* Compiler::impIntrinsic(GenTree*                newobjThis,
                 break;
             }
 
+            case NI_System_Runtime_CompilerServices_RuntimeHelpers_GetArrayElementNoBoundsCheck:
+            {
+                assert(sig->sigInst.methInstCount == 1);
+                var_types resultType = JITtype2varType(sig->retType);
+
+                GenTree* idxParam = impPopStack().val;
+                GenTree* arrParam = impPopStack().val;
+                retNode = gtNewIndexRef(resultType, arrParam, idxParam);
+                retNode->gtFlags &= ~GTF_INX_RNGCHK;
+
+                break;
+            }
+
             default:
                 break;
         }
@@ -4604,6 +4617,13 @@ NamedIntrinsic Compiler::lookupNamedIntrinsic(CORINFO_METHOD_HANDLE method)
         int sizeOfVectorT = getSIMDVectorRegisterByteLength();
 
         result = SimdAsHWIntrinsicInfo::lookupId(&sig, className, methodName, enclosingClassName, sizeOfVectorT);
+    }
+    else if (strcmp(namespaceName, "System.Runtime.CompilerServices") == 0)
+    {
+        if ((strcmp(className, "RuntimeHelpers") == 0) && (strcmp(methodName, "GetArrayElementNoBoundsCheck") == 0))
+        {
+            result = NI_System_Runtime_CompilerServices_RuntimeHelpers_GetArrayElementNoBoundsCheck;
+        }
     }
 #endif // FEATURE_HW_INTRINSICS
     else if (strncmp(namespaceName, "System.Runtime.Intrinsics", 25) == 0)
