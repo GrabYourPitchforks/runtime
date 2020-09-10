@@ -185,7 +185,7 @@ function ValidateSourceLinkLinks {
   }
 
   if ($GHRepoName -ne '' -and $GHCommit -ne '') {
-    $RepoTreeURL = -Join('http://api.github.com/repos/', $GHRepoName, '/git/trees/', $GHCommit, '?recursive=1')
+    $RepoTreeURL = -Join('https://api.github.com/repos/', $GHRepoName, '/git/trees/', $GHCommit, '?recursive=1')
     $CodeExtensions = @('.cs', '.vb', '.fs', '.fsi', '.fsx', '.fsscript')
 
     try {

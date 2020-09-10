@@ -347,7 +347,7 @@ and enabling support for running WPF on .NET Core (Windows Only).
 
 [introducing-net-core]: https://devblogs.microsoft.com/dotnet/introducing-net-core/
 [core-build-status]: https://github.com/dotnet/coreclr#build-status
-[corefx]: http://github.com/dotnet/corefx
+[corefx]: https://github.com/dotnet/corefx
 [referencesource]: https://github.com/microsoft/referencesource
 [mono-supported-platforms]: http://www.mono-project.com/docs/about-mono/supported-platforms/
 [mono-winforms]: http://www.mono-project.com/docs/gui/winforms/
