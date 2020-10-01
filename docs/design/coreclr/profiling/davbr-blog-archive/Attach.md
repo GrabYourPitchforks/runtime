@@ -31,11 +31,11 @@ Whereas the "hosting" interfaces enable one to host and manage a CLR in a proces
 
 ## Users and Integrity
 
-The permissions required to attach a profiler are similar to those required to attach a debugger.  First, the trigger process must run as the same user as the target profilee OR as an administrator.  Second, on OS's that support process integrity levels, the trigger process must be running at an integrity level higher than or equal to that of the target profilee process.  For more information about integrity and mandatory labels, [here's](http://msdn.microsoft.com/en-us/library/bb625964.aspx) some reference from MSDN.
+The permissions required to attach a profiler are similar to those required to attach a debugger.  First, the trigger process must run as the same user as the target profilee OR as an administrator.  Second, on OS's that support process integrity levels, the trigger process must be running at an integrity level higher than or equal to that of the target profilee process.  For more information about integrity and mandatory labels, [here's](https://msdn.microsoft.com/en-us/library/bb625964.aspx) some reference from MSDN.
 
 ## Sample Trigger Source Code
 
-For some sample code to attach a profiler to a process, take a look at the sample uploaded to the MSDN Code Gallery [here](http://code.msdn.microsoft.com/ProfilerAttacher/).
+For some sample code to attach a profiler to a process, take a look at the sample uploaded to the MSDN Code Gallery [here](https://code.msdn.microsoft.com/ProfilerAttacher/).
 
 You'll notice the code attempts to enable the SE\_DEBUG\_NAME privilege, as this is required to open a process running as another user with PROCESS\_ALL\_ACCESS.  Again, cross-user attach (i.e., trigger runs as a different user than the target profilee process) is only supported when the trigger is run as an administrator.  Otherwise, only same-user attach is supported, and would not need to enable the SE\_DEBUG\_NAME privilege.
 

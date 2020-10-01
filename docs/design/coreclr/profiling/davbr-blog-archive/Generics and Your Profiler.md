@@ -98,7 +98,7 @@ With a valid COR\_PRF\_FRAME\_INFO, GetFunctionInfo2 will give you helpful, spec
   - Note: If it’s impossible for the profiler to have a COR\_PRF\_FRAME\_INFO handy to pass to GetFunctionInfo2, and that results in a NULL \*pClassID, the profiler can always use the metadata interfaces to find the mdTypeDef token of the class on which the function resides for the purposes of pretty-printing the class name to the user.  Of course, the profiler will not know the specific instantiating type arguments that were used on the class in that case.
 - the typeArgs [out] array will contain the ClassID for **System.\_\_Canon** , rather than the actual instantiating type(s), if the function itself is generic and is instantiated with reference type argument(s).
 
-It’s worth noting here that there is a bug in GetFunctionInfo2, in that the [out] pClassId you get for the class containing the function can be wrong with generic virtual functions.  Take a look at [this forum post](http://social.msdn.microsoft.com/Forums/en-US/netfxtoolsdev/thread/ed6f972f-712a-48df-8cce-74f8951503fa/) for more information and a workaround.
+It’s worth noting here that there is a bug in GetFunctionInfo2, in that the [out] pClassId you get for the class containing the function can be wrong with generic virtual functions.  Take a look at [this forum post](https://social.msdn.microsoft.com/Forums/en-US/netfxtoolsdev/thread/ed6f972f-712a-48df-8cce-74f8951503fa/) for more information and a workaround.
 
 ## ClassIDs & FunctionIDs vs. Metadata Tokens
 
@@ -117,7 +117,7 @@ If you got curious, and ran such a profiler under the debugger, you could use th
 If your profiler performs IL rewriting, it’s important to understand that it must NOT do instantiation-specific IL rewriting.  Huh?  Let’s take an example.  Suppose you’re profiling code that uses MyClass\<int\>.Foo\<float\> and MyClass\<int\>.Foo\<long\>.  Your profiler will see two JITCompilationStarted callbacks, and will have two opportunities to rewrite the IL.  Your profiler may call GetFunctionInfo2 on those two FunctionIDs and determine that they’re two different instantiations of the same generic function.  You may then be tempted to make use of the fact that one is instantiated with float, and the other with long, and provide different IL for the two different JIT compilations.  The problem with this is that the IL stored in metadata, as well as the IL provided to SetILFunctionBody, is always specified relative to the mdMethodDef.  (Remember, SetILFunctionBody doesn’t take a FunctionID as input; it takes an mdMethodDef.)  And it’s the profiler’s responsibility always to specify the same rewritten IL for any given mdMethodDef no matter how many times it’s JITted.  And a given mdMethodDef can be JITted multiple times due to a number of reasons:
 
 - Two threads simultaneously trying to call the same function for the first time (and thus both trying to JIT that function)
-- Strange dependency chains involving class constructors (more on this in the MSDN [reference topic](http://msdn.microsoft.com/en-us/library/ms230586.aspx))
+- Strange dependency chains involving class constructors (more on this in the MSDN [reference topic](https://msdn.microsoft.com/en-us/library/ms230586.aspx))
 - Multiple AppDomains using the same (non-domain-neutral) function
 - And of course multiple generic instantiations!
 

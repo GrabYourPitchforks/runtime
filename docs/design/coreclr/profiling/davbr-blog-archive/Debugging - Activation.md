@@ -41,7 +41,7 @@ and look at the default value data.  It should be a full path to your profiler's
 
 If the above investigation indicates everything's ok, then your profiler is properly registered and your environment is properly set up, but something bad must be happening at run time.  You'll want symbols for the CLR, which are freely available via Microsoft's symbol server.  If you set this environment variable, you can ensure windbg will always use the symbol server:
 
-set \_NT\_SYMBOL\_PATH=srv\*C:\MySymbolCache\*http://msdl.microsoft.com/download/symbols
+set \_NT\_SYMBOL\_PATH=srv\*C:\MySymbolCache\*https://msdl.microsoft.com/download/symbols
 
 Feel free to add more paths (separate them via ";") so you can include your profiler's symbols as well.  Now, from a command-prompt that has your Cor\_Enable\_Profiling and COR\_PROFILER variables set, run windbg against the executable you want profiled.  The debuggee will inherit the environment, so the profiling environment variables will be propagated to the debuggee.
 
