@@ -613,8 +613,15 @@ namespace System
             return retType;
         }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern bool IsGenericTypeDefinition(RuntimeType type);
+        internal static bool IsGenericTypeDefinition(RuntimeType type)
+        {
+            Debug.Assert(type != null);
+            return IsGenericTypeDefinition(new QCallTypeHandle(ref type)) != Interop.BOOL.FALSE;
+        }
+
+        [DllImport(RuntimeHelpers.QCall, CharSet = CharSet.Unicode)]
+        [SuppressGCTransition]
+        private static extern Interop.BOOL IsGenericTypeDefinition(QCallTypeHandle typeHandle);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern bool IsGenericVariable(RuntimeType type);

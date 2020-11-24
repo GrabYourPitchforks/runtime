@@ -236,7 +236,7 @@ FCFuncStart(gCOMTypeHandleFuncs)
     FCFuncElement("HasInstantiation", RuntimeTypeHandle::HasInstantiation)
     FCFuncElement("GetGenericVariableIndex", RuntimeTypeHandle::GetGenericVariableIndex)
     FCFuncElement("IsGenericVariable", RuntimeTypeHandle::IsGenericVariable)
-    FCFuncElement("IsGenericTypeDefinition", RuntimeTypeHandle::IsGenericTypeDefinition)
+    QCFuncElement("IsGenericTypeDefinition", RuntimeTypeHandle::IsGenericTypeDefinition)
     FCFuncElement("ContainsGenericVariables", RuntimeTypeHandle::ContainsGenericVariables)
     FCFuncElement("SatisfiesConstraints", RuntimeTypeHandle::SatisfiesConstraints)
     FCFuncElement("Allocate", RuntimeTypeHandle::Allocate) //for A.CI

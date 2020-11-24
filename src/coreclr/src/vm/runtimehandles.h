@@ -196,8 +196,7 @@ public:
     static
     FCDECL1(FC_BOOL_RET, HasInstantiation, PTR_ReflectClassBaseObject pType);
 
-    static
-    FCDECL1(FC_BOOL_RET, IsGenericTypeDefinition, PTR_ReflectClassBaseObject pType);
+    static BOOL QCALLTYPE IsGenericTypeDefinition(QCall::TypeHandle typeHandle);
 
     static
     FCDECL1(FC_BOOL_RET, IsGenericVariable, PTR_ReflectClassBaseObject pType);

@@ -1611,18 +1611,13 @@ FCIMPL1(FC_BOOL_RET, RuntimeTypeHandle::HasInstantiation, PTR_ReflectClassBaseOb
 }
 FCIMPLEND
 
-FCIMPL1(FC_BOOL_RET, RuntimeTypeHandle::IsGenericTypeDefinition, PTR_ReflectClassBaseObject pTypeUNSAFE)
+BOOL QCALLTYPE RuntimeTypeHandle::IsGenericTypeDefinition(QCall::TypeHandle typeHandle)
 {
-    FCALL_CONTRACT;
+    QCALL_CONTRACT_NO_GC_TRANSITION;
 
-    REFLECTCLASSBASEREF refType = (REFLECTCLASSBASEREF)ObjectToOBJECTREF(pTypeUNSAFE);
-
-    if (refType == NULL)
-        FCThrowRes(kArgumentNullException, W("Arg_InvalidHandle"));
-
-    FC_RETURN_BOOL(refType->GetType().IsGenericTypeDefinition());
+    _ASSERTE(!typeHandle.AsTypeHandle().IsNull());
+    return typeHandle.AsTypeHandle().IsGenericTypeDefinition();
 }
-FCIMPLEND
 
 FCIMPL1(FC_BOOL_RET, RuntimeTypeHandle::IsGenericVariable, PTR_ReflectClassBaseObject pTypeUNSAFE)
 {
