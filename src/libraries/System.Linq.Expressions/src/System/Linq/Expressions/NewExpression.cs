@@ -187,15 +187,18 @@ namespace System.Linq.Expressions
             }
             TypeUtils.ValidateType(type, nameof(type));
 
-            if (!type.IsValueType)
+            // check constructors before checking for structs, otherwise we could miss structs with explicit parameterless ctors
+            ConstructorInfo? ci = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).SingleOrDefault(c => c.GetParametersCached().Length == 0);
+            if (ci != null)
             {
-                ConstructorInfo? ci = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).SingleOrDefault(c => c.GetParametersCached().Length == 0);
-                if (ci == null)
-                {
-                    throw Error.TypeMissingDefaultConstructor(type, nameof(type));
-                }
                 return New(ci);
             }
+
+            if (!type.IsValueType)
+            {
+                throw Error.TypeMissingDefaultConstructor(type, nameof(type));
+            }
+
             return new NewValueTypeExpression(type, EmptyReadOnlyCollection<Expression>.Instance, null);
         }
 

@@ -358,6 +358,7 @@ namespace System.Linq.Expressions.Tests
     {
         private static Type _charEnumType;
         private static Type _boolEnumType;
+        private static Type _valueTypeWithExplicitParameterlessCtorType;
 
         private static ModuleBuilder GetModuleBuilder()
         {
@@ -396,6 +397,27 @@ namespace System.Linq.Expressions.Tests
                 }
 
                 return _boolEnumType;
+            }
+        }
+
+        public static Type ValueTypeWithExplicitParameterlessCtorType
+        {
+            get
+            {
+                if (_valueTypeWithExplicitParameterlessCtorType == null)
+                {
+                    TypeBuilder typeBuilder = GetModuleBuilder().DefineType("ValueTypeWithExplicitParameterlessCtorType", TypeAttributes.Public, typeof(ValueType));
+                    FieldBuilder fieldBuilder = typeBuilder.DefineField("CtorWasRun", typeof(bool), FieldAttributes.Public | FieldAttributes.InitOnly);
+                    ConstructorBuilder constructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig, CallingConventions.Standard, new Type[0]);
+                    ILGenerator generator = constructorBuilder.GetILGenerator();
+                    generator.Emit(OpCodes.Ldarg_0);
+                    generator.Emit(OpCodes.Ldc_I4_1);
+                    generator.Emit(OpCodes.Stfld, fieldBuilder);
+                    generator.Emit(OpCodes.Ret);
+                    _valueTypeWithExplicitParameterlessCtorType = typeBuilder.CreateTypeInfo();
+                }
+
+                return _valueTypeWithExplicitParameterlessCtorType;
             }
         }
     }

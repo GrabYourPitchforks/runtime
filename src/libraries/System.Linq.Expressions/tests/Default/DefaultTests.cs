@@ -102,6 +102,18 @@ namespace System.Linq.Expressions.Tests
             Assert.Equal(0, defaultValue.IntProperty);
         }
 
+#if FEATURE_COMPILE
+        [Theory, ClassData(typeof(CompilationTypes))]
+        public void StructTypeWithExplicitParameterlessCtor(bool useInterpreter)
+        {
+            Type structType = NonCSharpTypes.ValueTypeWithExplicitParameterlessCtorType;
+            Expression<Func<object>> lambda = Expression.Lambda<Func<object>>(Expression.Convert(Expression.Default(structType), typeof(object)));
+            Func<object> func = lambda.Compile(useInterpreter);
+            object defaultValue = func();
+            Assert.Equal(false, structType.GetField("CtorWasRun").GetValue(defaultValue));
+        }
+#endif
+
         private struct StPri
         {
             public int IntProperty { get; set; }

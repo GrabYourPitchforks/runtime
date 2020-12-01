@@ -77,6 +77,42 @@ namespace System.Linq.Expressions.Tests
             Assert.Equal(new S(), f());
         }
 
+#if FEATURE_COMPILE
+        [Theory]
+        [ClassData(typeof(CompilationTypes))]
+        public static void CheckNewStructTypeWithExplicitParameterlessCtorByTypeTest(bool useInterpreter)
+        {
+            Type structType = NonCSharpTypes.ValueTypeWithExplicitParameterlessCtorType;
+
+            Expression<Func<object>> e =
+                Expression.Lambda<Func<object>>(
+                    Expression.Convert(
+                        Expression.New(structType),
+                        typeof(object)));
+            Func<object> f = e.Compile(useInterpreter);
+
+            object newValue = f();
+            Assert.Equal(true, structType.GetField("CtorWasRun").GetValue(newValue));
+        }
+
+        [Theory]
+        [ClassData(typeof(CompilationTypes))]
+        public static void CheckNewStructTypeWithExplicitParameterlessCtorByCtorInfoTest(bool useInterpreter)
+        {
+            Type structType = NonCSharpTypes.ValueTypeWithExplicitParameterlessCtorType;
+
+            Expression<Func<object>> e =
+                Expression.Lambda<Func<object>>(
+                    Expression.Convert(
+                        Expression.New(structType.GetConstructor(Type.EmptyTypes)),
+                        typeof(object)));
+            Func<object> f = e.Compile(useInterpreter);
+
+            object newValue = f();
+            Assert.Equal(true, structType.GetField("CtorWasRun").GetValue(newValue));
+        }
+#endif
+
         [Theory]
         [ClassData(typeof(CompilationTypes))]
         public static void CheckNewNullableStructTest(bool useInterpreter)
