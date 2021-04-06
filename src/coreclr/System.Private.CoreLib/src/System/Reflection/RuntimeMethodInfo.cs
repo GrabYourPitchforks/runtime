@@ -419,11 +419,21 @@ namespace System.Reflection
         [DebuggerStepThroughAttribute]
         [Diagnostics.DebuggerHidden]
         public override object? Invoke(object? obj, BindingFlags invokeAttr, Binder? binder, object?[]? parameters, CultureInfo? culture)
+            => Invoke(obj, parameters, new InvocationOptions
+            {
+                Binder = binder,
+                BindingFlags = invokeAttr,
+                Culture = culture
+            });
+
+        [DebuggerStepThroughAttribute]
+        [Diagnostics.DebuggerHidden]
+        private protected override object? Invoke(object? obj, object?[]? parameters, in InvocationOptions invokeOptions)
         {
             StackAllocedArguments stackArgs = default; // try to avoid intermediate array allocation if possible
-            Span<object?> arguments = InvokeArgumentsCheck(ref stackArgs, obj, invokeAttr, binder, parameters, culture);
+            Span<object?> arguments = InvokeArgumentsCheck(ref stackArgs, obj, parameters, invokeOptions);
 
-            bool wrapExceptions = (invokeAttr & BindingFlags.DoNotWrapExceptions) == 0;
+            bool wrapExceptions = (invokeOptions.BindingFlags & BindingFlags.DoNotWrapExceptions) == 0;
             object? retValue = RuntimeMethodHandle.InvokeMethod(obj, arguments, Signature, false, wrapExceptions);
 
             // copy out. This should be made only if ByRef are present.
@@ -436,7 +446,7 @@ namespace System.Reflection
 
         [DebuggerStepThroughAttribute]
         [Diagnostics.DebuggerHidden]
-        private Span<object?> InvokeArgumentsCheck(ref StackAllocedArguments stackArgs, object? obj, BindingFlags invokeAttr, Binder? binder, object?[]? parameters, CultureInfo? culture)
+        private Span<object?> InvokeArgumentsCheck(ref StackAllocedArguments stackArgs, object? obj, object?[]? parameters, in InvocationOptions invokeOptions)
         {
             Signature sig = Signature;
 
@@ -461,7 +471,7 @@ namespace System.Reflection
             Span<object?> retVal = default;
             if (actualCount != 0)
             {
-                retVal = CheckArguments(ref stackArgs, parameters!, binder, invokeAttr, culture, sig);
+                retVal = CheckArguments(ref stackArgs, parameters!, sig, invokeOptions);
             }
             return retVal;
         }

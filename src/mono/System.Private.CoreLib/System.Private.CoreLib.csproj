@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <!-- Generate Mono corelib version file -->
   <Import Project="GenerateMonoCoreLibVersionFile.targets" />
 
@@ -189,6 +189,7 @@
       <Compile Include="$(BclSourcesRoot)\System\IO\FileLoadException.Mono.cs" />
       <Compile Include="$(BclSourcesRoot)\System\Reflection\Assembly.Mono.cs" />
       <Compile Include="$(BclSourcesRoot)\System\Reflection\AssemblyName.Mono.cs" />
+      <Compile Include="$(BclSourcesRoot)\System\Reflection\ConstructorInfo.Mono.cs" />
       <Compile Include="$(BclSourcesRoot)\System\Reflection\CustomAttribute.cs" />
       <Compile Include="$(BclSourcesRoot)\System\Reflection\CustomAttributeData.cs" />
       <Compile Include="$(BclSourcesRoot)\System\Reflection\CustomAttributeTypedArgument.Mono.cs" />

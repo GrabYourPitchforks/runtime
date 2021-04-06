@@ -307,8 +307,19 @@ namespace System.Reflection
         [Diagnostics.DebuggerHidden]
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2059:RunClassConstructor",
             Justification = "This ConstructorInfo instance represents the static constructor itself, so if this object was created, the static constructor exists.")]
-        public override object? Invoke(
-            object? obj, BindingFlags invokeAttr, Binder? binder, object?[]? parameters, CultureInfo? culture)
+        public override object? Invoke(object? obj, BindingFlags invokeAttr, Binder? binder, object?[]? parameters, CultureInfo? culture)
+            => Invoke(obj, parameters, new InvocationOptions
+            {
+                Binder = binder,
+                BindingFlags = invokeAttr,
+                Culture = culture
+            });
+
+        [DebuggerStepThroughAttribute]
+        [Diagnostics.DebuggerHidden]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2059:RunClassConstructor",
+            Justification = "This ConstructorInfo instance represents the static constructor itself, so if this object was created, the static constructor exists.")]
+        private protected override object? Invoke(object? obj, object?[]? parameters, in InvocationOptions invokeOptions)
         {
             INVOCATION_FLAGS invocationFlags = InvocationFlags;
 
@@ -342,10 +353,10 @@ namespace System.Reflection
                 throw new TargetParameterCountException(SR.Arg_ParmCnt);
 
             // if we are here we passed all the previous checks. Time to look at the arguments
-            bool wrapExceptions = (invokeAttr & BindingFlags.DoNotWrapExceptions) == 0;
+            bool wrapExceptions = (invokeOptions.BindingFlags & BindingFlags.DoNotWrapExceptions) == 0;
 
             StackAllocedArguments stackArgs = default;
-            Span<object?> arguments = CheckArguments(ref stackArgs, parameters, binder, invokeAttr, culture, sig);
+            Span<object?> arguments = CheckArguments(ref stackArgs, parameters, sig, invokeOptions);
             object? retValue = RuntimeMethodHandle.InvokeMethod(obj, arguments, sig, false, wrapExceptions);
 
             // copy out. This should be made only if ByRef are present.
@@ -378,6 +389,16 @@ namespace System.Reflection
         [DebuggerStepThroughAttribute]
         [Diagnostics.DebuggerHidden]
         public override object Invoke(BindingFlags invokeAttr, Binder? binder, object?[]? parameters, CultureInfo? culture)
+            => Invoke(parameters, new InvocationOptions
+            {
+                Binder = binder,
+                BindingFlags = invokeAttr,
+                Culture = culture
+            });
+
+        [DebuggerStepThroughAttribute]
+        [Diagnostics.DebuggerHidden]
+        private protected override object Invoke(object?[]? parameters, in InvocationOptions invokeOptions)
         {
             INVOCATION_FLAGS invocationFlags = InvocationFlags;
 
@@ -396,10 +417,10 @@ namespace System.Reflection
             // JIT/NGen will insert the call to .cctor in the instance ctor.
 
             // if we are here we passed all the previous checks. Time to look at the arguments
-            bool wrapExceptions = (invokeAttr & BindingFlags.DoNotWrapExceptions) == 0;
+            bool wrapExceptions = (invokeOptions.BindingFlags & BindingFlags.DoNotWrapExceptions) == 0;
 
             StackAllocedArguments stackArgs = default;
-            Span<object?> arguments = CheckArguments(ref stackArgs, parameters, binder, invokeAttr, culture, sig);
+            Span<object?> arguments = CheckArguments(ref stackArgs, parameters, sig, invokeOptions);
             object retValue = RuntimeMethodHandle.InvokeMethod(null, arguments, sig, true, wrapExceptions)!; // ctor must return non-null
 
             // copy out. This should be made only if ByRef are present.

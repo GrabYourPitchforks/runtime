@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Internal.Runtime.CompilerServices;
@@ -11,6 +10,22 @@ namespace System.Reflection
 {
     public abstract partial class MethodBase : MemberInfo
     {
+        // MethodBase.Invoke(object, object[]) is called an order of magnitude more frequently than
+        // MethodBase.Invoke(object, BindingFlags, ...). Since the typical use case is that the actual
+        // type is RuntimeMethodInfo or RuntimeConstructorInfo, we'll have the simple Invoke method be
+        // an inlineable wrapper around the virtual workhorse method. If this isn't a RMI or RCI, we'll
+        // double-dispatch back to the regular method overload, but this should be rare enough that
+        // the perf hit shouldn't be a huge concern.
+
+        [DebuggerHidden]
+        [DebuggerStepThrough]
+        public object? Invoke(object? obj, object?[]? parameters) => Invoke(obj, parameters, default(InvocationOptions));
+
+        [DebuggerHidden]
+        [DebuggerStepThrough]
+        private protected virtual object? Invoke(object? obj, object?[]? parameters, in InvocationOptions invokeOptions)
+          => Invoke(obj, invokeOptions.BindingFlags, invokeOptions.Binder, parameters, invokeOptions.Culture);
+
         #region Static Members
         public static MethodBase? GetMethodFromHandle(RuntimeMethodHandle handle)
         {
@@ -65,8 +80,7 @@ namespace System.Reflection
             return parameterTypes;
         }
 
-        private protected Span<object?> CheckArguments(ref StackAllocedArguments stackArgs, object?[]? parameters, Binder? binder,
-            BindingFlags invokeAttr, CultureInfo? culture, Signature sig)
+        private protected Span<object?> CheckArguments(ref StackAllocedArguments stackArgs, object?[]? parameters, Signature sig, in InvocationOptions invokeOptions)
         {
             Debug.Assert(Unsafe.SizeOf<StackAllocedArguments>() == StackAllocedArguments.MaxStackAllocArgCount * Unsafe.SizeOf<object>(),
                 "MaxStackAllocArgCount not properly defined.");
@@ -93,7 +107,7 @@ namespace System.Reflection
                             throw new ArgumentException(SR.Arg_VarMissNull, nameof(parameters));
                         arg = p[i].DefaultValue!;
                     }
-                    copyOfParameters[i] = argRT.CheckValue(arg, binder, culture, invokeAttr);
+                    copyOfParameters[i] = argRT.CheckValue(arg, invokeOptions);
                 }
             }
 

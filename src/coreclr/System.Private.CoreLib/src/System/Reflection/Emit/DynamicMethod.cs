@@ -460,7 +460,12 @@ namespace System.Reflection.Emit
             bool wrapExceptions = (invokeAttr & BindingFlags.DoNotWrapExceptions) == 0;
 
             StackAllocedArguments stackArgs = default;
-            Span<object?> arguments = CheckArguments(ref stackArgs, parameters, binder, invokeAttr, culture, sig);
+            Span<object?> arguments = CheckArguments(ref stackArgs, parameters, sig, new InvocationOptions
+            {
+                Binder = binder,
+                BindingFlags = invokeAttr,
+                Culture = culture
+            });
             object? retValue = RuntimeMethodHandle.InvokeMethod(null, arguments, sig, false, wrapExceptions);
 
             // copy out. This should be made only if ByRef are present.

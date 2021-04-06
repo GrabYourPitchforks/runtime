@@ -184,7 +184,12 @@ namespace System.Reflection
             CheckConsistency(obj);
 
             RuntimeType fieldType = (RuntimeType)FieldType;
-            value = fieldType.CheckValue(value, binder, culture, invokeAttr);
+            value = fieldType.CheckValue(value, new InvocationOptions
+            {
+                Binder = binder,
+                BindingFlags = invokeAttr,
+                Culture = culture
+            });
 
             bool domainInitialized = false;
             if (declaringType == null)

@@ -3331,7 +3331,7 @@ namespace System
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern object AllocateValueType(RuntimeType type, object? value, bool fForceTypeChange);
 
-        internal object? CheckValue(object? value, Binder? binder, CultureInfo? culture, BindingFlags invokeAttr)
+        internal object? CheckValue(object? value, in InvocationOptions invokeOptions)
         {
             // this method is used by invocation in reflection to check whether a value can be assigned to type.
             if (IsInstanceOfType(value))
@@ -3393,10 +3393,10 @@ namespace System
                 }
             }
 
-            if ((invokeAttr & BindingFlags.ExactBinding) == BindingFlags.ExactBinding)
+            if ((invokeOptions.BindingFlags & BindingFlags.ExactBinding) != 0)
                 throw new ArgumentException(SR.Format(SR.Arg_ObjObjEx, value.GetType(), this));
 
-            return TryChangeType(value, binder, culture, needsSpecialCast);
+            return TryChangeType(value, invokeOptions.Binder, invokeOptions.Culture, needsSpecialCast);
         }
 
         // Factored out of CheckValue to reduce code complexity.
