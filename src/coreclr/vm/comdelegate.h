@@ -67,6 +67,8 @@ public:
 
     static FCDECL5(FC_BOOL_RET, BindToMethodInfo, Object* refThisUNSAFE, Object* targetUNSAFE, ReflectMethodObject *method, ReflectClassBaseObject *pMethodTypeUNSAFE, int flags);
 
+    static FCDECL5(FC_BOOL_RET, IsMethodSignatureCompatible, ReflectClassBaseObject *pDelegateTypeUNSAFE, Object* targetUNSAFE, ReflectMethodObject *method, ReflectClassBaseObject *pMethodTypeUNSAFE, int flags);
+
     // This gets the MethodInfo for a delegate, creating it if necessary
     static FCDECL1(ReflectMethodObject*, FindMethodHandle, Object* refThis);
     static FCDECL2(FC_BOOL_RET, InternalEqualMethodHandles, Object *refLeftIn, Object *refRightIn);
@@ -159,6 +161,7 @@ enum DelegateBindingFlags
     DBF_NeverCloseOverNull  =   0x00000010, // A null target will never been considered as a possible null 1st argument
     DBF_CaselessMatching    =   0x00000020, // Use case insensitive lookup for methods matched by name
     DBF_RelaxedSignature    =   0x00000040, // Allow relaxed signature matching (co/contra variance)
+    DBF_DontCheckReturnType =   0x00000080, // Suppress checking that Delegate.Invoke's return type is compatible with target's return type
 };
 
 void DistributeEvent(OBJECTREF *pDelegate,

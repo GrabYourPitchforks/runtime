@@ -478,5 +478,6 @@ namespace System
         NeverCloseOverNull = 0x00000010, // A null target will never been considered as a possible null 1st argument
         CaselessMatching = 0x00000020, // Use case insensitive lookup for methods matched by name
         RelaxedSignature = 0x00000040, // Allow relaxed signature matching (co/contra variance)
+        DontCheckReturnType = 0x00000080, // Suppress checking that Delegate.Invoke's return type is compatible with target's return type
     }
 }

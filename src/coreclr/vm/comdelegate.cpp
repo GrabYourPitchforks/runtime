@@ -1160,6 +1160,56 @@ void COMDelegate::BindToMethod(DELEGATEREF   *pRefThis,
     GCPROTECT_END();
 }
 
+FCIMPL5(FC_BOOL_RET, COMDelegate::IsMethodSignatureCompatible, ReflectClassBaseObject* pDelegateTypeUNSAFE, Object* targetUNSAFE, ReflectMethodObject* pMethodUNSAFE, ReflectClassBaseObject* pMethodTypeUNSAFE, int flags)
+{
+    FCALL_CONTRACT;
+
+    BOOL result = FALSE;
+
+    struct _gc
+    {
+        REFLECTCLASSBASEREF refDelegateType;
+        OBJECTREF refFirstArg;
+        REFLECTCLASSBASEREF refMethodType;
+        REFLECTMETHODREF refMethod;
+    } gc;
+
+    gc.refDelegateType = (REFLECTCLASSBASEREF)ObjectToOBJECTREF(pDelegateTypeUNSAFE);
+    gc.refFirstArg = ObjectToOBJECTREF(targetUNSAFE);
+    gc.refMethodType = (REFLECTCLASSBASEREF)ObjectToOBJECTREF(pMethodTypeUNSAFE);
+    gc.refMethod = (REFLECTMETHODREF)ObjectToOBJECTREF(pMethodUNSAFE);
+
+    MethodTable* pMethMT = gc.refMethodType->GetType().GetMethodTable();
+    MethodDesc* method = gc.refMethod->GetMethod();
+
+    HELPER_METHOD_FRAME_BEGIN_RET_PROTECT(gc);
+
+    // A generic method had better be instantiated (we can't dispatch to an uninstantiated one).
+    if (method->IsGenericMethodDefinition())
+        COMPlusThrow(kArgumentException, W("Arg_DlgtTargMeth"));
+
+    // get the invoke of the delegate
+    MethodDesc* pInvokeMeth = COMDelegate::FindDelegateInvokeMethod(gc.refDelegateType->GetMethodTable());
+    _ASSERTE(pInvokeMeth);
+
+    bool fIsOpenDelegate; // unused
+    if (COMDelegate::IsMethodDescCompatible((gc.refFirstArg == NULL) ? TypeHandle() : gc.refFirstArg->GetTypeHandle(),
+        TypeHandle(pMethMT),
+        method,
+        gc.refDelegateType->GetTypeHandle(),
+        pInvokeMeth,
+        flags,
+        &fIsOpenDelegate))
+    {
+        result = TRUE;
+    }
+
+    HELPER_METHOD_FRAME_END();
+
+    FC_RETURN_BOOL(result);
+}
+FCIMPLEND
+
 // Marshals a delegate to a unmanaged callback.
 LPVOID COMDelegate::ConvertToCallback(OBJECTREF pDelegateObj)
 {
@@ -2784,10 +2834,11 @@ bool COMDelegate::IsMethodDescCompatible(TypeHandle   thFirstArg,
     // Almost there, just compare the return types (remember that the assignment is in the other direction here, from callee to
     // caller, so switch the order of the arguments to IsLocationAssignable).
     // If we ever relax this we have to think about how to unbox this arg in the Nullable<T> case also.
-    if (!IsLocationAssignable(sigTarget.GetRetTypeHandleThrowing(),
-                              sigInvoke.GetRetTypeHandleThrowing(),
-                              flags & DBF_RelaxedSignature,
-                              false))
+    if (!(flags & DBF_DontCheckReturnType)
+        && !IsLocationAssignable(sigTarget.GetRetTypeHandleThrowing(),
+                                 sigInvoke.GetRetTypeHandleThrowing(),
+                                 flags & DBF_RelaxedSignature,
+                                 false))
         return false;
 
     // We must have a match.
