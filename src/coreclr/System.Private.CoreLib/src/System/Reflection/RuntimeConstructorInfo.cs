@@ -377,6 +377,28 @@ namespace System.Reflection
             }
             return RuntimeMethodHandle.InvokeMethod(null, null, sig, true, wrapExceptions);
         }
+
+        public override Delegate CreateDelegate(Type delegateType)
+        {
+            // Validate the parameters.
+            if (delegateType == null)
+                throw new ArgumentNullException(nameof(delegateType));
+
+            RuntimeType? rtType = delegateType as RuntimeType;
+            if (rtType == null)
+                throw new ArgumentException(SR.Argument_MustBeRuntimeType, nameof(delegateType));
+
+            if (!rtType.IsDelegate())
+                throw new ArgumentException(SR.Arg_MustBeDelegate, nameof(delegateType));
+
+            Delegate? d = Delegate.CreateDelegateInternal(rtType, this, firstArgument, bindingFlags);
+            if (d == null)
+            {
+                throw new ArgumentException(SR.Arg_DlgtTargMeth);
+            }
+
+            return d;
+        }
         #endregion
     }
 }

@@ -161,7 +161,7 @@ enum DelegateBindingFlags
     DBF_NeverCloseOverNull  =   0x00000010, // A null target will never been considered as a possible null 1st argument
     DBF_CaselessMatching    =   0x00000020, // Use case insensitive lookup for methods matched by name
     DBF_RelaxedSignature    =   0x00000040, // Allow relaxed signature matching (co/contra variance)
-    DBF_DontCheckReturnType =   0x00000080, // Suppress checking that Delegate.Invoke's return type is compatible with target's return type
+    DBF_RelaxedCtorReturn   =   0x00000080, // Allows the target method to be a .ctor, and uses the method's declaring type as the return type
 };
 
 void DistributeEvent(OBJECTREF *pDelegate,

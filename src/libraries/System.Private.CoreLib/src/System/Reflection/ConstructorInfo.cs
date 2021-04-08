@@ -18,6 +18,11 @@ namespace System.Reflection
         public object Invoke(object?[]? parameters) => Invoke(BindingFlags.Default, binder: null, parameters: parameters, culture: null);
         public abstract object Invoke(BindingFlags invokeAttr, Binder? binder, object?[]? parameters, CultureInfo? culture);
 
+        public virtual Delegate CreateDelegate(Type delegateType) { throw new NotSupportedException(SR.NotSupported_SubclassOverride); }
+
+        /// <summary>Creates a delegate of the given type 'T' from this method.</summary>
+        public T CreateDelegate<T>() where T : Delegate => (T)CreateDelegate(typeof(T));
+
         public override bool Equals(object? obj) => base.Equals(obj);
         public override int GetHashCode() => base.GetHashCode();
 

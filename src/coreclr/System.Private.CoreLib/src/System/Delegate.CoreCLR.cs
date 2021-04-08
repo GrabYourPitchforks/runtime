@@ -427,6 +427,9 @@ namespace System
         private extern bool BindToMethodInfo(object? target, IRuntimeMethodInfo method, RuntimeType methodType, DelegateBindingFlags flags);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool IsMethodSignatureCompatible(RuntimeType delegateType, object? target, IRuntimeMethodInfo method, RuntimeType methodType, DelegateBindingFlags flags);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern MulticastDelegate InternalAlloc(RuntimeType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -478,6 +481,6 @@ namespace System
         NeverCloseOverNull = 0x00000010, // A null target will never been considered as a possible null 1st argument
         CaselessMatching = 0x00000020, // Use case insensitive lookup for methods matched by name
         RelaxedSignature = 0x00000040, // Allow relaxed signature matching (co/contra variance)
-        DontCheckReturnType = 0x00000080, // Suppress checking that Delegate.Invoke's return type is compatible with target's return type
+        RelaxedCtorReturn = 0x00000080, // Allows the target method to be a .ctor, and uses the method's declaring type as the return type
     }
 }

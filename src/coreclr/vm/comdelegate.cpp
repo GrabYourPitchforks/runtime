@@ -1184,7 +1184,7 @@ FCIMPL5(FC_BOOL_RET, COMDelegate::IsMethodSignatureCompatible, ReflectClassBaseO
 
     HELPER_METHOD_FRAME_BEGIN_RET_PROTECT(gc);
 
-    // A generic method had better be instantiated (we can't dispatch to an uninstantiated one).
+    // A generic method had better be instantiated (we can't compare to an uninstantiated one).
     if (method->IsGenericMethodDefinition())
         COMPlusThrow(kArgumentException, W("Arg_DlgtTargMeth"));
 
@@ -2834,11 +2834,10 @@ bool COMDelegate::IsMethodDescCompatible(TypeHandle   thFirstArg,
     // Almost there, just compare the return types (remember that the assignment is in the other direction here, from callee to
     // caller, so switch the order of the arguments to IsLocationAssignable).
     // If we ever relax this we have to think about how to unbox this arg in the Nullable<T> case also.
-    if (!(flags & DBF_DontCheckReturnType)
-        && !IsLocationAssignable(sigTarget.GetRetTypeHandleThrowing(),
-                                 sigInvoke.GetRetTypeHandleThrowing(),
-                                 flags & DBF_RelaxedSignature,
-                                 false))
+    if (!IsLocationAssignable((flags & DBF_RelaxedCtorReturn) && pTargetMethod->IsCtor() ? thExactMethodType : sigTarget.GetRetTypeHandleThrowing(),
+                              sigInvoke.GetRetTypeHandleThrowing(),
+                              flags & DBF_RelaxedSignature,
+                              false))
         return false;
 
     // We must have a match.
