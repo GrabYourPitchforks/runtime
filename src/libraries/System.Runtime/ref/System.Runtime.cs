@@ -8035,6 +8035,8 @@ namespace System.Reflection
         public static readonly string TypeConstructorName;
         protected ConstructorInfo() { }
         public override System.Reflection.MemberTypes MemberType { get { throw null; } }
+        public virtual System.Delegate CreateDelegate(System.Type delegateType) { throw null; }
+        public T CreateDelegate<T>() where T : System.Delegate { throw null; }
         public override bool Equals(object? obj) { throw null; }
         public override int GetHashCode() { throw null; }
         public object Invoke(object?[]? parameters) { throw null; }

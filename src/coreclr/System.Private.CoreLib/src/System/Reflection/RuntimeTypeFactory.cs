@@ -2,19 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
-using RuntimeTypeCache = System.RuntimeType.RuntimeTypeCache;
 
 namespace System.Reflection
 {
     internal sealed class RuntimeTypeFactory
     {
-        private static readonly Dictionary<int, WeakReference> s_cachedStubEntries = new();
+        private static readonly Dictionary<int, WeakReference<CachedStubEntry>[]> s_cachedStubEntries = new();
 
         private static readonly RuntimeType?[] s_normalizedTypes = new RuntimeType?[]
         {
@@ -29,9 +25,160 @@ namespace System.Reflection
             (RuntimeType)typeof(double),
         };
 
+        internal static unsafe Delegate CreateFactory(RuntimeType delegateType, RuntimeConstructorInfo ctorInfo)
+        {
+            // Caller should already have validated that the requested delegate type
+            // is compatible with the ctor info we're using.
+
+            ShuffleType shuffleType;
+            if (RuntimeTypeHandle.IsValueType((RuntimeType)ctorInfo.DeclaringType!))
+            {
+                RuntimeMethodInfo invokeMethod = (RuntimeMethodInfo)delegateType.GetMethod("Invoke", BindingFlags.Public | BindingFlags.Static)!;
+                if (RuntimeTypeHandle.IsValueType((RuntimeType)invokeMethod.ReturnType))
+                {
+                    shuffleType = ShuffleType.ValueTypeCtorReturnedByValue;
+                }
+                else
+                {
+                    shuffleType = ShuffleType.ValueTypeCtorReturnedBoxed;
+                }
+            }
+            else
+            {
+                shuffleType = ShuffleType.RefTypeCtor;
+            }
+
+            CachedStubEntry realStubEntry = GetOrAddStubEntry(new CachedStubEntry(shuffleType, ctorInfo.Signature));
+
+            // Get the allocator, method table, and ctor pointer for this object
+
+            State state = new State()
+            {
+                cachedStubEntry = realStubEntry,
+                ctorDeclaredType = (RuntimeType)ctorInfo.DeclaringType!,
+                pfnCtor = ctorInfo.MethodHandle.GetFunctionPointer()
+            };
+
+            RuntimeTypeHandle.GetActivationInfo(state.ctorDeclaredType, out state.pfnAlloc, out state.pAllocFirstArg, out _, out _);
+
+            // Compile the stub method if it hasn't already been compiled, then get its fnptr and
+            // wrap the delegate around it.
+
+            RuntimeMethodHandle stubHandle = realStubEntry.GetOrCreateStub();
+            IntPtr stubFnptr = stubHandle.GetFunctionPointer();
+
+            RuntimeConstructorInfo delegateCtor = (RuntimeConstructorInfo)delegateType.GetConstructor(BindingFlags.Instance | BindingFlags.Public, new Type[] { typeof(object), typeof(IntPtr) })!;
+            Delegate retVal = (Delegate)delegateCtor.Invoke(new object[] { state, stubFnptr });
+
+            GC.KeepAlive(stubHandle.GetMethodInfo());
+            return retVal;
+        }
+
+        private static CachedStubEntry GetOrAddStubEntry(CachedStubEntry stubEntry)
+        {
+            int hashCode = stubEntry.GetHashCode(); // compute outside lock
+
+            // First, see if it already exists in the dictionary
+
+            WeakReference<CachedStubEntry>[]? existingDictEntry;
+            lock (s_cachedStubEntries)
+            {
+                s_cachedStubEntries.TryGetValue(hashCode, out existingDictEntry);
+            }
+
+            if (existingDictEntry is not null)
+            {
+                // Enumerate entries, looking for the one that matches ours
+                foreach (WeakReference<CachedStubEntry> element in existingDictEntry)
+                {
+                    if (!element.TryGetTarget(out CachedStubEntry? innerEntry))
+                    {
+                        break; // GC started empting entries; need to clean the cache
+                    }
+
+                    if (stubEntry.Equals(innerEntry))
+                    {
+                        return innerEntry; // found a match!
+                    }
+                }
+            }
+
+            // If we reached this point, we need to clear dead weight from the cache,
+            // or we need to add ourselves to the cache. This should be a fairly rare
+            // operation, so it's ok to perform this under lock.
+
+            lock (s_cachedStubEntries)
+            {
+                List<int>? keysToRemove = null;
+                Dictionary<int, WeakReference<CachedStubEntry>[]>? keysToReplace = null;
+                List<WeakReference<CachedStubEntry>>? tempList = new List<WeakReference<CachedStubEntry>>();
+
+                foreach (var kvp in s_cachedStubEntries)
+                {
+                    tempList.Clear();
+
+                    foreach (var innerEntry in kvp.Value)
+                    {
+                        if (innerEntry.TryGetTarget(out _))
+                        {
+                            tempList.Add(innerEntry); // target was still live
+                        }
+                    }
+
+                    if (tempList.Count == 0)
+                    {
+                        // none of the original targets are still alive; remove the entire KVP entry
+                        (keysToRemove ??= new()).Add(kvp.Key);
+                    }
+                    else if (tempList.Count < kvp.Value.Length)
+                    {
+                        // some of the original targets are still alive; trim (but don't remove) the KVP entry
+                        (keysToReplace ??= new())[kvp.Key] = tempList.ToArray();
+                    }
+                }
+
+                if (keysToRemove is not null)
+                {
+                    foreach (int key in keysToRemove)
+                    {
+                        s_cachedStubEntries.Remove(key);
+                    }
+                }
+
+                if (keysToReplace is not null)
+                {
+                    foreach (var kvp in keysToReplace)
+                    {
+                        s_cachedStubEntries[kvp.Key] = kvp.Value;
+                    }
+                }
+
+                // Try to find ourselves in the cache once more
+
+                if (s_cachedStubEntries.TryGetValue(hashCode, out WeakReference<CachedStubEntry>[]? existingArray))
+                {
+                    foreach (var element in existingArray)
+                    {
+                        if (element.TryGetTarget(out CachedStubEntry? innerEntry)
+                            && stubEntry.Equals(innerEntry))
+                        {
+                            return innerEntry; // already exists and found a match!
+                        }
+                    }
+                }
+
+                // And if we're not there, add and return ourselves
+
+                Array.Resize(ref existingArray, (existingArray?.Length ?? 0) + 1);
+                existingArray[existingArray.Length - 1] = new WeakReference<CachedStubEntry>(stubEntry);
+                s_cachedStubEntries[hashCode] = existingArray;
+                return stubEntry;
+            }
+        }
+
         private sealed class CachedStubEntry : IEquatable<CachedStubEntry>
         {
-            private Lazy<RuntimeMethodHandle> _stub = new Lazy<RuntimeMethodHandle>(CreateStub);
+            private RuntimeMethodHandle? _stub;
 
             internal CachedStubEntry(ShuffleType shuffleType, Signature realSignature)
             {
@@ -77,7 +224,7 @@ namespace System.Reflection
                     returnType: DeclaringValueType ?? typeof(object),
                     parameterTypes: parameterTypes,
                     owner: parameterTypes[0]);
-                dynamicMethod.InitLocals = true; // we rely on value types being zeroed out by default
+                dynamicMethod.InitLocals = false; // will set this to true later if needed
 
                 ILGenerator ilGen = dynamicMethod.GetILGenerator();
 
@@ -93,10 +240,10 @@ namespace System.Reflection
                 {
                     // Typical case: Creating a class or a boxed valuetype, call the allocator
                     ilGen.Emit(OpCodes.Ldloc, stateLocal);
-                    ilGen.Emit(OpCodes.Ldfld, State.fi_pMT);
+                    ilGen.Emit(OpCodes.Ldfld, State.fi_pAllocFirstArg);
                     ilGen.Emit(OpCodes.Ldloc, stateLocal);
                     ilGen.Emit(OpCodes.Ldfld, State.fi_pfnAlloc);
-                    ilGen.EmitCalli(OpCodes.Calli, CallingConventions.Standard, typeof(object), new[] { typeof(IntPtr) }, null);
+                    ilGen.EmitCalli(OpCodes.Calli, CallingConventions.Standard, typeof(object), new[] { typeof(void*) }, null);
                     ilGen.Emit(OpCodes.Stloc, retValLocal);
 
                     // Need to make sure the type wasn't collected before we called the allocator
@@ -115,6 +262,7 @@ namespace System.Reflection
                 else
                 {
                     // Uncommon case: Returning a valuetype byval
+                    dynamicMethod.InitLocals = true; // need to zero out the value type before passing the ref to the ctor
                     ilGen.Emit(OpCodes.Ldloca, retValLocal);
                     topOfStackBeforeCtorInvoke = (RuntimeType)DeclaringValueType!.MakeByRefType();
                 }
@@ -173,6 +321,7 @@ namespace System.Reflection
                 if (obj is null) return false;
                 if (ShuffleType != obj.ShuffleType) return false;
                 if (CallingConvention != obj.CallingConvention) return false;
+                if (!Equals(DeclaringValueType, obj.DeclaringValueType)) return false;
 
                 if (NormalizedCtorArgs.Length != obj.NormalizedCtorArgs.Length) return false;
                 for (int i = 0; i < NormalizedCtorArgs.Length; i++)
@@ -188,6 +337,7 @@ namespace System.Reflection
                 HashCode hashCode = default;
                 hashCode.Add((int)ShuffleType);
                 hashCode.Add((int)CallingConvention);
+                hashCode.Add(DeclaringValueType?.GetHashCode() ?? 0);
                 for (int i = 0; i < NormalizedCtorArgs.Length; i++)
                 {
                     hashCode.Add(NormalizedCtorArgs[i].GetHashCode());
@@ -195,7 +345,13 @@ namespace System.Reflection
                 return hashCode.ToHashCode();
             }
 
-            internal RuntimeMethodHandle GetOrCreateStub() => _stub.Value;
+            internal RuntimeMethodHandle GetOrCreateStub()
+            {
+                lock (this)
+                {
+                    return _stub ??= CreateStub();
+                }
+            }
         }
 
         private static RuntimeType GetNormalizedType(RuntimeType runtimeType)
@@ -286,17 +442,22 @@ namespace System.Reflection
             internal static readonly MethodInfo mi_gcKeepAlive = typeof(GC).GetMethod("KeepAlive", BindingFlags.Static | BindingFlags.Public, new Type[] { typeof(object) })!;
         }
 
-        private sealed class State
+        private unsafe sealed class State
         {
-            internal static readonly FieldInfo fi_ctorDeclaredType = typeof(State).GetField(nameof(ctorDeclaredType))!;
             internal static readonly FieldInfo fi_pfnAlloc = typeof(State).GetField(nameof(pfnAlloc))!;
             internal static readonly FieldInfo fi_pfnCtor = typeof(State).GetField(nameof(pfnCtor))!;
-            internal static readonly FieldInfo fi_pMT = typeof(State).GetField(nameof(pMT))!;
+            internal static readonly FieldInfo fi_pAllocFirstArg = typeof(State).GetField(nameof(pAllocFirstArg))!;
 
-            public RuntimeType? ctorDeclaredType; // only used for keepalive
-            public IntPtr pfnAlloc;
+            // Three fields below are used by our stub method
+
+            public delegate* managed<void*, object> pfnAlloc;
             public IntPtr pfnCtor;
-            public IntPtr pMT;
+            public void* pAllocFirstArg;
+
+            // Two fields below exist so that GC.KeepAlive(state) also roots critical info
+
+            public RuntimeType? ctorDeclaredType;
+            public CachedStubEntry? cachedStubEntry;
         }
 
         private sealed class Box

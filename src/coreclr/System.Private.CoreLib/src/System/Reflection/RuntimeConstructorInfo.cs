@@ -95,7 +95,7 @@ namespace System.Reflection
         internal override bool CacheEquals(object? o) =>
             o is RuntimeConstructorInfo m && m.m_handle == m_handle;
 
-        private Signature Signature => m_signature ??= new Signature(this, m_declaringType);
+        internal Signature Signature => m_signature ??= new Signature(this, m_declaringType);
 
         private RuntimeType ReflectedTypeInternal => m_reflectedTypeCache.GetRuntimeType();
 
@@ -391,13 +391,13 @@ namespace System.Reflection
             if (!rtType.IsDelegate())
                 throw new ArgumentException(SR.Arg_MustBeDelegate, nameof(delegateType));
 
-            Delegate? d = Delegate.CreateDelegateInternal(rtType, this, firstArgument, bindingFlags);
-            if (d == null)
+            if (!Delegate.IsMethodSignatureCompatible(rtType, null, this, m_declaringType,
+                DelegateBindingFlags.InstanceMethodOnly | DelegateBindingFlags.OpenDelegateOnly | DelegateBindingFlags.RelaxedSignature | DelegateBindingFlags.RelaxedCtorReturn))
             {
                 throw new ArgumentException(SR.Arg_DlgtTargMeth);
             }
 
-            return d;
+            return RuntimeTypeFactory.CreateFactory(rtType, this);
         }
         #endregion
     }
