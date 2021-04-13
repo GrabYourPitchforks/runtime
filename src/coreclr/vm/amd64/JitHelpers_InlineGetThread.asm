@@ -19,7 +19,7 @@ JIT_NEW                 equ     ?JIT_New@@YAPEAVObject@@PEAUCORINFO_CLASS_STRUCT
 CopyValueClassUnchecked equ     ?CopyValueClassUnchecked@@YAXPEAX0PEAVMethodTable@@@Z
 JIT_Box                 equ     ?JIT_Box@@YAPEAVObject@@PEAUCORINFO_CLASS_STRUCT_@@PEAX@Z
 g_pStringClass          equ     ?g_pStringClass@@3PEAVMethodTable@@EA
-FramedAllocateString    equ     ?FramedAllocateString@@YAPEAVStringObject@@K@Z
+FramedAllocateString    equ     ?FramedAllocateString@@YAPEAVStringObject@@KW4GC_ALLOC_FLAGS@@@Z
 JIT_NewArr1             equ     ?JIT_NewArr1@@YAPEAVObject@@PEAUCORINFO_CLASS_STRUCT_@@_J@Z
 
 INVALIDGCVALUE          equ     0CCCCCCCDh
@@ -120,6 +120,7 @@ NESTED_END JIT_BoxFastMP_InlineGetThread, _TEXT
 
 LEAF_ENTRY AllocateStringFastMP_InlineGetThread, _TEXT
         ; We were passed the number of characters in ECX
+        ; EDX contains flags to pass to the allocator in case we can't inline-allocate
 
         ; we need to load the method table for string from the global
         mov     r9, [g_pStringClass]
@@ -135,19 +136,19 @@ LEAF_ENTRY AllocateStringFastMP_InlineGetThread, _TEXT
         ; Calculate the final size to allocate.
         ; We need to calculate baseSize + cnt*2, then round that up by adding 7 and anding ~7.
 
-        lea     edx, [STRING_BASE_SIZE + ecx*2 + 7]
-        and     edx, -8
+        lea     r8d, [STRING_BASE_SIZE + ecx*2 + 7]
+        and     r8d, -8
 
         INLINE_GETTHREAD r11
         mov     r10, [r11 + OFFSET__Thread__m_alloc_context__alloc_limit]
         mov     rax, [r11 + OFFSET__Thread__m_alloc_context__alloc_ptr]
 
-        add     rdx, rax
+        add     r8, rax
 
-        cmp     rdx, r10
+        cmp     r8, r10
         ja      AllocFailed
 
-        mov     [r11 + OFFSET__Thread__m_alloc_context__alloc_ptr], rdx
+        mov     [r11 + OFFSET__Thread__m_alloc_context__alloc_ptr], r8
         mov     [rax], r9
 
         mov     [rax + OFFSETOF__StringObject__m_StringLength], ecx

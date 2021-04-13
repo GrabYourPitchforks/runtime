@@ -48,7 +48,7 @@ JIT_NEW                 equ     ?JIT_New@@YAPEAVObject@@PEAUCORINFO_CLASS_STRUCT
 CopyValueClassUnchecked equ     ?CopyValueClassUnchecked@@YAXPEAX0PEAVMethodTable@@@Z
 JIT_Box                 equ     ?JIT_Box@@YAPEAVObject@@PEAUCORINFO_CLASS_STRUCT_@@PEAX@Z
 g_pStringClass          equ     ?g_pStringClass@@3PEAVMethodTable@@EA
-FramedAllocateString    equ     ?FramedAllocateString@@YAPEAVStringObject@@K@Z
+FramedAllocateString    equ     ?FramedAllocateString@@YAPEAVStringObject@@KW4GC_ALLOC_FLAGS@@@Z
 JIT_NewArr1             equ     ?JIT_NewArr1@@YAPEAVObject@@PEAUCORINFO_CLASS_STRUCT_@@_J@Z
 
 INVALIDGCVALUE          equ     0CCCCCCCDh
@@ -277,6 +277,7 @@ NESTED_END JIT_BoxFastUP, _TEXT
 LEAF_ENTRY AllocateStringFastUP, _TEXT
 
         ; We were passed the number of characters in ECX
+        ; EDX contains flags to pass to the allocator in case we can't inline-allocate
 
         ; we need to load the method table for string from the global
 

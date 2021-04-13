@@ -887,7 +887,6 @@ class StringObject : public Object
     // characters. So this means that if you have a string that has 5
     // characters and the null terminator you should pass in 5 and NOT 6.
     //========================================================================
-    static STRINGREF NewString(int length);
     static STRINGREF NewString(int length, BOOL bHasTrailByte);
     static STRINGREF NewString(const WCHAR *pwsz);
     static STRINGREF NewString(const WCHAR *pwsz, int length);

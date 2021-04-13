@@ -45,8 +45,27 @@ namespace System
             get;
         }
 
+        /// <summary>
+        /// Allocates a string instance whose contents are zeroed.
+        /// </summary>
+        /// <remarks>
+        /// The returned instance will already have a null terminator.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string FastAllocateString(int length) => _FastAllocateString(length, GC.GC_ALLOC_FLAGS.GC_ALLOC_NO_FLAGS);
+
+        /// <summary>
+        /// Allocates a string instance whose contents are uninitialized (not zeroed).
+        /// The caller MUST fully populate the buffer before exposing it to non-runtime code.
+        /// </summary>
+        /// <remarks>
+        /// The returned instance will already have a null terminator.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string FastAllocateUninitializedString(int length) => _FastAllocateString(length, GC.GC_ALLOC_FLAGS.GC_ALLOC_ZEROING_OPTIONAL);
+
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern string FastAllocateString(int length);
+        private static extern string _FastAllocateString(int length, GC.GC_ALLOC_FLAGS flags);
 
         // Set extra byte for odd-sized strings that came from interop as BSTR.
         [MethodImpl(MethodImplOptions.InternalCall)]

@@ -89,7 +89,7 @@ namespace System
                 return string.Empty;
             }
 
-            string result = FastAllocateString(totalLength);
+            string result = FastAllocateUninitializedString(totalLength); // we'll overwrite the whole thing
             int position = 0; // How many characters we've copied so far
 
             for (int i = 0; i < strings.Length; i++)
@@ -103,6 +103,7 @@ namespace System
                 position += s.Length;
             }
 
+            Debug.Assert(position == result.Length);
             return result;
         }
 
@@ -239,7 +240,7 @@ namespace System
 
             int str0Length = str0.Length;
 
-            string result = FastAllocateString(str0Length + str1.Length);
+            string result = FastAllocateUninitializedString(str0Length + str1.Length); // we'll overwrite the whole thing
 
             FillStringChecked(result, 0, str0);
             FillStringChecked(result, str0Length, str1);
@@ -266,7 +267,7 @@ namespace System
 
             int totalLength = str0.Length + str1.Length + str2.Length;
 
-            string result = FastAllocateString(totalLength);
+            string result = FastAllocateUninitializedString(totalLength); // we'll overwrite the whole thing
             FillStringChecked(result, 0, str0);
             FillStringChecked(result, str0.Length, str1);
             FillStringChecked(result, str0.Length + str1.Length, str2);
@@ -298,7 +299,7 @@ namespace System
 
             int totalLength = str0.Length + str1.Length + str2.Length + str3.Length;
 
-            string result = FastAllocateString(totalLength);
+            string result = FastAllocateUninitializedString(totalLength); // we'll overwrite the whole thing
             FillStringChecked(result, 0, str0);
             FillStringChecked(result, str0.Length, str1);
             FillStringChecked(result, str0.Length + str1.Length, str2);
@@ -315,7 +316,7 @@ namespace System
                 return Empty;
             }
 
-            string result = FastAllocateString(length);
+            string result = FastAllocateUninitializedString(length); // we'll overwrite the whole thing
             Span<char> resultSpan = new Span<char>(ref result._firstChar, result.Length);
 
             str0.CopyTo(resultSpan);
@@ -332,7 +333,7 @@ namespace System
                 return Empty;
             }
 
-            string result = FastAllocateString(length);
+            string result = FastAllocateUninitializedString(length); // we'll overwrite the whole thing
             Span<char> resultSpan = new Span<char>(ref result._firstChar, result.Length);
 
             str0.CopyTo(resultSpan);
@@ -354,7 +355,7 @@ namespace System
                 return Empty;
             }
 
-            string result = FastAllocateString(length);
+            string result = FastAllocateUninitializedString(length); // we'll overwrite the whole thing
             Span<char> resultSpan = new Span<char>(ref result._firstChar, result.Length);
 
             str0.CopyTo(resultSpan);
@@ -413,7 +414,7 @@ namespace System
             }
 
             // Allocate a new string and copy each input string into it
-            string result = FastAllocateString(totalLength);
+            string result = FastAllocateUninitializedString(totalLength); // we'll defensively check we populated the whole thing before returning
             int copiedLength = 0;
             for (int i = 0; i < values.Length; i++)
             {
@@ -521,7 +522,7 @@ namespace System
 
             // In case this computation overflows, newLength will be negative and FastAllocateString throws OutOfMemoryException
             int newLength = oldLength + insertLength;
-            string result = FastAllocateString(newLength);
+            string result = FastAllocateUninitializedString(newLength); // we'll overwrite the whole thing
 
             Buffer.Memmove(ref result._firstChar, ref _firstChar, (nuint)startIndex);
             Buffer.Memmove(ref Unsafe.Add(ref result._firstChar, startIndex), ref value._firstChar, (nuint)insertLength);
@@ -756,7 +757,7 @@ namespace System
             }
 
             // Copy each of the strings into the result buffer, interleaving with the separator.
-            string result = FastAllocateString(totalLength);
+            string result = FastAllocateUninitializedString(totalLength); // we'll defensively check we populated the whole thing before returning
             int copiedLength = 0;
 
             for (int i = 0; i < values.Length; i++)
@@ -822,7 +823,7 @@ namespace System
             if (count <= 0)
                 return this;
 
-            string result = FastAllocateString(totalWidth);
+            string result = FastAllocateUninitializedString(totalWidth); // we'll overwrite the whole thing
 
             new Span<char>(ref result._firstChar, count).Fill(paddingChar);
             Buffer.Memmove(ref Unsafe.Add(ref result._firstChar, count), ref _firstChar, (nuint)oldLength);
@@ -841,7 +842,7 @@ namespace System
             if (count <= 0)
                 return this;
 
-            string result = FastAllocateString(totalWidth);
+            string result = FastAllocateUninitializedString(totalWidth); // we'll overwrite the whole thing
 
             Buffer.Memmove(ref result._firstChar, ref _firstChar, (nuint)oldLength);
             new Span<char>(ref Unsafe.Add(ref result._firstChar, oldLength), count).Fill(paddingChar);
@@ -865,7 +866,7 @@ namespace System
             if (newLength == 0)
                 return Empty;
 
-            string result = FastAllocateString(newLength);
+            string result = FastAllocateUninitializedString(newLength); // we'll overwrite the whole thing
 
             Buffer.Memmove(ref result._firstChar, ref _firstChar, (nuint)startIndex);
             Buffer.Memmove(ref Unsafe.Add(ref result._firstChar, startIndex), ref Unsafe.Add(ref _firstChar, startIndex + count), (nuint)(newLength - startIndex));
@@ -994,7 +995,7 @@ namespace System
                 return this;
 
             int remainingLength = Length - firstIndex;
-            string result = FastAllocateString(Length);
+            string result = FastAllocateUninitializedString(Length); // we'll overwrite the whole thing
 
             int copyLength = firstIndex;
 
@@ -1120,7 +1121,7 @@ namespace System
             long dstLength = this.Length + ((long)(newValue.Length - oldValueLength)) * indices.Length;
             if (dstLength > int.MaxValue)
                 throw new OutOfMemoryException();
-            string dst = FastAllocateString((int)dstLength);
+            string dst = FastAllocateUninitializedString((int)dstLength); // we'll overwrite the whole thing
 
             Span<char> dstSpan = new Span<char>(ref dst._firstChar, dst.Length);
 
@@ -1742,7 +1743,7 @@ namespace System
             Debug.Assert(startIndex >= 0 && startIndex <= this.Length, "StartIndex is out of range!");
             Debug.Assert(length >= 0 && startIndex <= this.Length - length, "length is out of range!");
 
-            string result = FastAllocateString(length);
+            string result = FastAllocateUninitializedString(length); // we'll overwrite the whole thing
 
             Buffer.Memmove(
                 elementCount: (uint)result.Length, // derefing Length now allows JIT to prove 'result' not null below

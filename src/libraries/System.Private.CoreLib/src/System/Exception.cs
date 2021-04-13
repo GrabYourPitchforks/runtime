@@ -145,7 +145,7 @@ namespace System
             }
 
             // Create the string
-            string result = string.FastAllocateString(length);
+            string result = string.FastAllocateUninitializedString(length); // we'll overwrite the whole thing
             Span<char> resultSpan = new Span<char>(ref result.GetRawStringData(), result.Length);
 
             // Fill it in

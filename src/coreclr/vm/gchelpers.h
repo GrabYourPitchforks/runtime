@@ -34,7 +34,7 @@ OBJECTREF AllocatePrimitiveArray(CorElementType type, DWORD cElements);
 OBJECTREF AllocateObjectArray(DWORD cElements, TypeHandle ElementType, BOOL bAllocateInPinnedHeap = FALSE);
 
 // Allocate a string
-STRINGREF AllocateString( DWORD cchStringLength );
+STRINGREF AllocateString( DWORD cchStringLength, GC_ALLOC_FLAGS flags = GC_ALLOC_NO_FLAGS );
 
 OBJECTREF DupArrayForCloning(BASEARRAYREF pRef);
 

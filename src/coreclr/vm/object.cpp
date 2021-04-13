@@ -260,7 +260,7 @@ STRINGREF AllocateString(SString sstr)
     } CONTRACTL_END;
 
     COUNT_T length = sstr.GetCount(); // count of WCHARs excluding terminating NULL
-    STRINGREF strObj = AllocateString(length);
+    STRINGREF strObj = AllocateString(length, GC_ALLOC_ZEROING_OPTIONAL);
     memcpyNoGCRefs(strObj->GetBuffer(), sstr.GetUnicode(), length*sizeof(WCHAR));
 
     return strObj;
@@ -597,34 +597,6 @@ VOID Object::ValidateInner(BOOL bDeep, BOOL bVerifyNextHeader, BOOL bVerifySyncB
 #endif   // VERIFY_HEAP
 
 /*==================================NewString===================================
-**Action:  Creates a System.String object.
-**Returns:
-**Arguments:
-**Exceptions:
-==============================================================================*/
-STRINGREF StringObject::NewString(INT32 length) {
-    CONTRACTL {
-        GC_TRIGGERS;
-        MODE_COOPERATIVE;
-        PRECONDITION(length>=0);
-    } CONTRACTL_END;
-
-    STRINGREF pString;
-
-    if (length<0) {
-        return NULL;
-    } else if (length == 0) {
-        return GetEmptyString();
-    } else {
-        pString = AllocateString(length);
-        _ASSERTE(pString->GetBuffer()[length] == 0);
-
-        return pString;
-    }
-}
-
-
-/*==================================NewString===================================
 **Action: Many years ago, VB didn't have the concept of a byte array, so enterprising
 **        users created one by allocating a BSTR with an odd length and using it to
 **        store bytes.  A generation later, we're still stuck supporting this behavior.
@@ -702,7 +674,7 @@ STRINGREF StringObject::NewString(const WCHAR *pwsz)
                  !"pwsz can not point to GC Heap");
 #endif // 0
 
-        STRINGREF pString = AllocateString( nch );
+        STRINGREF pString = AllocateString( nch, GC_ALLOC_ZEROING_OPTIONAL );
 
         memcpyNoGCRefs(pString->GetBuffer(), pwsz, nch*sizeof(WCHAR));
         _ASSERTE(pString->GetBuffer()[nch] == 0);
@@ -740,7 +712,7 @@ STRINGREF StringObject::NewString(const WCHAR *pwsz, int length) {
         _ASSERTE(!GCHeapUtilities::GetGCHeap()->IsHeapPointer((BYTE *) pwsz) ||
                  !"pwsz can not point to GC Heap");
 #endif // 0
-        STRINGREF pString = AllocateString(length);
+        STRINGREF pString = AllocateString(length, GC_ALLOC_ZEROING_OPTIONAL);
 
         memcpyNoGCRefs(pString->GetBuffer(), pwsz, length*sizeof(WCHAR));
         _ASSERTE(pString->GetBuffer()[length] == 0);

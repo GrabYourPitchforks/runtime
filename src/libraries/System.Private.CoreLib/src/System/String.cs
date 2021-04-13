@@ -59,7 +59,7 @@ namespace System
             if (value == null || value.Length == 0)
                 return Empty;
 
-            string result = FastAllocateString(value.Length);
+            string result = FastAllocateUninitializedString(value.Length); // we'll overwrite the whole thing
 
             Buffer.Memmove(
                 elementCount: (uint)result.Length, // derefing Length now allows JIT to prove 'result' not null below
@@ -94,7 +94,7 @@ namespace System
             if (length == 0)
                 return Empty;
 
-            string result = FastAllocateString(length);
+            string result = FastAllocateUninitializedString(length); // we'll overwrite the whole thing
 
             Buffer.Memmove(
                 elementCount: (uint)result.Length, // derefing Length now allows JIT to prove 'result' not null below
@@ -122,7 +122,7 @@ namespace System
             if (count == 0)
                 return Empty;
 
-            string result = FastAllocateString(count);
+            string result = FastAllocateUninitializedString(count); // we'll overwrite the whole thing
 
             Buffer.Memmove(
                 elementCount: (uint)result.Length, // derefing Length now allows JIT to prove 'result' not null below
@@ -161,7 +161,7 @@ namespace System
             if (ptr == null)
                 throw new ArgumentOutOfRangeException(nameof(ptr), SR.ArgumentOutOfRange_PartialWCHAR);
 
-            string result = FastAllocateString(length);
+            string result = FastAllocateUninitializedString(length); // we'll overwrite the whole thing
 
             Buffer.Memmove(
                elementCount: (uint)result.Length, // derefing Length now allows JIT to prove 'result' not null below
@@ -239,6 +239,8 @@ namespace System
             if (numCharsRequired == 0)
                 throw new ArgumentException(SR.Arg_InvalidANSIString);
 
+            // Zero-init new string instance, otherwise if byte* buffer changes, the required string length
+            // might also change, and we don't want to expose uninitialized string data to caller.
             string newString = FastAllocateString(numCharsRequired);
             fixed (char* pFirstChar = &newString._firstChar)
             {
@@ -306,35 +308,32 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(count), SR.ArgumentOutOfRange_NegativeCount);
             }
 
-            string result = FastAllocateString(count);
+            string result = FastAllocateUninitializedString(count); // we'll overwrite the whole thing
 
-            if (c != '\0') // Fast path null char string
+            unsafe
             {
-                unsafe
+                fixed (char* dest = &result._firstChar)
                 {
-                    fixed (char* dest = &result._firstChar)
+                    uint cc = (uint)((c << 16) | c);
+                    uint* dmem = (uint*)dest;
+                    if (count >= 4)
                     {
-                        uint cc = (uint)((c << 16) | c);
-                        uint* dmem = (uint*)dest;
-                        if (count >= 4)
+                        count -= 4;
+                        do
                         {
+                            dmem[0] = cc;
+                            dmem[1] = cc;
+                            dmem += 2;
                             count -= 4;
-                            do
-                            {
-                                dmem[0] = cc;
-                                dmem[1] = cc;
-                                dmem += 2;
-                                count -= 4;
-                            } while (count >= 0);
-                        }
-                        if ((count & 2) != 0)
-                        {
-                            *dmem = cc;
-                            dmem++;
-                        }
-                        if ((count & 1) != 0)
-                            ((char*)dmem)[0] = c;
+                        } while (count >= 0);
                     }
+                    if ((count & 2) != 0)
+                    {
+                        *dmem = cc;
+                        dmem++;
+                    }
+                    if ((count & 1) != 0)
+                        ((char*)dmem)[0] = c;
                 }
             }
             return result;
@@ -353,7 +352,7 @@ namespace System
             if (value.Length == 0)
                 return Empty;
 
-            string result = FastAllocateString(value.Length);
+            string result = FastAllocateUninitializedString(value.Length); // we'll overwrite the whole thing
             Buffer.Memmove(ref result._firstChar, ref MemoryMarshal.GetReference(value), (uint)value.Length);
             return result;
         }
@@ -372,7 +371,7 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
-            string result = FastAllocateString(length);
+            string result = FastAllocateString(length); // exposed to user delegate, ensure zero-inited
             action(new Span<char>(ref result.GetRawStringData(), length), state);
             return result;
         }
@@ -413,7 +412,7 @@ namespace System
             if (str == null)
                 throw new ArgumentNullException(nameof(str));
 
-            string result = FastAllocateString(str.Length);
+            string result = FastAllocateUninitializedString(str.Length); // we'll overwrite the whole thing
 
             Buffer.Memmove(
                 elementCount: (uint)result.Length, // derefing Length now allows JIT to prove 'result' not null below
@@ -568,6 +567,8 @@ namespace System
             if (stringLength == 0)
                 return Empty;
 
+            // Zero-init the string to avoid the possibility where byte* contents change, resulting
+            // in us not populating the entire string buffer.
             string s = FastAllocateString(stringLength);
             fixed (char* pTempChars = &s._firstChar)
             {

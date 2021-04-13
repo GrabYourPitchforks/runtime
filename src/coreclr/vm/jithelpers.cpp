@@ -2341,7 +2341,7 @@ HCIMPLEND
 //*************************************************************
 // Allocation fast path for typical objects
 //
-HCIMPL1(StringObject*, AllocateString_MP_FastPortable, DWORD stringLength)
+HCIMPL2(StringObject*, AllocateString_MP_FastPortable, DWORD stringLength, GC_ALLOC_FLAGS flags)
 {
     FCALL_CONTRACT;
 
@@ -2391,7 +2391,7 @@ HCIMPL1(StringObject*, AllocateString_MP_FastPortable, DWORD stringLength)
 
     // Tail call to the slow helper
     ENDFORBIDGC();
-    return HCCALL1(FramedAllocateString, stringLength);
+    return HCCALL2(FramedAllocateString, stringLength, flags);
 }
 HCIMPLEND
 
@@ -2401,7 +2401,7 @@ HCIMPLEND
 /* We don't use HCIMPL macros because this is not a real helper call */
 /* This function just needs mangled arguments like a helper call     */
 
-HCIMPL1_RAW(StringObject*, UnframedAllocateString, DWORD stringLength)
+HCIMPL2_RAW(StringObject*, UnframedAllocateString, DWORD stringLength, GC_ALLOC_FLAGS flags)
 {
     // This isn't _really_ an FCALL and therefore shouldn't have the
     // SO_TOLERANT part of the FCALL_CONTRACT b/c it is not entered
@@ -2413,20 +2413,20 @@ HCIMPL1_RAW(StringObject*, UnframedAllocateString, DWORD stringLength)
     } CONTRACTL_END;
 
     STRINGREF result;
-    result = AllocateString(stringLength);
+    result = AllocateString(stringLength, flags);
 
     return((StringObject*) OBJECTREFToObject(result));
 }
 HCIMPLEND_RAW
 
-HCIMPL1(StringObject*, FramedAllocateString, DWORD stringLength)
+HCIMPL2(StringObject*, FramedAllocateString, DWORD stringLength, GC_ALLOC_FLAGS flags)
 {
     FCALL_CONTRACT;
 
     STRINGREF result = NULL;
     HELPER_METHOD_FRAME_BEGIN_RET_0();    // Set up a frame
 
-    result = AllocateString(stringLength);
+    result = AllocateString(stringLength, flags);
 
     HELPER_METHOD_FRAME_END();
     return((StringObject*) OBJECTREFToObject(result));

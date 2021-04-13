@@ -456,7 +456,7 @@ STRINGREF AllocateStringObject(EEStringData *pStringData)
     // Create the COM+ string object.
     DWORD cCount = pStringData->GetCharCount();
 
-    STRINGREF strObj = AllocateString(cCount);
+    STRINGREF strObj = AllocateString(cCount, GC_ALLOC_ZEROING_OPTIONAL);
 
     GCPROTECT_BEGIN(strObj)
     {

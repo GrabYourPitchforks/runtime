@@ -2359,7 +2359,7 @@ namespace System
             }
 
             bool insertLineBreaks = (options == Base64FormattingOptions.InsertLineBreaks);
-            string result = string.FastAllocateString(ToBase64_CalculateAndValidateOutputLength(bytes.Length, insertLineBreaks));
+            string result = string.FastAllocateUninitializedString(ToBase64_CalculateAndValidateOutputLength(bytes.Length, insertLineBreaks)); // we'll overwrite the whole thing
 
             unsafe
             {

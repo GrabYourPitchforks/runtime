@@ -406,7 +406,7 @@ namespace System.Text
             }
 
             AssertInvariants();
-            string result = string.FastAllocateString(length);
+            string result = string.FastAllocateUninitializedString(length); // we'll overwrite the whole thing
             unsafe
             {
                 fixed (char* destinationPtr = result)

@@ -44,6 +44,16 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal static extern string FastAllocateString(int length);
 
+        /// <summary>
+        /// Allocates a string instance <em>without zeroing the string contents</em>. The caller <em>must</em>
+        /// fully populate the string buffer before passing it to user code.
+        /// </summary>
+        /// <remarks>
+        /// The returned instance will already have a null terminator.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string FastAllocateUninitializedString(int length) => FastAllocateString(length);
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private static extern string InternalIsInterned(string str);
 

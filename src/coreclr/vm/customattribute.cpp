@@ -1356,7 +1356,7 @@ ARG_SLOT COMCustomAttribute::GetDataFromBlob(Assembly *pCtorAssembly,
             *pBlob += size;
         }
         else if (size == 0)
-            retValue = ObjToArgSlot(StringObject::NewString(0));
+            retValue = ObjToArgSlot(StringObject::GetEmptyString());
         else
             *bObjectCreated = FALSE;
 

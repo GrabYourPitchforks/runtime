@@ -827,7 +827,7 @@ OBJECTREF AllocateObjectArray(DWORD cElements, TypeHandle elementType, BOOL bAll
     return AllocateSzArray(arrayType, (INT32) cElements, flags);
 }
 
-STRINGREF AllocateString( DWORD cchStringLength )
+STRINGREF AllocateString( DWORD cchStringLength, GC_ALLOC_FLAGS flags )
 {
     CONTRACTL {
         THROWS;
@@ -855,15 +855,21 @@ STRINGREF AllocateString( DWORD cchStringLength )
 
     SetTypeHandleOnThreadForAlloc(TypeHandle(g_pStringClass));
 
-    GC_ALLOC_FLAGS flags = GC_ALLOC_NO_FLAGS;
+    _ASSERTE((flags & ~GC_ALLOC_ZEROING_OPTIONAL) == 0);
     if (totalSize >= g_pConfig->GetGCLOHThreshold())
         flags |= GC_ALLOC_LARGE_OBJECT_HEAP;
+
+    // Per the managed GC.AllocateUninitializedArray method, it's faster to ignore the
+    // "zeroing optional" flag for small inputs. The const below is from that method.
+    if (totalSize < 2048)
+        flags &= ~GC_ALLOC_ZEROING_OPTIONAL;
 
     StringObject* orString = (StringObject*)Alloc(totalSize, flags);
 
     // Initialize Object
     orString->SetMethodTable(g_pStringClass);
     orString->SetStringLength(cchStringLength);
+    orString->GetBuffer()[cchStringLength] = 0; // manually append null terminator in case string object wasn't zero-inited
 
     PublishObjectAndNotify(orString, flags);
     return ObjectToSTRINGREF(orString);

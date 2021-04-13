@@ -24,7 +24,7 @@
 // that does not make a call.
 EXTERN_C Object* JIT_TrialAllocSFastMP_InlineGetThread(CORINFO_CLASS_HANDLE typeHnd_);
 EXTERN_C Object* JIT_BoxFastMP_InlineGetThread (CORINFO_CLASS_HANDLE type, void* unboxedData);
-EXTERN_C Object* AllocateStringFastMP_InlineGetThread (CLR_I4 cch);
+EXTERN_C Object* AllocateStringFastMP_InlineGetThread (CLR_I4 cch, CLR_I4 flags);
 EXTERN_C Object* JIT_NewArr1OBJ_MP_InlineGetThread (CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 EXTERN_C Object* JIT_NewArr1VC_MP_InlineGetThread (CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 
@@ -34,8 +34,8 @@ EXTERN_C Object* JIT_TrialAllocSFastMP(CORINFO_CLASS_HANDLE typeHnd_);
 EXTERN_C Object* JIT_TrialAllocSFastSP(CORINFO_CLASS_HANDLE typeHnd_);
 EXTERN_C Object* JIT_BoxFastMP (CORINFO_CLASS_HANDLE type, void* unboxedData);
 EXTERN_C Object* JIT_BoxFastUP (CORINFO_CLASS_HANDLE type, void* unboxedData);
-EXTERN_C Object* AllocateStringFastMP (CLR_I4 cch);
-EXTERN_C Object* AllocateStringFastUP (CLR_I4 cch);
+EXTERN_C Object* AllocateStringFastMP (CLR_I4 cch, CLR_I4 flags);
+EXTERN_C Object* AllocateStringFastUP (CLR_I4 cch, CLR_I4 flags);
 
 EXTERN_C Object* JIT_NewArr1OBJ_MP (CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 EXTERN_C Object* JIT_NewArr1OBJ_UP (CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
