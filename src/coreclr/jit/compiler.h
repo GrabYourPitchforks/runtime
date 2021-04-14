@@ -6077,7 +6077,7 @@ private:
     };
 
     TypeProducerKind gtGetTypeProducerKind(GenTree* tree);
-    bool gtIsTypeHandleToRuntimeTypeHelper(GenTreeCall* call);
+    bool gtIsTypeHandleToRuntimeTypeHelper(GenTreeCall* call, CorInfoHelpFunc* pHelper = nullptr);
     bool gtIsTypeHandleToRuntimeTypeHandleHelper(GenTreeCall* call, CorInfoHelpFunc* pHelper = nullptr);
     bool gtIsActiveCSE_Candidate(GenTree* tree);
 

@@ -16468,10 +16468,25 @@ Compiler::TypeProducerKind Compiler::gtGetTypeProducerKind(GenTree* tree)
 // Return Value:
 //    True if so
 
-bool Compiler::gtIsTypeHandleToRuntimeTypeHelper(GenTreeCall* call)
+bool Compiler::gtIsTypeHandleToRuntimeTypeHelper(GenTreeCall* call, CorInfoHelpFunc* pHelper)
 {
-    return call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE) ||
-           call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE_MAYBENULL);
+    CorInfoHelpFunc helper = CORINFO_HELP_UNDEF;
+
+    if (call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE))
+    {
+        helper = CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE;
+    }
+    else if (call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE_MAYBENULL))
+    {
+        helper = CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE_MAYBENULL;
+    }
+
+    if (pHelper != nullptr)
+    {
+        *pHelper = helper;
+    }
+
+    return helper != CORINFO_HELP_UNDEF;
 }
 
 //------------------------------------------------------------------------

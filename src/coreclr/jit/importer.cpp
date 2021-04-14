@@ -4342,6 +4342,52 @@ GenTree* Compiler::impIntrinsic(GenTree*                newobjThis,
                 break;
             }
 
+            case NI_System_Type_get_TypeHandle:
+            {
+                // Optimize
+                //
+                //   call Type.GetTypeFromHandle (which is replaced with CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE)
+                //   callvirt Type.TypeHandle
+                //
+                // to the original helper CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPEHANDLE
+                GenTree* op1 = impStackTop(0).val;
+                CorInfoHelpFunc typeHandleHelper;
+                if (op1->gtOper == GT_CALL && (op1->AsCall()->gtCallType == CT_HELPER) &&
+                    gtIsTypeHandleToRuntimeTypeHelper(op1->AsCall(), &typeHandleHelper))
+                {
+                    op1 = impPopStack().val;
+                    // Replace helper with a more specialized helper that returns RuntimeTypeHandle
+                    if (typeHandleHelper == CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE)
+                    {
+                        typeHandleHelper = CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPEHANDLE;
+                    }
+                    else
+                    {
+                        assert(typeHandleHelper == CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE_MAYBENULL);
+                        typeHandleHelper = CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPEHANDLE_MAYBENULL;
+                    }
+                    assert(op1->AsCall()->gtCallArgs->GetNext() == nullptr);
+                    op1 = gtNewHelperCallNode(typeHandleHelper, TYP_STRUCT, op1->AsCall()->gtCallArgs);
+                    op1->gtType = TYP_STRUCT;
+
+                    // The handle struct is returned in register and
+                    // it could be consumed both as `TYP_STRUCT` and `TYP_REF`.
+                    op1->AsCall()->gtReturnType = GetRuntimeHandleUnderlyingType();
+                    if (!compDoOldStructRetyping())
+                    {
+#if FEATURE_MULTIREG_RET
+                        op1->AsCall()->InitializeStructReturnType(this, impGetTypeHandleClass(),
+                                                                  op1->AsCall()->GetUnmanagedCallConv());
+#endif
+                        op1->AsCall()->gtRetClsHnd = impGetTypeHandleClass();
+                    }
+
+                    retNode = op1;
+                }
+                // Call the regular function.
+                break;
+            }
+
             case NI_System_Threading_Thread_get_ManagedThreadId:
             {
                 if (opts.OptimizationEnabled() && impStackTop().val->OperIs(GT_RET_EXPR))
@@ -4917,6 +4963,10 @@ NamedIntrinsic Compiler::lookupNamedIntrinsic(CORINFO_METHOD_HANDLE method)
             if (strcmp(methodName, "get_IsValueType") == 0)
             {
                 result = NI_System_Type_get_IsValueType;
+            }
+            else if (strcmp(methodName, "get_TypeHandle") == 0)
+            {
+                result = NI_System_Type_get_TypeHandle;
             }
             else if (strcmp(methodName, "IsAssignableFrom") == 0)
             {

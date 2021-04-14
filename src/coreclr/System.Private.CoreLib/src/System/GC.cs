@@ -692,7 +692,7 @@ namespace System
                 if (pinned)
                     flags |= GC_ALLOC_FLAGS.GC_ALLOC_PINNED_OBJECT_HEAP;
 
-                return Unsafe.As<T[]>(AllocateNewArray(typeof(T[]).TypeHandle.Value, length, flags));
+                return Unsafe.As<T[]>(AllocateNewArray(RuntimeTypeHandle.GetValueInternal(typeof(T[]).TypeHandle), length, flags));
             }
         }
 

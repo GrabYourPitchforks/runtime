@@ -390,7 +390,7 @@ namespace System
             | DynamicallyAccessedMemberTypes.PublicNestedTypes)]
         public virtual MemberInfo[] GetDefaultMembers() => throw NotImplemented.ByDesign;
 
-        public virtual RuntimeTypeHandle TypeHandle => throw new NotSupportedException();
+        public virtual RuntimeTypeHandle TypeHandle { [Intrinsic] get => throw new NotSupportedException(); }
         public static RuntimeTypeHandle GetTypeHandle(object o)
         {
             if (o == null)
