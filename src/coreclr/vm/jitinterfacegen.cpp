@@ -27,6 +27,7 @@ EXTERN_C Object* JIT_BoxFastMP_InlineGetThread (CORINFO_CLASS_HANDLE type, void*
 EXTERN_C Object* AllocateStringFastMP_InlineGetThread (CLR_I4 cch);
 EXTERN_C Object* JIT_NewArr1OBJ_MP_InlineGetThread (CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 EXTERN_C Object* JIT_NewArr1VC_MP_InlineGetThread (CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
+EXTERN_C Object* JIT_NewArr1VCUninit_MP_InlineGetThread (CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 
 // This next set is the fast version that invoke GetThread but is still faster than the VM implementation (i.e.
 // the "slow" versions).
@@ -76,6 +77,7 @@ void InitJITHelpers1()
         SetJitHelperFunction(CORINFO_HELP_NEWSFAST, JIT_NewS_MP_FastPortable);
         SetJitHelperFunction(CORINFO_HELP_NEWSFAST_ALIGN8, JIT_NewS_MP_FastPortable);
         SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC, JIT_NewArr1VC_MP_FastPortable);
+        SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC_UNINIT, JIT_NewArr1VCUninit_MP_FastPortable);
         SetJitHelperFunction(CORINFO_HELP_NEWARR_1_OBJ, JIT_NewArr1OBJ_MP_FastPortable);
 
         ECall::DynamicallyAssignFCallImpl(GetEEFuncEntryPoint(AllocateString_MP_FastPortable), ECall::FastAllocateString);
@@ -87,6 +89,7 @@ void InitJITHelpers1()
             SetJitHelperFunction(CORINFO_HELP_NEWSFAST_ALIGN8, JIT_TrialAllocSFastMP_InlineGetThread);
             SetJitHelperFunction(CORINFO_HELP_BOX, JIT_BoxFastMP_InlineGetThread);
             SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC, JIT_NewArr1VC_MP_InlineGetThread);
+            SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC_UNINIT, JIT_NewArr1VCUninit_MP_InlineGetThread);
             SetJitHelperFunction(CORINFO_HELP_NEWARR_1_OBJ, JIT_NewArr1OBJ_MP_InlineGetThread);
 
             ECall::DynamicallyAssignFCallImpl(GetEEFuncEntryPoint(AllocateStringFastMP_InlineGetThread), ECall::FastAllocateString);
@@ -101,6 +104,7 @@ void InitJITHelpers1()
             SetJitHelperFunction(CORINFO_HELP_NEWSFAST_ALIGN8, JIT_TrialAllocSFastSP);
             SetJitHelperFunction(CORINFO_HELP_BOX, JIT_BoxFastUP);
             SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC, JIT_NewArr1VC_UP);
+            SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC_UNINIT, JIT_NewArr1VC_UP);
             SetJitHelperFunction(CORINFO_HELP_NEWARR_1_OBJ, JIT_NewArr1OBJ_UP);
 
             ECall::DynamicallyAssignFCallImpl(GetEEFuncEntryPoint(AllocateStringFastUP), ECall::FastAllocateString);

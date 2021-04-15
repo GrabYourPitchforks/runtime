@@ -4600,6 +4600,23 @@ GenTree* Compiler::impIntrinsic(GenTree*                newobjThis,
                 break;
             }
 
+            case NI_System_GC_AllocateNewUninitializedArray:
+            {
+                // TODO: Figure out if instantiating the requested T[] would actually go down
+                // the fast VC helper path. For this prototype, we limit calls to byte and char,
+                // so let's just assume for now this is valid.
+
+                GenTree* op2 = impPopStack().val;
+                GenTree* op1 = impPopStack().val;
+                GenTreeCall::Use* args = gtNewCallArgs(op1, op2);
+
+                GenTree* newCall = gtNewHelperCallNode(CORINFO_HELP_NEWARR_1_VC_UNINIT, TYP_REF, args);
+                compCurBB->bbFlags |= BBF_HAS_NEWARRAY; // we're a glorified allocation
+
+                retNode = newCall;
+                break;
+            }
+
             case NI_System_GC_KeepAlive:
             {
                 retNode = gtNewOperNode(GT_KEEPALIVE, TYP_VOID, impPopStack().val);
@@ -4939,7 +4956,11 @@ NamedIntrinsic Compiler::lookupNamedIntrinsic(CORINFO_METHOD_HANDLE method)
         }
         else if (strcmp(className, "GC") == 0)
         {
-            if (strcmp(methodName, "KeepAlive") == 0)
+            if (strcmp(methodName, "AllocateNewUninitializedArray") == 0)
+            {
+                result = NI_System_GC_AllocateNewUninitializedArray;
+            }
+            else if (strcmp(methodName, "KeepAlive") == 0)
             {
                 result = NI_System_GC_KeepAlive;
             }

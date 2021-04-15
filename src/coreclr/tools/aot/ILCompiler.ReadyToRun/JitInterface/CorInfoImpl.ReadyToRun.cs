@@ -875,6 +875,7 @@ namespace Internal.JitInterface
                 case CorInfoHelpFunc.CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPE_MAYBENULL:
                 case CorInfoHelpFunc.CORINFO_HELP_TYPEHANDLE_TO_RUNTIMETYPEHANDLE_MAYBENULL:
                 case CorInfoHelpFunc.CORINFO_HELP_GETREFANY:
+                case CorInfoHelpFunc.CORINFO_HELP_NEWARR_1_VC_UNINIT:
                 // For Vector256.Create and similar cases
                 case CorInfoHelpFunc.CORINFO_HELP_THROW_NOT_IMPLEMENTED:
                     throw new RequiresRuntimeJitException(ftnNum.ToString());

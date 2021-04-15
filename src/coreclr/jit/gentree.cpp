@@ -18234,6 +18234,7 @@ CORINFO_CLASS_HANDLE Compiler::gtGetHelperCallClassHandle(GenTreeCall* call, boo
         case CORINFO_HELP_NEWARR_1_DIRECT:
         case CORINFO_HELP_NEWARR_1_OBJ:
         case CORINFO_HELP_NEWARR_1_VC:
+        case CORINFO_HELP_NEWARR_1_VC_UNINIT:
         case CORINFO_HELP_NEWARR_1_ALIGN8:
         case CORINFO_HELP_READYTORUN_NEWARR_1:
         {

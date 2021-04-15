@@ -942,6 +942,7 @@ void InitJITHelpers1()
                                                       W("@Box"),
                                                       W("@NewArray1Object"),
                                                       W("@NewArray1ValueType"),
+                                                      W("@NewArray1ValueTypeUninit"),
                                                       W("@NewArray1ObjectAlign8"),
                                                       W("@StaticBaseObject"),
                                                       W("@StaticBaseNonObject"),
@@ -1009,8 +1010,10 @@ void InitJITHelpers1()
         SetJitHelperFunction(CORINFO_HELP_NEWARR_1_OBJ, pMethodAddresses[3]);
         pMethodAddresses[4] = JIT_TrialAlloc::GenAllocArray(flags);
         SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC, pMethodAddresses[4]);
-        pMethodAddresses[5] = JIT_TrialAlloc::GenAllocArray((JIT_TrialAlloc::Flags)(flags|JIT_TrialAlloc::ALIGN8));
-        SetJitHelperFunction(CORINFO_HELP_NEWARR_1_ALIGN8, pMethodAddresses[5]);
+        pMethodAddresses[5] = pMethodAddresses[4]; // no good implementation on i386 just yet
+        SetJitHelperFunction(CORINFO_HELP_NEWARR_1_VC_UNINIT, pMethodAddresses[5]);
+        pMethodAddresses[6] = JIT_TrialAlloc::GenAllocArray((JIT_TrialAlloc::Flags)(flags|JIT_TrialAlloc::ALIGN8));
+        SetJitHelperFunction(CORINFO_HELP_NEWARR_1_ALIGN8, pMethodAddresses[6]);
 
         // If allocation logging is on, then we divert calls to FastAllocateString to an Ecall method, not this
         // generated method. Find this workaround in Ecall::Init() in ecall.cpp.
@@ -1018,14 +1021,14 @@ void InitJITHelpers1()
     }
 
     // Replace static helpers with faster assembly versions
-    pMethodAddresses[6] = GenFastGetSharedStaticBase(true, true);
-    SetJitHelperFunction(CORINFO_HELP_GETSHARED_GCSTATIC_BASE, pMethodAddresses[6]);
-    pMethodAddresses[7] = GenFastGetSharedStaticBase(true, false);
-    SetJitHelperFunction(CORINFO_HELP_GETSHARED_NONGCSTATIC_BASE, pMethodAddresses[7]);
-    pMethodAddresses[8] = GenFastGetSharedStaticBase(false, true);
-    SetJitHelperFunction(CORINFO_HELP_GETSHARED_GCSTATIC_BASE_NOCTOR, pMethodAddresses[8]);
-    pMethodAddresses[9] = GenFastGetSharedStaticBase(false, false);
-    SetJitHelperFunction(CORINFO_HELP_GETSHARED_NONGCSTATIC_BASE_NOCTOR, pMethodAddresses[9]);
+    pMethodAddresses[7] = GenFastGetSharedStaticBase(true, true);
+    SetJitHelperFunction(CORINFO_HELP_GETSHARED_GCSTATIC_BASE, pMethodAddresses[7]);
+    pMethodAddresses[8] = GenFastGetSharedStaticBase(true, false);
+    SetJitHelperFunction(CORINFO_HELP_GETSHARED_NONGCSTATIC_BASE, pMethodAddresses[8]);
+    pMethodAddresses[9] = GenFastGetSharedStaticBase(false, true);
+    SetJitHelperFunction(CORINFO_HELP_GETSHARED_GCSTATIC_BASE_NOCTOR, pMethodAddresses[9]);
+    pMethodAddresses[10] = GenFastGetSharedStaticBase(false, false);
+    SetJitHelperFunction(CORINFO_HELP_GETSHARED_NONGCSTATIC_BASE_NOCTOR, pMethodAddresses[10]);
 
     ETW::MethodLog::StubsInitialized(pMethodAddresses, (PVOID *)pHelperNames, ETW_NUM_JIT_HELPERS);
 

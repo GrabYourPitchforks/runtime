@@ -93,7 +93,12 @@ namespace System
         };
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern Array AllocateNewArray(IntPtr typeHandle, int length, GC_ALLOC_FLAGS flags);
+        private static extern Array AllocateNewArray(IntPtr typeHandle, int length, GC_ALLOC_FLAGS flags);
+
+        [Intrinsic]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Array AllocateNewUninitializedArray(IntPtr typeHandle, nuint length)
+            => AllocateNewArray(typeHandle, (int)length, GC_ALLOC_FLAGS.GC_ALLOC_ZEROING_OPTIONAL);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern int GetGenerationWR(IntPtr handle);
@@ -661,39 +666,35 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)] // forced to ensure no perf drop for small memory buffers (hot path)
         public static T[] AllocateUninitializedArray<T>(int length, bool pinned = false) // T[] rather than T?[] to match `new T[length]` behavior
         {
+            // We expect the 'pinned' parameter to be provided as a literal, which should allow
+            // the JIT to elide unnecessary blocks below.
+
+            GC_ALLOC_FLAGS flags = GC_ALLOC_FLAGS.GC_ALLOC_ZEROING_OPTIONAL;
+
             if (!pinned)
             {
                 if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
                 {
                     return new T[length];
                 }
-
-                // for debug builds we always want to call AllocateNewArray to detect AllocateNewArray bugs
-#if !DEBUG
-                // small arrays are allocated using `new[]` as that is generally faster.
-                if (length < 2048 / Unsafe.SizeOf<T>())
+                else if (typeof(T) == typeof(byte) || typeof(T) == typeof(char))
                 {
-                    return new T[length];
+                    return Unsafe.As<T[]>(AllocateNewUninitializedArray(RuntimeTypeHandle.GetValueInternal(typeof(T[]).TypeHandle), (uint)length));
                 }
-#endif
             }
-            else if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+            else
             {
-                ThrowHelper.ThrowInvalidTypeWithPointersNotSupported(typeof(T));
-            }
-
-            // kept outside of the small arrays hot path to have inlining without big size growth
-            return AllocateNewUninitializedArray(length, pinned);
-
-            // remove the local function when https://github.com/dotnet/runtime/issues/5973 is implemented
-            static T[] AllocateNewUninitializedArray(int length, bool pinned)
-            {
-                GC_ALLOC_FLAGS flags = GC_ALLOC_FLAGS.GC_ALLOC_ZEROING_OPTIONAL;
-                if (pinned)
+                if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+                {
+                    ThrowHelper.ThrowInvalidTypeWithPointersNotSupported(typeof(T));
+                }
+                else
+                {
                     flags |= GC_ALLOC_FLAGS.GC_ALLOC_PINNED_OBJECT_HEAP;
-
-                return Unsafe.As<T[]>(AllocateNewArray(RuntimeTypeHandle.GetValueInternal(typeof(T[]).TypeHandle), length, flags));
+                }
             }
+
+            return Unsafe.As<T[]>(AllocateNewArray(RuntimeTypeHandle.GetValueInternal(typeof(T[]).TypeHandle), length, flags));
         }
 
         /// <summary>
@@ -717,7 +718,7 @@ namespace System
                 flags = GC_ALLOC_FLAGS.GC_ALLOC_PINNED_OBJECT_HEAP;
             }
 
-            return Unsafe.As<T[]>(AllocateNewArray(typeof(T[]).TypeHandle.Value, length, flags));
+            return Unsafe.As<T[]>(AllocateNewArray(RuntimeTypeHandle.GetValueInternal(typeof(T[]).TypeHandle), length, flags));
         }
     }
 }

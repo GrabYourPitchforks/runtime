@@ -205,6 +205,7 @@ extern FCDECL1(StringObject*, FramedAllocateString, DWORD stringLength);
 extern FCDECL2(Object*, JIT_NewArr1VC_MP_FastPortable, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 extern FCDECL2(Object*, JIT_NewArr1OBJ_MP_FastPortable, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 extern FCDECL2(Object*, JIT_NewArr1, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
+extern FCDECL2(Object*, JIT_NewArr1Uninit, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 
 EXTERN_C FCDECL_MONHELPER(JITutil_MonEnterWorker, Object* obj);
 EXTERN_C FCDECL2(void, JITutil_MonReliableEnter, Object* obj, BYTE* pbLockTaken);
@@ -311,6 +312,7 @@ private:
 EXTERN_C FCDECL1(Object*, JIT_TrialAllocSFastMP_InlineGetThread, CORINFO_CLASS_HANDLE typeHnd_);
 EXTERN_C FCDECL2(Object*, JIT_BoxFastMP_InlineGetThread, CORINFO_CLASS_HANDLE type, void* data);
 EXTERN_C FCDECL2(Object*, JIT_NewArr1VC_MP_InlineGetThread, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
+EXTERN_C FCDECL2(Object*, JIT_NewArr1VCUninit_MP_InlineGetThread, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 EXTERN_C FCDECL2(Object*, JIT_NewArr1OBJ_MP_InlineGetThread, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size);
 
 #endif // HOST_64BIT

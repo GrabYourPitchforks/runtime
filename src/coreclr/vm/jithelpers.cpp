@@ -2562,6 +2562,71 @@ HCIMPL2(Object*, JIT_NewArr1VC_MP_FastPortable, CORINFO_CLASS_HANDLE arrayMT, IN
 }
 HCIMPLEND
 
+HCIMPL2(Object*, JIT_NewArr1VCUninit_MP_FastPortable, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size)
+{
+    FCALL_CONTRACT;
+
+    do
+    {
+        _ASSERTE(GCHeapUtilities::UseThreadAllocationContexts());
+
+        // Do a conservative check here.  This is to avoid overflow while doing the calculations.  We don't
+        // have to worry about "large" objects, since the allocation quantum is never big enough for
+        // LARGE_OBJECT_SIZE.
+        //
+        // For Value Classes, this needs to be 2^16 - slack (2^32 / max component size),
+        // The slack includes the size for the array header and round-up ; for alignment.  Use 256 for the
+        // slack value out of laziness.
+        SIZE_T componentCount = static_cast<SIZE_T>(size);
+        if (componentCount >= static_cast<SIZE_T>(65535 - 256))
+        {
+            break;
+        }
+
+        // This is typically the only call in the fast path. Making the call early seems to be better, as it allows the compiler
+        // to use volatile registers for intermediate values. This reduces the number of push/pop instructions and eliminates
+        // some reshuffling of intermediate values into nonvolatile registers around the call.
+        Thread* thread = GetThread();
+
+        MethodTable* pArrayMT = (MethodTable*)arrayMT;
+
+        _ASSERTE(pArrayMT->HasComponentSize());
+        SIZE_T componentSize = pArrayMT->RawGetComponentSize();
+        SIZE_T totalSize = componentCount * componentSize;
+        _ASSERTE(totalSize / componentSize == componentCount);
+
+        SIZE_T baseSize = pArrayMT->GetBaseSize();
+        totalSize += baseSize;
+        _ASSERTE(totalSize >= baseSize);
+
+        SIZE_T alignedTotalSize = ALIGN_UP(totalSize, DATA_ALIGNMENT);
+        _ASSERTE(alignedTotalSize >= totalSize);
+        totalSize = alignedTotalSize;
+
+        gc_alloc_context* allocContext = thread->GetAllocContext();
+        BYTE* allocPtr = allocContext->alloc_ptr;
+        _ASSERTE(allocPtr <= allocContext->alloc_limit);
+        if (totalSize > static_cast<SIZE_T>(allocContext->alloc_limit - allocPtr))
+        {
+            break;
+        }
+        allocContext->alloc_ptr = allocPtr + totalSize;
+
+        _ASSERTE(allocPtr != nullptr);
+        ArrayBase* array = reinterpret_cast<ArrayBase*>(allocPtr);
+        array->SetMethodTable(pArrayMT);
+        _ASSERTE(static_cast<DWORD>(componentCount) == componentCount);
+        array->m_NumComponents = static_cast<DWORD>(componentCount);
+
+        return array;
+    } while (false);
+
+    // Tail call to the slow helper
+    ENDFORBIDGC();
+    return HCCALL2(JIT_NewArr1Uninit, arrayMT, size);
+}
+HCIMPLEND
+
 //*************************************************************
 // Array allocation fast path for arrays of object elements
 //
@@ -2656,6 +2721,46 @@ HCIMPL2(Object*, JIT_NewArr1, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size)
 #endif // _DEBUG
 
     newArray = AllocateSzArray(pArrayMT, (INT32)size);
+    HELPER_METHOD_FRAME_END();
+
+    return(OBJECTREFToObject(newArray));
+}
+HCIMPLEND
+
+/*************************************************************/
+HCIMPL2(Object*, JIT_NewArr1Uninit, CORINFO_CLASS_HANDLE arrayMT, INT_PTR size)
+{
+    FCALL_CONTRACT;
+
+    OBJECTREF newArray = NULL;
+
+    HELPER_METHOD_FRAME_BEGIN_RET_0();    // Set up a frame
+
+    MethodTable* pArrayMT = (MethodTable*)arrayMT;
+
+    _ASSERTE(pArrayMT->IsFullyLoaded());
+    _ASSERTE(pArrayMT->IsArray());
+    _ASSERTE(!pArrayMT->IsMultiDimArray());
+    _ASSERTE((UINT_PTR)size <= UINT_MAX);
+
+    if (size < 0)
+        COMPlusThrow(kOverflowException);
+
+#ifdef HOST_64BIT
+    // Even though ECMA allows using a native int as the argument to newarr instruction
+    // (therefore size is INT_PTR), ArrayBase::m_NumComponents is 32-bit, so even on 64-bit
+    // platforms we can't create an array whose size exceeds 32 bits.
+    if (size > INT_MAX)
+        EX_THROW(EEMessageException, (kOverflowException, IDS_EE_ARRAY_DIMENSIONS_EXCEEDED));
+#endif
+
+#ifdef _DEBUG
+    if (g_pConfig->FastGCStressLevel()) {
+        GetThread()->DisableStressHeap();
+    }
+#endif // _DEBUG
+
+    newArray = AllocateSzArray(pArrayMT, (INT32)size, GC_ALLOC_ZEROING_OPTIONAL);
     HELPER_METHOD_FRAME_END();
 
     return(OBJECTREFToObject(newArray));

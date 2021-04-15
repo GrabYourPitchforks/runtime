@@ -1293,6 +1293,7 @@ void HelperCallProperties::init()
             // These allocation helpers do some checks on the size (and lower bound) inputs,
             // and can throw exceptions other than OOM.
             case CORINFO_HELP_NEWARR_1_VC:
+            case CORINFO_HELP_NEWARR_1_VC_UNINIT:
             case CORINFO_HELP_NEWARR_1_ALIGN8:
             case CORINFO_HELP_NEW_MDARR:
             case CORINFO_HELP_NEWARR_1_DIRECT:

@@ -9535,6 +9535,7 @@ VNFunc Compiler::fgValueNumberJitHelperMethodVNFunc(CorInfoHelpFunc helpFunc)
         case CORINFO_HELP_NEWARR_1_DIRECT:
         case CORINFO_HELP_NEWARR_1_OBJ:
         case CORINFO_HELP_NEWARR_1_VC:
+        case CORINFO_HELP_NEWARR_1_VC_UNINIT:
         case CORINFO_HELP_NEWARR_1_ALIGN8:
             vnf = VNF_JitNewArr;
             break;

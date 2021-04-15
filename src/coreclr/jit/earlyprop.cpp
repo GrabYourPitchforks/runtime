@@ -81,6 +81,7 @@ GenTree* Compiler::getArrayLengthFromAllocation(GenTree* tree DEBUGARG(BasicBloc
             if (call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_DIRECT) ||
                 call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_OBJ) ||
                 call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_VC) ||
+                call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_VC_UNINIT) ||
                 call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_ALIGN8))
             {
                 // This is an array allocation site. Grab the array length node.
@@ -138,6 +139,7 @@ GenTree* Compiler::getObjectHandleNodeFromAllocation(GenTree* tree DEBUGARG(Basi
             bool hasNewArr = call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_DIRECT) ||
                              call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_OBJ) ||
                              call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_VC) ||
+                             call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_VC_UNINIT) ||
                              call->gtCallMethHnd == eeFindHelper(CORINFO_HELP_NEWARR_1_ALIGN8);
 
 #ifdef DEBUG

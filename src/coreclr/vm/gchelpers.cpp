@@ -418,6 +418,9 @@ OBJECTREF AllocateSzArray(MethodTable* pArrayMT, INT32 cElements, GC_ALLOC_FLAGS
     if (totalSize >= g_pConfig->GetGCLOHThreshold())
         flags |= GC_ALLOC_LARGE_OBJECT_HEAP;
 
+    if (totalSize < 2048)
+        flags &= ~GC_ALLOC_ZEROING_OPTIONAL;
+
     if (pArrayMT->ContainsPointers())
         flags |= GC_ALLOC_CONTAINS_REF;
 
