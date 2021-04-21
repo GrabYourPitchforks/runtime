@@ -335,62 +335,38 @@ namespace System
         {
             Debug.Assert((nint)Unsafe.AsPointer(ref ip) % sizeof(IntPtr) == 0, "Should've been aligned on natural word boundary.");
 
-            // Since references are always natural word-aligned, our "unaligned" writes below will
-            // always be natural word-aligned as well. Even if the full SIMD write is split across
-            // pages, no core will ever observe any reference as containing a torn address.
-
-            if (Vector.IsHardwareAccelerated && pointerSizeLength >= (uint)(Vector<byte>.Count / sizeof(IntPtr)))
+            if (Vector.IsHardwareAccelerated && pointerSizeLength >= 8)
             {
-                // We have enough data for at least one vectorized write.
-                // Perform that write now, potentially unaligned.
+                // We have enough data for at least one bulk (vectorized) write.
 
-                Vector<byte> zero = default;
-                ref byte refDataAsBytes = ref Unsafe.As<IntPtr, byte>(ref ip);
-                Unsafe.WriteUnaligned(ref refDataAsBytes, zero);
+                nuint byteOffset = 0;
+                nuint byteOffsetWhereToStopLoop = (pointerSizeLength & ~(nuint)7) * (nuint)IntPtr.Size;
+                Debug.Assert(byteOffsetWhereToStopLoop >= (nuint)Unsafe.SizeOf<EightRefs>());
 
-                // Now, attempt to align the rest of the writes.
-                // It's possible that the GC could kick in mid-method and unalign everything, but that should
-                // be rare enough that it's not worth worrying about here. Worst case it slows things down a bit.
+                // Write 8 refs, which is 256 - 512 bits, which is 1 - 4 SIMD vectors.
 
-                nint offsetFromAligned = (nint)Unsafe.AsPointer(ref refDataAsBytes) & (Vector<byte>.Count - 1);
-                nuint totalByteLength = pointerSizeLength * (nuint)sizeof(IntPtr) + (nuint)offsetFromAligned - (nuint)Vector<byte>.Count;
-                refDataAsBytes = ref Unsafe.Add(ref refDataAsBytes, Vector<byte>.Count); // legal GC-trackable reference due to earlier length check
-                refDataAsBytes = ref Unsafe.Add(ref refDataAsBytes, -offsetFromAligned); // this subtraction MUST BE AFTER the addition above to avoid creating an intermediate invalid gcref
-                nuint offset = 0;
-
-                // Loop, writing 2 vectors at a time.
-
-                if (totalByteLength >= (uint)(2 * Vector<byte>.Count))
+                do
                 {
-                    nuint stopLoopAtOffset = totalByteLength & (nuint)(nint)(2 * -Vector<byte>.Count); // intentional sign extension carries the negative bit
+                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, EightRefs>(ref ip), byteOffset) = default;
+                } while ((byteOffset += (nuint)Unsafe.SizeOf<EightRefs>()) < byteOffsetWhereToStopLoop);
 
-                    do
-                    {
-                        Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref refDataAsBytes, offset), zero);
-                        Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref refDataAsBytes, offset + (nuint)Vector<byte>.Count), zero);
-                        offset += (uint)(2 * Vector<byte>.Count);
-                    } while (offset < stopLoopAtOffset);
+                // Write 4 refs, which is 128 - 256 bits, which is 1 - 2 SIMD vectors.
+
+                if ((pointerSizeLength & 4) != 0)
+                {
+                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, FourRefs>(ref ip), byteOffset) = default;
+                    byteOffset += (nuint)Unsafe.SizeOf<FourRefs>();
                 }
 
-                // At this point, if any data remains to be written, it's strictly less than
-                // 2 * sizeof(Vector) bytes. The loop above had us write an even number of vectors.
-                // If the total byte length instead involves us writing an odd number of vectors, write
-                // one additional vector now. The bit check below tells us if we're in an "odd vector
-                // count" situation.
+                // Write 2 refs, which is 64 - 128 bits, which is 0 - 1 SIMD vectors.
 
-                if ((totalByteLength & (nuint)Vector<byte>.Count) != 0)
+                if ((pointerSizeLength & 2) != 0)
                 {
-                    Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref refDataAsBytes, offset), zero);
+                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, TwoRefs>(ref ip), byteOffset) = default;
                 }
 
-                // It's possible that some small buffer remains to be populated - something that won't
-                // fit an entire vector's worth of data. Instead of falling back to a loop, we'll write
-                // a vector at the very end of the buffer. This may involve overwriting previously
-                // populated data, which is fine since we're just zeroing everything out anyway.
-                // There's no need to perform a length check here because we already performed this
-                // check before entering the vectorized code path.
-
-                Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref refDataAsBytes, totalByteLength - (nuint)Vector<byte>.Count), zero);
+                // Unconditionally write the last element as scalar
+                Unsafe.Add(ref Unsafe.As<IntPtr, object?>(ref ip), (nint)pointerSizeLength - 1) = default;
             }
             else
             {
@@ -457,5 +433,33 @@ namespace System
                 }
             }
         }
+
+#pragma warning disable CA1823, IDE0051, CS0169 // Avoid unused private fields
+        private readonly struct EightRefs
+        {
+            private readonly object? _data0;
+            private readonly object? _data1;
+            private readonly object? _data2;
+            private readonly object? _data3;
+            private readonly object? _data4;
+            private readonly object? _data5;
+            private readonly object? _data6;
+            private readonly object? _data7;
+        }
+
+        private readonly struct FourRefs
+        {
+            private readonly object? _data0;
+            private readonly object? _data1;
+            private readonly object? _data2;
+            private readonly object? _data3;
+        }
+
+        private readonly struct TwoRefs
+        {
+            private readonly object? _data0;
+            private readonly object? _data1;
+        }
+#pragma warning restore CA1823, IDE0051, CS0169 // Avoid unused private fields
     }
 }
