@@ -335,40 +335,51 @@ namespace System
         {
             Debug.Assert((nint)Unsafe.AsPointer(ref ip) % sizeof(IntPtr) == 0, "Should've been aligned on natural word boundary.");
 
+#if CORECLR // Mono's JIT or target architectures may mishandle the vectorized optimization
             if (Vector.IsHardwareAccelerated && pointerSizeLength >= 8)
             {
+                // We're relying on the JIT to turn the writes below into SIMD stores.
+                // Currently the JIT prefers 128-bit stores, so we'll help it along by ensuring
+                // the main write loop is 128-bit aligned. Technically the GC could kick in and
+                // throw off the alignment mid-loop, but this should be rare; and if for whatever
+                // reason it does happen, the only conseqeunce will be that we'll see a slowdown
+                // due to unaligned writes. It's not the end of the world.
+
+                // TODO: Actually implement alignment nonsense.
+
+
                 // We have enough data for at least one bulk (vectorized) write.
 
-                nuint byteOffset = 0;
-                nuint byteOffsetWhereToStopLoop = (pointerSizeLength & ~(nuint)7) * (nuint)IntPtr.Size;
-                Debug.Assert(byteOffsetWhereToStopLoop >= (nuint)Unsafe.SizeOf<EightRefs>());
+                nuint currentByteOffset = 0;
+                nuint byteOffsetWhereCanPerformFinalLoopIteration = (pointerSizeLength - 8) * (nuint)IntPtr.Size;
 
                 // Write 8 refs, which is 256 - 512 bits, which is 1 - 4 SIMD vectors.
 
                 do
                 {
-                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, EightRefs>(ref ip), byteOffset) = default;
-                } while ((byteOffset += (nuint)Unsafe.SizeOf<EightRefs>()) < byteOffsetWhereToStopLoop);
+                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, EightRefs>(ref ip), currentByteOffset) = default;
+                } while ((currentByteOffset += (nuint)Unsafe.SizeOf<EightRefs>()) <= byteOffsetWhereCanPerformFinalLoopIteration);
 
                 // Write 4 refs, which is 128 - 256 bits, which is 1 - 2 SIMD vectors.
 
                 if ((pointerSizeLength & 4) != 0)
                 {
-                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, FourRefs>(ref ip), byteOffset) = default;
-                    byteOffset += (nuint)Unsafe.SizeOf<FourRefs>();
+                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, FourRefs>(ref ip), currentByteOffset) = default;
+                    currentByteOffset += (nuint)Unsafe.SizeOf<FourRefs>();
                 }
 
-                // Write 2 refs, which is 64 - 128 bits, which is 0 - 1 SIMD vectors.
+                // Write 2 refs, which is 64 - 128 bits, which is 1 SIMD vector or 2 scalars.
 
                 if ((pointerSizeLength & 2) != 0)
                 {
-                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, TwoRefs>(ref ip), byteOffset) = default;
+                    Unsafe.AddByteOffset(ref Unsafe.As<IntPtr, TwoRefs>(ref ip), currentByteOffset) = default;
                 }
 
                 // Unconditionally write the last element as scalar
                 Unsafe.Add(ref Unsafe.As<IntPtr, object?>(ref ip), (nint)pointerSizeLength - 1) = default;
             }
             else
+#endif
             {
                 // If we reached this point, vectorization is disabled, or there are too few
                 // elements for us to vectorize. Fall back to an unrolled loop.
@@ -376,9 +387,10 @@ namespace System
                 nuint i = 0;
 
                 // Write 8 elements at a time
-                // Skip this check if "write 8 elements" would've gone down the vectorized code path earlier
 
-                if (!Vector.IsHardwareAccelerated || Vector<byte>.Count / sizeof(IntPtr) > 8) // JIT turns this into constant true or false
+#if CORECLR
+                if (!Vector.IsHardwareAccelerated) // If vectorization enabled, 8-element case would've been handled earlier, no need to check again
+#endif
                 {
                     if (pointerSizeLength >= 8)
                     {
@@ -398,31 +410,23 @@ namespace System
                 }
 
                 // Write next 4 elements if needed
-                // Skip this check if "write 4 elements" would've gone down the vectorized code path earlier
 
-                if (!Vector.IsHardwareAccelerated || Vector<byte>.Count / sizeof(IntPtr) > 4) // JIT turns this into const true or false
+                if ((pointerSizeLength & 4) != 0)
                 {
-                    if ((pointerSizeLength & 4) != 0)
-                    {
-                        Unsafe.Add(ref ip, (nint)i + 0) = default;
-                        Unsafe.Add(ref ip, (nint)i + 1) = default;
-                        Unsafe.Add(ref ip, (nint)i + 2) = default;
-                        Unsafe.Add(ref ip, (nint)i + 3) = default;
-                        i += 4;
-                    }
+                    Unsafe.Add(ref ip, (nint)i + 0) = default;
+                    Unsafe.Add(ref ip, (nint)i + 1) = default;
+                    Unsafe.Add(ref ip, (nint)i + 2) = default;
+                    Unsafe.Add(ref ip, (nint)i + 3) = default;
+                    i += 4;
                 }
 
                 // Write next 2 elements if needed
-                // Skip this check if "write 2 elements" would've gone down the vectorized code path earlier
 
-                if (!Vector.IsHardwareAccelerated || Vector<byte>.Count / sizeof(IntPtr) > 2) // JIT turns this into const true or false
+                if ((pointerSizeLength & 2) != 0)
                 {
-                    if ((pointerSizeLength & 2) != 0)
-                    {
-                        Unsafe.Add(ref ip, (nint)i + 0) = default;
-                        Unsafe.Add(ref ip, (nint)i + 1) = default;
-                        i += 2;
-                    }
+                    Unsafe.Add(ref ip, (nint)i + 0) = default;
+                    Unsafe.Add(ref ip, (nint)i + 1) = default;
+                    i += 2;
                 }
 
                 // Write final element if needed
@@ -434,6 +438,7 @@ namespace System
             }
         }
 
+#if CORECLR
 #pragma warning disable CA1823, IDE0051, CS0169 // Avoid unused private fields
         private readonly struct EightRefs
         {
@@ -461,5 +466,6 @@ namespace System
             private readonly object? _data1;
         }
 #pragma warning restore CA1823, IDE0051, CS0169 // Avoid unused private fields
+#endif
     }
 }
