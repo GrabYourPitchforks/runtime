@@ -21,8 +21,12 @@ namespace System.Security.Cryptography
         public override System.Security.Cryptography.PaddingMode Padding { get { throw null; } set { } }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         protected override void Dispose(bool disposing) { }
         public override void GenerateIV() { }
         public override void GenerateKey() { }
@@ -287,8 +291,12 @@ namespace System.Security.Cryptography
         public override System.Security.Cryptography.PaddingMode Padding { get { throw null; } set { } }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         protected override void Dispose(bool disposing) { }
         public override void GenerateIV() { }
         public override void GenerateKey() { }

@@ -19,6 +19,7 @@ namespace System.Security.Cryptography
     {
         public AesCcm(byte[] key) { }
         public AesCcm(System.ReadOnlySpan<byte> key) { }
+        public AesCcm(System.Security.Secret<byte> key) { }
         public static System.Security.Cryptography.KeySizes NonceByteSizes { get { throw null; } }
         public static System.Security.Cryptography.KeySizes TagByteSizes { get { throw null; } }
         public void Decrypt(byte[] nonce, byte[] ciphertext, byte[] tag, byte[] plaintext, byte[]? associatedData = null) { }
@@ -32,6 +33,7 @@ namespace System.Security.Cryptography
     {
         public AesGcm(byte[] key) { }
         public AesGcm(System.ReadOnlySpan<byte> key) { }
+        public AesGcm(System.Security.Secret<byte> key) { }
         public static System.Security.Cryptography.KeySizes NonceByteSizes { get { throw null; } }
         public static System.Security.Cryptography.KeySizes TagByteSizes { get { throw null; } }
         public void Decrypt(byte[] nonce, byte[] ciphertext, byte[] tag, byte[] plaintext, byte[]? associatedData = null) { }
@@ -56,8 +58,12 @@ namespace System.Security.Cryptography
         public override System.Security.Cryptography.PaddingMode Padding { get { throw null; } set { } }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         protected override void Dispose(bool disposing) { }
         public override void GenerateIV() { }
         public override void GenerateKey() { }
@@ -505,6 +511,8 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.IncrementalHash CreateHMAC(System.Security.Cryptography.HashAlgorithmName hashAlgorithm, byte[] key) { throw null; }
         [System.Runtime.Versioning.UnsupportedOSPlatformAttribute("browser")]
         public static System.Security.Cryptography.IncrementalHash CreateHMAC(System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.ReadOnlySpan<byte> key) { throw null; }
+        [System.Runtime.Versioning.UnsupportedOSPlatformAttribute("browser")]
+        public static System.Security.Cryptography.IncrementalHash CreateHMAC(System.Security.Cryptography.HashAlgorithmName hashAlgorithm, System.Security.Secret<byte> key) { throw null; }
         public void Dispose() { }
         public byte[] GetCurrentHash() { throw null; }
         public int GetCurrentHash(System.Span<byte> destination) { throw null; }
@@ -575,12 +583,15 @@ namespace System.Security.Cryptography
     {
         public Rfc2898DeriveBytes(byte[] password, byte[] salt, int iterations) { }
         public Rfc2898DeriveBytes(byte[] password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
+        public Rfc2898DeriveBytes(System.Security.Secret<byte> password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
         public Rfc2898DeriveBytes(string password, byte[] salt) { }
         public Rfc2898DeriveBytes(string password, byte[] salt, int iterations) { }
         public Rfc2898DeriveBytes(string password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
+        public Rfc2898DeriveBytes(System.Security.Secret<char> password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
         public Rfc2898DeriveBytes(string password, int saltSize) { }
         public Rfc2898DeriveBytes(string password, int saltSize, int iterations) { }
         public Rfc2898DeriveBytes(string password, int saltSize, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
+        public Rfc2898DeriveBytes(System.Security.Secret<char> password, int saltSize, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
         public System.Security.Cryptography.HashAlgorithmName HashAlgorithm { get { throw null; } }
         public int IterationCount { get { throw null; } set { } }
         public byte[] Salt { get { throw null; } set { } }
@@ -588,11 +599,17 @@ namespace System.Security.Cryptography
         protected override void Dispose(bool disposing) { }
         public override byte[] GetBytes(int cb) { throw null; }
         public static byte[] Pbkdf2(byte[] password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
+        public static byte[] Pbkdf2(System.Security.Secret<byte> password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
         public static byte[] Pbkdf2(System.ReadOnlySpan<byte> password, System.ReadOnlySpan<byte> salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
+        public static byte[] Pbkdf2(System.Security.Secret<byte> password, System.ReadOnlySpan<byte> salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
         public static void Pbkdf2(System.ReadOnlySpan<byte> password, System.ReadOnlySpan<byte> salt, System.Span<byte> destination, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
+        public static void Pbkdf2(System.Security.Secret<byte> password, System.ReadOnlySpan<byte> salt, System.Span<byte> destination, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
         public static byte[] Pbkdf2(System.ReadOnlySpan<char> password, System.ReadOnlySpan<byte> salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
+        public static byte[] Pbkdf2(System.Security.Secret<char> password, System.ReadOnlySpan<byte> salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
         public static void Pbkdf2(System.ReadOnlySpan<char> password, System.ReadOnlySpan<byte> salt, System.Span<byte> destination, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
+        public static void Pbkdf2(System.Security.Secret<char> password, System.ReadOnlySpan<byte> salt, System.Span<byte> destination, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { }
         public static byte[] Pbkdf2(string password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
+        public static byte[] Pbkdf2(System.Security.Secret<char> password, byte[] salt, int iterations, System.Security.Cryptography.HashAlgorithmName hashAlgorithm, int outputLength) { throw null; }
         public override void Reset() { }
     }
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
@@ -619,8 +636,12 @@ namespace System.Security.Cryptography
         public override System.Security.Cryptography.PaddingMode Padding { get { throw null; } set { } }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor() { throw null; }
         public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public override System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         protected override void Dispose(bool disposing) { }
         public override void GenerateIV() { }
         public override void GenerateKey() { }

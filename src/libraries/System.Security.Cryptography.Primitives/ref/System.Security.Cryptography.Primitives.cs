@@ -24,20 +24,26 @@ namespace System.Security.Cryptography
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         public virtual byte[] ExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<byte> passwordBytes, System.Security.Cryptography.PbeParameters pbeParameters) { throw null; }
+        public virtual byte[] ExportEncryptedPkcs8PrivateKey(System.Security.Secret<byte> passwordBytes, System.Security.Cryptography.PbeParameters pbeParameters) { throw null; }
         public virtual byte[] ExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<char> password, System.Security.Cryptography.PbeParameters pbeParameters) { throw null; }
+        public virtual byte[] ExportEncryptedPkcs8PrivateKey(System.Security.Secret<char> password, System.Security.Cryptography.PbeParameters pbeParameters) { throw null; }
         public virtual byte[] ExportPkcs8PrivateKey() { throw null; }
         public virtual byte[] ExportSubjectPublicKeyInfo() { throw null; }
         public virtual void FromXmlString(string xmlString) { }
         public virtual void ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<byte> passwordBytes, System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
         public virtual void ImportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<char> password, System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
         public virtual void ImportFromEncryptedPem(System.ReadOnlySpan<char> input, System.ReadOnlySpan<byte> passwordBytes) { }
+        public virtual void ImportFromEncryptedPem(System.ReadOnlySpan<char> input, System.Security.Secret<byte> passwordBytes) { }
         public virtual void ImportFromEncryptedPem(System.ReadOnlySpan<char> input, System.ReadOnlySpan<char> password) { }
+        public virtual void ImportFromEncryptedPem(System.ReadOnlySpan<char> input, System.Security.Secret<char> password) { }
         public virtual void ImportFromPem(System.ReadOnlySpan<char> input) { }
         public virtual void ImportPkcs8PrivateKey(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
         public virtual void ImportSubjectPublicKeyInfo(System.ReadOnlySpan<byte> source, out int bytesRead) { throw null; }
         public virtual string ToXmlString(bool includePrivateParameters) { throw null; }
         public virtual bool TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<byte> passwordBytes, System.Security.Cryptography.PbeParameters pbeParameters, System.Span<byte> destination, out int bytesWritten) { throw null; }
+        public virtual bool TryExportEncryptedPkcs8PrivateKey(System.Security.Secret<byte> passwordBytes, System.Security.Cryptography.PbeParameters pbeParameters, System.Span<byte> destination, out int bytesWritten) { throw null; }
         public virtual bool TryExportEncryptedPkcs8PrivateKey(System.ReadOnlySpan<char> password, System.Security.Cryptography.PbeParameters pbeParameters, System.Span<byte> destination, out int bytesWritten) { throw null; }
+        public virtual bool TryExportEncryptedPkcs8PrivateKey(System.Security.Secret<char> password, System.Security.Cryptography.PbeParameters pbeParameters, System.Span<byte> destination, out int bytesWritten) { throw null; }
         public virtual bool TryExportPkcs8PrivateKey(System.Span<byte> destination, out int bytesWritten) { throw null; }
         public virtual bool TryExportSubjectPublicKeyInfo(System.Span<byte> destination, out int bytesWritten) { throw null; }
     }
@@ -251,8 +257,12 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.SymmetricAlgorithm? Create(string algName) { throw null; }
         public virtual System.Security.Cryptography.ICryptoTransform CreateDecryptor() { throw null; }
         public abstract System.Security.Cryptography.ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV);
+        public virtual System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public virtual System.Security.Cryptography.ICryptoTransform CreateDecryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         public virtual System.Security.Cryptography.ICryptoTransform CreateEncryptor() { throw null; }
         public abstract System.Security.Cryptography.ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV);
+        public virtual System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.ReadOnlySpan<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
+        public virtual System.Security.Cryptography.ICryptoTransform CreateEncryptor(System.Security.Secret<byte> rgbKey, System.ReadOnlySpan<byte> rgbIV) { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         public abstract void GenerateIV();

@@ -880,6 +880,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Security\Principal\IPrincipal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Security\Principal\PrincipalPolicy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Security\Principal\TokenImpersonationLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Security\Secret.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Security\SecureString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Security\SecurityCriticalAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Security\SecurityCriticalScope.cs" />

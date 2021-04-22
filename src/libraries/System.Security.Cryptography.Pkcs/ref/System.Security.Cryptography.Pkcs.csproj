@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="System.Security.Cryptography.Pkcs.cs" />
     <Compile Include="System.Security.Cryptography.Pkcs.netcoreapp.cs" Condition="!$(TargetFramework.StartsWith('net4'))" />
+    <Compile Include="System.Security.Cryptography.Pkcs.netcurrent.cs" Condition="'$(TargetFramework)' == '$(NetCoreAppCurrent)'" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="System.Security" />
