@@ -783,6 +783,8 @@ namespace System
                     return "offset";
                 case ExceptionArgument.stream:
                     return "stream";
+                case ExceptionArgument.right:
+                    return "right";
                 default:
                     Debug.Fail("The enum value is not defined, please check the ExceptionArgument Enum.");
                     return "";
@@ -1046,7 +1048,8 @@ namespace System
         suffix,
         buffer,
         offset,
-        stream
+        stream,
+        right
     }
 
     //

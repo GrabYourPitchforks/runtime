@@ -84,12 +84,12 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe nuint GetIndexOfFirstNonAsciiByte(byte* pBuffer, nuint bufferLength)
         {
-            // If SSE2 is supported, use those specific intrinsics instead of the generic vectorized
+            // If intrinsics are supported, use those specific intrinsics instead of the generic vectorized
             // code below. This has two benefits: (a) we can take advantage of specific instructions like
             // pmovmskb which we know are optimized, and (b) we can avoid downclocking the processor while
             // this method is running.
 
-            return (Sse2.IsSupported || AdvSimd.Arm64.IsSupported && BitConverter.IsLittleEndian)
+            return (Sse2.IsSupported || (AdvSimd.Arm64.IsSupported && BitConverter.IsLittleEndian))
                 ? GetIndexOfFirstNonAsciiByte_Intrinsified(pBuffer, bufferLength)
                 : GetIndexOfFirstNonAsciiByte_Default(pBuffer, bufferLength);
         }
@@ -244,7 +244,6 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ContainsNonAsciiByte_Sse2(uint sseMask)
         {
-            Debug.Assert(sseMask != uint.MaxValue);
             Debug.Assert(Sse2.IsSupported);
             return sseMask != 0;
         }
@@ -252,7 +251,6 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ContainsNonAsciiByte_AdvSimd(uint advSimdIndex)
         {
-            Debug.Assert(advSimdIndex != uint.MaxValue);
             Debug.Assert(AdvSimd.IsSupported);
             return advSimdIndex < 16;
         }
@@ -481,6 +479,7 @@ namespace System.Text
             {
                 throw new PlatformNotSupportedException();
             }
+
         FoundNonAsciiDataInCurrentChunk:
 
 
@@ -1750,7 +1749,7 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ContainsNonAsciiByte(Vector128<byte> value)
+        private static bool ContainsNonAsciiByte(Vector128<byte> value)
         {
             if (!AdvSimd.Arm64.IsSupported)
             {

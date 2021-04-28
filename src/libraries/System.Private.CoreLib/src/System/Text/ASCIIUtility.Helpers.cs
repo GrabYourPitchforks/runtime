@@ -32,6 +32,66 @@ namespace System.Text
         }
 
         /// <summary>
+        /// Given a UInt32 that represents four ASCII bytes, returns the invariant lowercase
+        /// representation of those characters. Requires the input value to contain four ASCII
+        /// bytes. Input and output are in machine endianness.
+        /// </summary>
+        /// <remarks>
+        /// This is a branchless implementation.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static uint ConvertAllAsciiBytesInUInt32ToLowercase(uint value)
+        {
+            // Keep this in sync with Utf16Utility.ConvertAllAsciiCharsInUInt32ToLowercase.
+            // ASSUMPTION: Caller has validated that input value is ASCII.
+            Debug.Assert(AllBytesInUInt32AreAscii(value));
+
+            // the 0x80 bit of each byte of 'lowerIndicator' will be set iff the byte has value >= 'A'
+            uint lowerIndicator = value + 0x8080_8080u - 0x4141_4141u;
+
+            // the 0x80 bit of each byte of 'upperIndicator' will be set iff the byte has value > 'Z'
+            uint upperIndicator = value + 0x8080_8080u - 0x5B5B_5B5Bu;
+
+            // the 0x80 bit of each byte of 'combinedIndicator' will be set iff the byte has value >= 'A' and <= 'Z'
+            uint combinedIndicator = (lowerIndicator ^ upperIndicator);
+
+            // the 0x20 bit of each byte of 'mask' will be set iff the byte has value >= 'A' and <= 'Z'
+            uint mask = (combinedIndicator & 0x8080_8080u) >> 2;
+
+            return value ^ mask; // bit flip uppercase letters [A-Z] => [a-z]
+        }
+
+        /// <summary>
+        /// Given a UInt32 that represents four ASCII bytes, returns the invariant uppercase
+        /// representation of those characters. Requires the input value to contain four ASCII
+        /// bytes. Input and output are in machine endianness.
+        /// </summary>
+        /// <remarks>
+        /// This is a branchless implementation.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static uint ConvertAllAsciiBytesInUInt32ToUppercase(uint value)
+        {
+            // Keep this in sync with Utf16Utility.ConvertAllAsciiCharsInUInt32ToUppercase.
+            // ASSUMPTION: Caller has validated that input value is ASCII.
+            Debug.Assert(AllBytesInUInt32AreAscii(value));
+
+            // the 0x80 bit of each byte of 'lowerIndicator' will be set iff the byte has value >= 'a'
+            uint lowerIndicator = value + 0x8080_8080u - 0x6161_6161u;
+
+            // the 0x80 bit of each byte of 'upperIndicator' will be set iff the byte has value > 'z'
+            uint upperIndicator = value + 0x8080_8080u - 0x7B7B_7B7Bu;
+
+            // the 0x80 bit of each byte of 'combinedIndicator' will be set iff the byte has value >= 'a' and <= 'z'
+            uint combinedIndicator = (lowerIndicator ^ upperIndicator);
+
+            // the 0x20 bit of each byte of 'mask' will be set iff the byte has value >= 'a' and <= 'z'
+            uint mask = (combinedIndicator & 0x8080_8080u) >> 2;
+
+            return value ^ mask; // bit flip lowercase letters [a-z] => [A-Z]
+        }
+
+        /// <summary>
         /// Given a DWORD which represents a four-byte buffer read in machine endianness, and which
         /// the caller has asserted contains a non-ASCII byte *somewhere* in the data, counts the
         /// number of consecutive ASCII bytes starting from the beginning of the buffer. Returns
