@@ -214,19 +214,7 @@ namespace System.Diagnostics
             // at the max size of IntPtr.  This often happens when there is no configured
             // rsslim other than ulong.MaxValue, which without these checks would show up
             // as a maxWorkingSet == -1.
-            switch (IntPtr.Size)
-            {
-                case 4:
-                    if (rsslim > int.MaxValue)
-                        rsslim = int.MaxValue;
-                    break;
-                case 8:
-                    if (rsslim > long.MaxValue)
-                        rsslim = long.MaxValue;
-                    break;
-            }
-
-            maxWorkingSet = (IntPtr)rsslim;
+            maxWorkingSet = (rsslim > (ulong)nint.MaxValue) ? nint.MaxValue : (nint)rsslim;
         }
 
         /// <summary>Sets one or both of the minimum and maximum working set limits.</summary>

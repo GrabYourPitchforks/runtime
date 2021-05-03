@@ -1509,9 +1509,7 @@ namespace System
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Overlaps<T>(this Span<T> span, ReadOnlySpan<T> other)
-        {
-            return Overlaps((ReadOnlySpan<T>)span, other);
-        }
+            => Overlaps(ref MemoryMarshal.GetReference(span), (uint)span.Length, ref MemoryMarshal.GetReference(other), (uint)other.Length);
 
         /// <summary>
         /// Determines whether two sequences overlap in memory and outputs the element offset.
@@ -1526,77 +1524,43 @@ namespace System
         /// Determines whether two sequences overlap in memory.
         /// </summary>
         public static bool Overlaps<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> other)
-        {
-            if (span.IsEmpty || other.IsEmpty)
-            {
-                return false;
-            }
-
-            IntPtr byteOffset = Unsafe.ByteOffset(
-                ref MemoryMarshal.GetReference(span),
-                ref MemoryMarshal.GetReference(other));
-
-            if (Unsafe.SizeOf<IntPtr>() == sizeof(int))
-            {
-                return (uint)byteOffset < (uint)(span.Length * Unsafe.SizeOf<T>()) ||
-                       (uint)byteOffset > (uint)-(other.Length * Unsafe.SizeOf<T>());
-            }
-            else
-            {
-                return (ulong)byteOffset < (ulong)((long)span.Length * Unsafe.SizeOf<T>()) ||
-                       (ulong)byteOffset > (ulong)-((long)other.Length * Unsafe.SizeOf<T>());
-            }
-        }
+            => Overlaps(ref MemoryMarshal.GetReference(span), (uint)span.Length, ref MemoryMarshal.GetReference(other), (uint)other.Length);
 
         /// <summary>
         /// Determines whether two sequences overlap in memory and outputs the element offset.
         /// </summary>
         public static bool Overlaps<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> other, out int elementOffset)
         {
-            if (span.IsEmpty || other.IsEmpty)
+            nuint byteOffset = (nuint)(nint)Unsafe.ByteOffset(
+                ref MemoryMarshal.GetReference(span),
+                ref MemoryMarshal.GetReference(other));
+
+            if (byteOffset < ((uint)span.Length * (nuint)Unsafe.SizeOf<T>()) ||
+                byteOffset > (nuint)((nint)(uint)other.Length * -Unsafe.SizeOf<T>()))
+            {
+                if (byteOffset % (nuint)Unsafe.SizeOf<T>() != 0)
+                    ThrowHelper.ThrowArgumentException_OverlapAlignmentMismatch();
+
+                elementOffset = (int)((nint)byteOffset / Unsafe.SizeOf<T>());
+                return true;
+            }
+            else
             {
                 elementOffset = 0;
                 return false;
             }
+        }
 
-            IntPtr byteOffset = Unsafe.ByteOffset(
-                ref MemoryMarshal.GetReference(span),
-                ref MemoryMarshal.GetReference(other));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool Overlaps<T>(ref T span1, nuint span1ElementCount, ref T span2, nuint span2ElementCount)
+        {
+            // Using explicit branches below results in better codegen than "return a || b;".
+            // More info: https://github.com/dotnet/runtime/issues/4207
 
-            if (Unsafe.SizeOf<IntPtr>() == sizeof(int))
-            {
-                if ((uint)byteOffset < (uint)(span.Length * Unsafe.SizeOf<T>()) ||
-                    (uint)byteOffset > (uint)-(other.Length * Unsafe.SizeOf<T>()))
-                {
-                    if ((int)byteOffset % Unsafe.SizeOf<T>() != 0)
-                        ThrowHelper.ThrowArgumentException_OverlapAlignmentMismatch();
-
-                    elementOffset = (int)byteOffset / Unsafe.SizeOf<T>();
-                    return true;
-                }
-                else
-                {
-                    elementOffset = 0;
-                    return false;
-                }
-            }
-            else
-            {
-                if ((ulong)byteOffset < (ulong)((long)span.Length * Unsafe.SizeOf<T>()) ||
-                    (ulong)byteOffset > (ulong)-((long)other.Length * Unsafe.SizeOf<T>()))
-                {
-                    if ((long)byteOffset % Unsafe.SizeOf<T>() != 0)
-                        ThrowHelper.ThrowArgumentException_OverlapAlignmentMismatch();
-
-                    elementOffset = (int)((long)byteOffset / Unsafe.SizeOf<T>());
-                    return true;
-                }
-                else
-                {
-                    elementOffset = 0;
-                    return false;
-                }
-            }
+            nuint byteOffset = (nuint)(nint)Unsafe.ByteOffset(ref span1, ref span2);
+            if (byteOffset < span1ElementCount * (nuint)Unsafe.SizeOf<T>()) { return true; }
+            if (byteOffset > (nuint)((nint)span2ElementCount * -Unsafe.SizeOf<T>())) { return true; }
+            return false;
         }
 
         /// <summary>
