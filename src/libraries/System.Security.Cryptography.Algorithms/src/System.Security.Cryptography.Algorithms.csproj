@@ -23,12 +23,16 @@
     <Compile Include="System\Security\Cryptography\RandomNumberGenerator.cs" />
     <Compile Include="System\Security\Cryptography\SHA1.cs" />
     <Compile Include="System\Security\Cryptography\SHA1Managed.cs" />
+    <Compile Include="System\Security\Cryptography\HMACSHA1.cs" />
     <Compile Include="System\Security\Cryptography\SHA256.cs" />
     <Compile Include="System\Security\Cryptography\SHA256Managed.cs" />
+    <Compile Include="System\Security\Cryptography\HMACSHA256.cs" />
     <Compile Include="System\Security\Cryptography\SHA384.cs" />
     <Compile Include="System\Security\Cryptography\SHA384Managed.cs" />
+    <Compile Include="System\Security\Cryptography\HMACSHA384.cs" />
     <Compile Include="System\Security\Cryptography\SHA512.cs" />
     <Compile Include="System\Security\Cryptography\SHA512Managed.cs" />
+    <Compile Include="System\Security\Cryptography\HMACSHA512.cs" />
     <Compile Include="$(CommonPath)Internal\Cryptography\HashProvider.cs"
              Link="Internal\Cryptography\HashProvider.cs" />
     <Compile Include="$(CommonPath)System\Obsoletions.cs"
@@ -76,10 +80,6 @@
     <Compile Include="System\Security\Cryptography\MaskGenerationMethod.cs" />
     <Compile Include="System\Security\Cryptography\MD5.cs" />
     <Compile Include="System\Security\Cryptography\HMACMD5.cs" />
-    <Compile Include="System\Security\Cryptography\HMACSHA1.cs" />
-    <Compile Include="System\Security\Cryptography\HMACSHA256.cs" />
-    <Compile Include="System\Security\Cryptography\HMACSHA384.cs" />
-    <Compile Include="System\Security\Cryptography\HMACSHA512.cs" />
     <Compile Include="System\Security\Cryptography\PKCS1MaskGenerationMethod.cs" />
     <Compile Include="System\Security\Cryptography\RC2.cs" />
     <Compile Include="System\Security\Cryptography\Rijndael.cs" />
@@ -710,6 +710,7 @@
              Link="Common\Interop\Unix\Interop.Libraries.cs" />
     <Compile Include="$(CommonPath)System\Sha1ForNonSecretPurposes.cs"
              Link="Common\System\Sha1ForNonSecretPurposes.cs" />
+    <Compile Include="Internal\Cryptography\CryptographyProvider.Browser.cs" />
     <Compile Include="Internal\Cryptography\HashProviderDispenser.Browser.cs" />
     <Compile Include="Internal\Cryptography\RandomNumberGeneratorImplementation.Browser.cs" />
     <Compile Include="Internal\Cryptography\SHAHashProvider.Browser.cs" />
