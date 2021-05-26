@@ -1,12 +1,42 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461;netcoreapp3.1</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>true</IsPackable>
+    <EnablePackageBaselineValidation>false</EnablePackageBaselineValidation>
     <PackageDescription />
+    <IsPartialFacadeAssembly Condition="'$(TargetFramework)' == 'netcoreapp3.1'">true</IsPartialFacadeAssembly>
+    <OmitResources Condition="'$(IsPartialFacadeAssembly)' == 'true'">true</OmitResources>
+    <!-- CS3011: Only CLS-compliant members can be abstract -->
+    <!-- CS3019: CLS attributes on internal types. Some shared source files are internal in this project. -->
+    <NoWarn>$(NoWarn);CS3011;CS3019</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="$(CoreLibSharedDir)System\Numerics\BitOperations.Rotation.cs" Link="System\Numerics\BitOperations.Rotation.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Numerics\BitOperations.Tzcnt.cs" Link="System\Numerics\BitOperations.Tzcnt.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\ASCIIUtility.cs" Link="System\Text\ASCIIUtility.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\ASCIIUtility.Helpers.cs" Link="System\Text\ASCIIUtility.Helpers.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\Rune.cs" Link="System\Text\Rune.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\UnicodeDebug.cs" Link="System\Text\UnicodeDebug.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\UnicodeUtility.cs" Link="System\Text\UnicodeUtility.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\Unicode\Utf16Utility.cs" Link="System\Text\Unicode\Utf16Utility.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\Unicode\Utf8.cs" Link="System\Text\Unicode\Utf8.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\Unicode\Utf8Utility.Helpers.cs" Link="System\Text\Unicode\Utf8Utility.Helpers.cs" />
+    <Compile Include="$(CoreLibSharedDir)System\Text\Unicode\Utf8Utility.Transcoding.cs" Link="System\Text\Unicode\Utf8Utility.Transcoding.cs" />
+    <Compile Include="System\ThrowHelper.cs" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <None Include="Resources\Strings.resx" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net461'">
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafeVersion)" />
+  </ItemGroup>
+
 
 </Project>

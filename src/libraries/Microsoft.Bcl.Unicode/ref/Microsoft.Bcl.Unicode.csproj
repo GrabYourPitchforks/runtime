@@ -1,8 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461;netcoreapp3.1</TargetFrameworks>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <Compile Include="Microsoft.Bcl.Unicode.forwards.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
     <Compile Include="Microsoft.Bcl.Unicode.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <Reference Include="System.Memory" />
+    <Reference Include="System.Runtime" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
   </ItemGroup>
 </Project>

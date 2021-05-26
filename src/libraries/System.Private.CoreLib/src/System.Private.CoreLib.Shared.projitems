@@ -478,6 +478,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Number.NumberToFloatingPointBits.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Number.Parsing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Numerics\BitOperations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Numerics\BitOperations.Rotation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Numerics\BitOperations.Tzcnt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Numerics\Matrix3x2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Numerics\Matrix4x4.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Numerics\Plane.cs" />
@@ -922,6 +924,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Text\ASCIIEncoding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Text\ASCIIUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Text\ASCIIUtility.Helpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Text\ASCIIUtility.Intrinsicified.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Text\CodePageDataItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Text\Decoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Text\DecoderExceptionFallback.cs" />

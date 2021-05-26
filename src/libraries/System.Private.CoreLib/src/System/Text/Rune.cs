@@ -18,10 +18,10 @@ namespace System.Text
     /// assuming that the underlying <see cref="Rune"/> instance is well-formed.
     /// </remarks>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public readonly struct Rune : IComparable, IComparable<Rune>, IEquatable<Rune>
+    public readonly partial struct Rune : IComparable<Rune>, IEquatable<Rune>
 #if SYSTEM_PRIVATE_CORELIB
 #pragma warning disable SA1001 // Commas should be spaced correctly
-        , ISpanFormattable
+        , IComparable, ISpanFormattable
 #pragma warning restore SA1001
 #endif
     {
@@ -241,7 +241,6 @@ namespace System.Text
 #else
         private static Rune ChangeCaseCultureAware(Rune rune, CultureInfo culture, bool toUpper)
         {
-            Debug.Assert(!GlobalizationMode.Invariant, "This should've been checked by the caller.");
             Debug.Assert(culture != null, "This should've been checked by the caller.");
 
             Span<char> original = stackalloc char[MaxUtf16CharsPerRune]; // worst case scenario = 2 code units (for a surrogate pair)
@@ -1376,12 +1375,12 @@ namespace System.Text
             // ASCII characters differently than the invariant culture (e.g., Turkish I). Instead
             // we'll just jump straight to the globalization tables if they're available.
 
+#if SYSTEM_PRIVATE_CORELIB
             if (GlobalizationMode.Invariant)
             {
                 return ToLowerInvariant(value);
             }
 
-#if SYSTEM_PRIVATE_CORELIB
             return ChangeCaseCultureAware(value, culture.TextInfo, toUpper: false);
 #else
             return ChangeCaseCultureAware(value, culture, toUpper: false);
@@ -1400,6 +1399,7 @@ namespace System.Text
                 return UnsafeCreate(Utf16Utility.ConvertAllAsciiCharsInUInt32ToLowercase(value._value));
             }
 
+#if SYSTEM_PRIVATE_CORELIB
             if (GlobalizationMode.Invariant)
             {
                 // If the value isn't ASCII and if the globalization tables aren't available,
@@ -1409,7 +1409,6 @@ namespace System.Text
 
             // Non-ASCII data requires going through the case folding tables.
 
-#if SYSTEM_PRIVATE_CORELIB
             return ChangeCaseCultureAware(value, TextInfo.Invariant, toUpper: false);
 #else
             return ChangeCaseCultureAware(value, CultureInfo.InvariantCulture, toUpper: false);
@@ -1427,12 +1426,12 @@ namespace System.Text
             // ASCII characters differently than the invariant culture (e.g., Turkish I). Instead
             // we'll just jump straight to the globalization tables if they're available.
 
+#if SYSTEM_PRIVATE_CORELIB
             if (GlobalizationMode.Invariant)
             {
                 return ToUpperInvariant(value);
             }
 
-#if SYSTEM_PRIVATE_CORELIB
             return ChangeCaseCultureAware(value, culture.TextInfo, toUpper: true);
 #else
             return ChangeCaseCultureAware(value, culture, toUpper: true);
@@ -1451,6 +1450,7 @@ namespace System.Text
                 return UnsafeCreate(Utf16Utility.ConvertAllAsciiCharsInUInt32ToUppercase(value._value));
             }
 
+#if SYSTEM_PRIVATE_CORELIB
             if (GlobalizationMode.Invariant)
             {
                 // If the value isn't ASCII and if the globalization tables aren't available,
@@ -1460,13 +1460,13 @@ namespace System.Text
 
             // Non-ASCII data requires going through the case folding tables.
 
-#if SYSTEM_PRIVATE_CORELIB
             return ChangeCaseCultureAware(value, TextInfo.Invariant, toUpper: true);
 #else
             return ChangeCaseCultureAware(value, CultureInfo.InvariantCulture, toUpper: true);
 #endif
         }
 
+#if SYSTEM_PRIVATE_CORELIB
         /// <inheritdoc cref="IComparable.CompareTo" />
         int IComparable.CompareTo(object? obj)
         {
@@ -1482,5 +1482,6 @@ namespace System.Text
 
             throw new ArgumentException(SR.Arg_MustBeRune);
         }
+#endif
     }
 }
