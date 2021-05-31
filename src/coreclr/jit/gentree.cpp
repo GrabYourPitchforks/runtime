@@ -19133,13 +19133,21 @@ GenTree* Compiler::gtNewSimdBinOpNode(genTreeOps  op,
             {
                 assert(compIsaSupportedDebugOnly(InstructionSet_AVX));
 
-                if (varTypeIsFloating(simdBaseType) || !compOpportunisticallyDependsOn(InstructionSet_AVX2))
+                if (varTypeIsFloating(simdBaseType))
                 {
                     intrinsic = NI_AVX_And;
                 }
-                else
+                else if (compOpportunisticallyDependsOn(InstructionSet_AVX2))
                 {
                     intrinsic = NI_AVX2_And;
+                }
+                else
+                {
+                    // Since this is a bitwise operation, we can still support it by lying
+                    // about the type and doing the operation using a supported instruction
+
+                    intrinsic       = NI_AVX_And;
+                    simdBaseJitType = CORINFO_TYPE_FLOAT;
                 }
             }
             else if (simdBaseType == TYP_FLOAT)
@@ -19159,13 +19167,21 @@ GenTree* Compiler::gtNewSimdBinOpNode(genTreeOps  op,
             {
                 assert(compIsaSupportedDebugOnly(InstructionSet_AVX));
 
-                if (varTypeIsFloating(simdBaseType) || !compOpportunisticallyDependsOn(InstructionSet_AVX2))
+                if (varTypeIsFloating(simdBaseType))
                 {
                     intrinsic = NI_AVX_AndNot;
                 }
-                else
+                else if (compOpportunisticallyDependsOn(InstructionSet_AVX2))
                 {
                     intrinsic = NI_AVX2_AndNot;
+                }
+                else
+                {
+                    // Since this is a bitwise operation, we can still support it by lying
+                    // about the type and doing the operation using a supported instruction
+
+                    intrinsic       = NI_AVX_AndNot;
+                    simdBaseJitType = CORINFO_TYPE_FLOAT;
                 }
             }
             else if (simdBaseType == TYP_FLOAT)
@@ -19337,13 +19353,21 @@ GenTree* Compiler::gtNewSimdBinOpNode(genTreeOps  op,
             {
                 assert(compIsaSupportedDebugOnly(InstructionSet_AVX));
 
-                if (varTypeIsFloating(simdBaseType) || !compOpportunisticallyDependsOn(InstructionSet_AVX2))
+                if (varTypeIsFloating(simdBaseType))
                 {
                     intrinsic = NI_AVX_Or;
                 }
-                else
+                else if (compOpportunisticallyDependsOn(InstructionSet_AVX2))
                 {
                     intrinsic = NI_AVX2_Or;
+                }
+                else
+                {
+                    // Since this is a bitwise operation, we can still support it by lying
+                    // about the type and doing the operation using a supported instruction
+
+                    intrinsic       = NI_AVX_Or;
+                    simdBaseJitType = CORINFO_TYPE_FLOAT;
                 }
             }
             else if (simdBaseType == TYP_FLOAT)
@@ -19390,13 +19414,21 @@ GenTree* Compiler::gtNewSimdBinOpNode(genTreeOps  op,
             {
                 assert(compIsaSupportedDebugOnly(InstructionSet_AVX));
 
-                if (varTypeIsFloating(simdBaseType) || !compOpportunisticallyDependsOn(InstructionSet_AVX2))
+                if (varTypeIsFloating(simdBaseType))
                 {
                     intrinsic = NI_AVX_Xor;
                 }
-                else
+                else if (compOpportunisticallyDependsOn(InstructionSet_AVX2))
                 {
                     intrinsic = NI_AVX2_Xor;
+                }
+                else
+                {
+                    // Since this is a bitwise operation, we can still support it by lying
+                    // about the type and doing the operation using a supported instruction
+
+                    intrinsic       = NI_AVX_Xor;
+                    simdBaseJitType = CORINFO_TYPE_FLOAT;
                 }
             }
             else if (simdBaseType == TYP_FLOAT)
@@ -20458,18 +20490,19 @@ GenTree* Compiler::gtNewSimdDotProdNode(var_types   type,
                                         bool        isSimdAsHWIntrinsic)
 {
     assert(IsBaselineSimdIsaSupportedDebugOnly());
+    assert(varTypeIsArithmetic(type));
 
-    assert(varTypeIsSIMD(type));
-    assert(getSIMDTypeForSize(simdSize) == type);
+    var_types simdType = getSIMDTypeForSize(simdSize);
+    assert(varTypeIsSIMD(simdType));
 
     assert(op1 != nullptr);
-    assert(op1->TypeGet() == type);
+    assert(op1->TypeGet() == simdType);
 
     assert(op2 != nullptr);
-    assert(op2->TypeGet() == type);
+    assert(op2->TypeGet() == simdType);
 
     var_types simdBaseType = JitType2PreciseVarType(simdBaseJitType);
-    assert(varTypeIsArithmetic(simdBaseType));
+    assert(genActualType(simdBaseType) == type);
 
     NamedIntrinsic intrinsic = NI_Illegal;
 
@@ -21061,11 +21094,7 @@ GenTree* Compiler::gtNewSimdUnOpNode(genTreeOps  op,
 
         case GT_NOT:
         {
-            if (simdSize == 32)
-            {
-                assert(compIsaSupportedDebugOnly(InstructionSet_AVX));
-                assert(varTypeIsFloating(simdBaseType) || compIsaSupportedDebugOnly(InstructionSet_AVX2));
-            }
+            assert((simdSize != 32) || compIsaSupportedDebugOnly(InstructionSet_AVX));
 
             intrinsic = (simdSize == 32) ? NI_Vector256_get_AllBitsSet : NI_Vector128_get_AllBitsSet;
             op2       = gtNewSimdHWIntrinsicNode(type, intrinsic, simdBaseJitType, simdSize, isSimdAsHWIntrinsic);
