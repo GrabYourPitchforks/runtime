@@ -5,6 +5,7 @@
 // ------------------------------------------------------------------------------
 
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.IO.UnmanagedMemoryStream))]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Reflection.Missing))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.InteropServices.CriticalHandle))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.InteropServices.GCHandle))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.InteropServices.GCHandleType))]

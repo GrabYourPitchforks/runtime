@@ -6513,6 +6513,26 @@ namespace System.Buffers
         InvalidData = 3,
     }
     public delegate void ReadOnlySpanAction<T, in TArg>(System.ReadOnlySpan<T> span, TArg arg);
+    public sealed partial class Secret<T> : System.IDisposable where T : unmanaged
+    {
+        public Secret(System.ReadOnlySpan<T> buffer) { }
+        public int GetLength() { throw null; }
+        public System.Buffers.Secret<T> Clone() { throw null; }
+        public void Dispose() { }
+        public int RevealInto(System.Span<T> destination) { throw null; }
+        public T[] RevealToArray() { throw null; }
+        public void RevealAndUse<TArg>(TArg arg, System.Buffers.ReadOnlySpanAction<T, TArg> spanAction) { }
+        [System.ObsoleteAttribute("Use RevealToString")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public override string ToString() { throw null; }
+    }
+    public static partial class Secret
+    {
+        public static System.Buffers.Secret<char> Create(string value) { throw null; }
+        public static System.Buffers.Secret<T> Create<T>(T[] buffer) where T : unmanaged { throw null; }
+        public static System.Buffers.Secret<T> Create<T>(System.ReadOnlySpan<T> buffer) where T : unmanaged { throw null; }
+        public static string RevealToString(this System.Buffers.Secret<char> secret) { throw null; }
+    }
     public delegate void SpanAction<T, in TArg>(System.Span<T> span, TArg arg);
 }
 namespace System.CodeDom.Compiler
