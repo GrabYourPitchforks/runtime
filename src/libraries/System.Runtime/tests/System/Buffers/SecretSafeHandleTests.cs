@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Xunit;
 
-namespace System.Tests
+namespace System.Buffers.Tests
 {
     public unsafe static class SecretSafeHandleTests
     {
