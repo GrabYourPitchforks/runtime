@@ -113,6 +113,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\MemoryManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\OperationStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Secret.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\SecretSafeHandle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\StandardFormat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Text\FormattingHelpers.CountDigits.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Text\Utf8Constants.cs" />
@@ -1871,7 +1872,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft\Win32\SafeHandles\SafeRegistryHandle.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\AppDomain.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffer.Windows.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Secret.Windows.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\SecretSafeHandle.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\DateTime.Win32.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\DateTime.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Environment.Win32.cs" />
@@ -2166,6 +2167,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft\Win32\SafeHandles\SafeFileHandle.Unix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\AppDomain.Unix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffer.Unix.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\SecretSafeHandle.Unix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\ComponentModel\Win32Exception.Unix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\DateTime.Unix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Diagnostics\DebugProvider.Unix.cs" />
