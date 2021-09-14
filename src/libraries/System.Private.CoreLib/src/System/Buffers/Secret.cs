@@ -280,7 +280,26 @@ namespace System.Buffers
         public static SecretSafeHandle Allocate(nuint byteCount)
         {
             SecretSafeHandle retVal = new SecretSafeHandle();
-            AllocateImpl(byteCount, out retVal._shroudedPointer);
+            void* pAlloc = null;
+
+            // We need to leave some room for our header data (byte length).
+            // If this calculation would overflow, just normalize to OOM instead
+            // of letting an OverflowException propagate its way up the stack.
+            // Honestly this should never happen in practice.
+
+            if (byteCount < (nuint)(nint)(-sizeof(IntPtr)))
+            {
+                nuint byteCountWithHeader = byteCount + (uint)sizeof(IntPtr);
+                pAlloc = AllocateRaw(byteCountWithHeader);
+            }
+
+            if (pAlloc == null)
+            {
+                throw new OutOfMemoryException();
+            }
+
+            Unsafe.WriteUnaligned(pAlloc, byteCount); // header contains the number of raw bytes which follow
+            retVal._shroudedPointer = new ShroudedPointer(pAlloc);
             return retVal;
         }
 

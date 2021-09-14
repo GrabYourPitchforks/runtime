@@ -2,37 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.InteropServices;
-using Internal.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
+    // On Windows, we create a standalone private heap used for storing our raw secret data.
+    // This private heap is never destroyed for the lifetime of the process. This is a
+    // defense-in-depth measure to further minimize the chance of a dangling malloc pointer
+    // referencing the raw data.
     internal unsafe sealed partial class SecretSafeHandle
     {
         private static readonly IntPtr _secretHeap = CreateSecretHeap();
 
-        private static void AllocateImpl(nuint byteCount, out ShroudedPointer shroudedPointer)
-        {
-            void* pAlloc = null;
-
-            // We need to leave some room for our header data (byte length).
-            // If this calculation would overflow, just normalize to OOM instead
-            // of letting an OverflowException propagate its way up the stack.
-            // Honestly this should never happen in practice.
-
-            if (byteCount < (nuint)(nint)(-sizeof(IntPtr)))
-            {
-                nuint realByteCount = byteCount + (uint)sizeof(IntPtr);
-                pAlloc = (void*)HeapAlloc(_secretHeap, 0, realByteCount);
-            }
-
-            if (pAlloc == null)
-            {
-                throw new OutOfMemoryException();
-            }
-
-            Unsafe.WriteUnaligned(pAlloc, byteCount);
-            shroudedPointer = new ShroudedPointer(pAlloc);
-        }
+        private static void* AllocateRaw(nuint byteCount) => (void*)HeapAlloc(_secretHeap, 0, byteCount);
 
         private static IntPtr CreateSecretHeap()
         {
