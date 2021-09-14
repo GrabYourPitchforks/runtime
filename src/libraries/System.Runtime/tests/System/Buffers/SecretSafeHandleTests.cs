@@ -34,17 +34,17 @@ namespace System.Buffers.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(1024 * 1024)]
-        public static void AllocateAndFill(nuint expectedByteCount)
+        public static void AllocateAndFill(int expectedByteCount)
         {
-            using SafeHandle handle = (SafeHandle)SecretSafeHandleType.GetMethod("Allocate").Invoke(null, new object[] { expectedByteCount });
+            using SafeHandle handle = (SafeHandle)SecretSafeHandleType.GetMethod("Allocate").Invoke(null, new object[] { (nuint)expectedByteCount });
             DangerousGetRawData(handle, out nuint actualByteCount, out void* pData);
 
             // Ensure the output values make sense.
-            Assert.Equal(expectedByteCount, actualByteCount);
+            Assert.Equal((nuint)expectedByteCount, actualByteCount);
             Assert.True(pData != null);
 
             // Ensure the entire span is writable without AVing.
-            new Span<byte>(pData, (int)expectedByteCount).Clear();
+            new Span<byte>(pData, expectedByteCount).Clear();
 
             // Ideally we'd also be able to test that the data is cleared
             // on dispose; but since this results in a call to free / HeapFree,

@@ -29,9 +29,9 @@ namespace System.Buffers
             // of letting an OverflowException propagate its way up the stack.
             // Honestly this should never happen in practice.
 
-            if (byteCount < (nuint)(nint)(-sizeof(IntPtr)))
+            if (byteCount < (nuint)(nint)(-IntPtr.Size))
             {
-                nuint byteCountWithHeader = byteCount + (uint)sizeof(IntPtr);
+                nuint byteCountWithHeader = byteCount + (uint)IntPtr.Size;
                 pAlloc = AllocateRaw(byteCountWithHeader);
             }
 
@@ -51,7 +51,7 @@ namespace System.Buffers
         {
             void* pHeader = _shroudedPointer.GetUnshroudedPointer().Value;
             byteCount = Unsafe.ReadUnaligned<nuint>(pHeader);
-            pData = (byte*)pHeader + sizeof(nuint);
+            pData = (byte*)pHeader + IntPtr.Size;
         }
 
         public SecretSafeHandle Duplicate()
@@ -66,8 +66,9 @@ namespace System.Buffers
                 try
                 {
                     duplicateHandle.DangerousAddRef(ref duplicateSuccess);
-                    DangerousGetRawData(out _, out void* pDest);
-                    Buffer.Memmove(ref *(byte*)pDest, ref *(byte*)pSrc, byteCount);
+                    duplicateHandle.DangerousGetRawData(out _, out void* pDest);
+                    // fudge memmove pointers & length to account for data header also requiring copy
+                    Buffer.Memmove(ref ((byte*)pDest)[-IntPtr.Size], ref ((byte*)pSrc)[-IntPtr.Size], byteCount + (nuint)IntPtr.Size);
                     return duplicateHandle;
                 }
                 finally
@@ -87,13 +88,13 @@ namespace System.Buffers
             }
         }
 
-        public override bool IsInvalid => _shroudedPointer.GetUnshroudedPointer().Value is not null;
+        public override bool IsInvalid => _shroudedPointer.GetUnshroudedPointer().Value == null;
 
         protected override bool ReleaseHandle()
         {
             void* pHeader = _shroudedPointer.GetUnshroudedPointer().Value;
             nuint byteCountExcludingHeader = Unsafe.ReadUnaligned<nuint>(pHeader);
-            SpanHelpers.ClearWithoutReferences(ref *(byte*)pHeader, byteCountExcludingHeader + (nuint)sizeof(nuint));
+            SpanHelpers.ClearWithoutReferences(ref *(byte*)pHeader, byteCountExcludingHeader + (nuint)IntPtr.Size);
             return ReleaseHandleImpl((IntPtr)pHeader);
         }
     }

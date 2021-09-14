@@ -229,12 +229,8 @@ namespace System.Buffers.Tests
             clone.Dispose();
             ints = null;
 
-            // RevealToString
-
-            char[] chars = GC.AllocateUninitializedArray<char>(1_500_000_000);
-            chars.AsSpan().Fill('a');
-            string secretRevealedAsString = new Secret<char>(chars).RevealToString();
-            Assert.True(chars.AsSpan().SequenceEqual(secretRevealedAsString));
+            // We don't test RevealToString here because strings are limited to approx. 1bn elements.
+            // See AllocateString in gchelpers.cpp.
         }
     }
 }
