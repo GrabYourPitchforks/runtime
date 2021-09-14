@@ -112,6 +112,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\MemoryHandle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\MemoryManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\OperationStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Secret.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\StandardFormat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Text\FormattingHelpers.CountDigits.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Text\Utf8Constants.cs" />
@@ -892,6 +893,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Runtime\InteropServices\SafeBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Runtime\InteropServices\SafeHandle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Runtime\InteropServices\SEHException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Runtime\InteropServices\ShroudedPointer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Runtime\InteropServices\StringMarshalling.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Runtime\InteropServices\StructLayoutAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Runtime\InteropServices\SuppressGCTransitionAttribute.cs" />
@@ -1869,6 +1871,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft\Win32\SafeHandles\SafeRegistryHandle.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\AppDomain.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Buffer.Windows.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Buffers\Secret.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\DateTime.Win32.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\DateTime.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Environment.Win32.cs" />
