@@ -11,6 +11,8 @@ namespace System.Security
 {
     public unsafe sealed partial class SecureString : IDisposable
     {
+        private delegate void SwapSecretAction<TState>(ReadOnlySpan<char> oldSecret, Span<char> newSecret, TState state);
+
         private const int MaxLength = 65536;
         private const int MaxStackAlloc = 128; // measured in chars; we realistically expect very small values
 
@@ -75,22 +77,11 @@ namespace System.Security
                 EnsureNotDisposed();
                 EnsureNotReadOnly();
 
-                int newCapacity = checked(_secret.GetLength() + 1);
-                Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
-                fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
+                SwapSecretUnderLock(newCapacity: _secret.GetLength() + 1, c, static (oldSecret, newSecret, c) =>
                 {
-                    try
-                    {
-                        int index = _secret.RevealInto(scratchBuffer);
-                        scratchBuffer[index] = c; // append
-                        scratchBuffer = scratchBuffer.Slice(0, index + 1); // because buffer may be oversized
-                        SwapSecretUnderLock(scratchBuffer);
-                    }
-                    finally
-                    {
-                        scratchBuffer.Clear();
-                    }
-                }
+                    oldSecret.CopyTo(newSecret);
+                    newSecret[newSecret.Length - 1] = c;
+                });
             }
         }
 
@@ -137,39 +128,31 @@ namespace System.Security
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_IndexString);
                 }
 
-                _secret.RevealAndUse((@this: this, index, c), static (span, state) =>
+                SwapSecretUnderLock(newCapacity: _secret.GetLength() + 1, (index, c), static (oldSecret, newSecret, state) =>
                 {
-                    int newCapacity = checked(state.@this._secret!.GetLength() + 1);
-                    Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
-                    fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
-                    {
-                        try
-                        {
-                            span.Slice(0, state.index).CopyTo(scratchBuffer);
-                            scratchBuffer[state.index] = state.c;
-                            span.Slice(state.index).CopyTo(scratchBuffer.Slice(state.index + 1));
-                            scratchBuffer = scratchBuffer.Slice(span.Length + 1); // because buffer may be oversized
-                            state.@this.SwapSecretUnderLock(scratchBuffer);
-                        }
-                        finally
-                        {
-                            scratchBuffer.Clear();
-                        }
-                    }
+                    oldSecret.Slice(0, state.index).CopyTo(newSecret);
+                    newSecret[state.index] = state.c;
+                    oldSecret.Slice(state.index).CopyTo(newSecret.Slice(state.index + 1));
                 });
             }
         }
 
         public bool IsReadOnly()
         {
-            EnsureNotDisposed();
-            return Volatile.Read(ref _readOnly);
+            lock (_methodLock)
+            {
+                EnsureNotDisposed();
+                return _readOnly;
+            }
         }
 
         public void MakeReadOnly()
         {
-            EnsureNotDisposed();
-            Volatile.Write(ref _readOnly, true);
+            lock (_methodLock)
+            {
+                EnsureNotDisposed();
+                _readOnly = true;
+            }
         }
 
         public void RemoveAt(int index)
@@ -184,24 +167,10 @@ namespace System.Security
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_IndexString);
                 }
 
-                _secret.RevealAndUse((@this: this, index), static (span, state) =>
+                SwapSecretUnderLock(newCapacity: _secret.GetLength() - 1, index, static (oldSecret, newSecret, index) =>
                 {
-                    int newCapacity = checked(state.@this._secret!.GetLength() - 1);
-                    Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
-                    fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
-                    {
-                        try
-                        {
-                            span.Slice(0, state.index).CopyTo(scratchBuffer);
-                            span.Slice(state.index + 1).CopyTo(scratchBuffer.Slice(state.index));
-                            scratchBuffer = scratchBuffer.Slice(span.Length - 1); // because buffer may be oversized
-                            state.@this.SwapSecretUnderLock(scratchBuffer);
-                        }
-                        finally
-                        {
-                            scratchBuffer.Clear();
-                        }
-                    }
+                    oldSecret.Slice(0, index).CopyTo(newSecret);
+                    oldSecret.Slice(index + 1).CopyTo(newSecret.Slice(index));
                 });
             }
         }
@@ -218,22 +187,11 @@ namespace System.Security
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_IndexString);
                 }
 
-                int newCapacity = _secret.GetLength();
-                Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
-                fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
+                SwapSecretUnderLock(newCapacity: _secret.GetLength(), (index, c), static (oldSecret, newSecret, state) =>
                 {
-                    try
-                    {
-                        _secret.RevealInto(scratchBuffer);
-                        scratchBuffer[index] = c;
-                        scratchBuffer = scratchBuffer.Slice(newCapacity); // because buffer may be oversized
-                        SwapSecretUnderLock(scratchBuffer);
-                    }
-                    finally
-                    {
-                        scratchBuffer.Clear();
-                    }
-                }
+                    oldSecret.CopyTo(newSecret);
+                    newSecret[state.index] = state.c;
+                });
             }
         }
 
@@ -269,6 +227,40 @@ namespace System.Security
             Secret<char> oldSecret = _secret!;
             _secret = new Secret<char>(newSecret);
             oldSecret.Dispose();
+        }
+
+        private void SwapSecretUnderLock<TState>(int newCapacity, TState state, SwapSecretAction<TState> action)
+        {
+            Debug.Assert(Monitor.IsEntered(_methodLock), "Caller didn't take the lock before invoking this method.");
+            Debug.Assert(action is not null);
+
+            if (newCapacity > MaxLength)
+            {
+                throw new ArgumentOutOfRangeException("capacity" /* name for compat with old implementation */, SR.ArgumentOutOfRange_Capacity);
+            }
+
+            _secret!.RevealAndUse((@this: this, newCapacity, state, action), static (originalSecret, state) =>
+            {
+                Span<char> scratchBuffer = ((uint)state.newCapacity < MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : new char[state.newCapacity];
+                scratchBuffer = scratchBuffer.Slice(0, state.newCapacity); // just in case we overallocated
+                fixed (char* _ = scratchBuffer) // just in case we allocated an array; avoid GC moving it
+                {
+                    try
+                    {
+                        state.action(originalSecret, scratchBuffer, state.state);
+                        Secret<char> newSecret = new Secret<char>(scratchBuffer);
+
+                        // it's ok for us to dispose of the secret while we're inside the callback; SafeHandle will manage this correctly
+                        Secret<char> oldSecret = state.@this._secret!;
+                        state.@this._secret = newSecret;
+                        oldSecret.Dispose();
+                    }
+                    finally
+                    {
+                        scratchBuffer.Clear(); // defense-in-depth: don't allow scratch buffer to stick around in memory
+                    }
+                }
+            });
         }
 
         internal IntPtr MarshalToBSTR()
