@@ -1,24 +1,26 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Buffers;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace System.Security
 {
-    public sealed partial class SecureString : IDisposable
+    public unsafe sealed partial class SecureString : IDisposable
     {
         private const int MaxLength = 65536;
+        private const int MaxStackAlloc = 128; // measured in chars; we realistically expect very small values
+
         private readonly object _methodLock = new object();
-        private UnmanagedBuffer? _buffer;
-        private int _decryptedLength;
-        private bool _encrypted;
         private bool _readOnly;
+        private Secret<char>? _secret;
 
         public SecureString()
         {
-            Initialize(ReadOnlySpan<char>.Empty);
+            _secret = new Secret<char>(ReadOnlySpan<char>.Empty);
         }
 
         [CLSCompliant(false)]
@@ -35,67 +37,35 @@ namespace System.Security
                 throw new ArgumentOutOfRangeException(nameof(length), SR.ArgumentOutOfRange_Length);
             }
 
-            Initialize(new ReadOnlySpan<char>(value, length));
-        }
-
-        private void Initialize(ReadOnlySpan<char> value)
-        {
-            _buffer = UnmanagedBuffer.Allocate(GetAlignedByteSize(value.Length));
-            _decryptedLength = value.Length;
-
-            SafeBuffer? bufferToRelease = null;
-            try
-            {
-                Span<char> span = AcquireSpan(ref bufferToRelease);
-                value.CopyTo(span);
-            }
-            finally
-            {
-                ProtectMemory();
-                bufferToRelease?.DangerousRelease();
-            }
+            _secret = new Secret<char>(new ReadOnlySpan<char>(value, length));
         }
 
         private SecureString(SecureString str)
         {
-            Debug.Assert(str._buffer != null, "Expected other SecureString's buffer to be non-null");
-            Debug.Assert(str._encrypted, "Expected to be used only on encrypted SecureStrings");
-
-            _buffer = UnmanagedBuffer.Allocate((int)str._buffer.ByteLength);
-            Debug.Assert(_buffer != null);
-            UnmanagedBuffer.Copy(str._buffer, _buffer, str._buffer.ByteLength);
-
-            _decryptedLength = str._decryptedLength;
-            _encrypted = str._encrypted;
+            Debug.Assert(str._secret is not null, "Expected other SecureString's buffer to be non-null");
+            _secret = str._secret.Clone();
         }
 
         public int Length
         {
             get
             {
-                EnsureNotDisposed();
-                return Volatile.Read(ref _decryptedLength);
+                lock (_methodLock)
+                {
+                    EnsureNotDisposed();
+                    return _secret.GetLength();
+                }
             }
         }
 
-        private void EnsureCapacity(int capacity)
+        private static char[] AllocateArray(int capacity)
         {
             if (capacity > MaxLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(capacity), SR.ArgumentOutOfRange_Capacity);
             }
 
-            Debug.Assert(_buffer != null);
-            if ((uint)capacity * sizeof(char) <= _buffer.ByteLength)
-            {
-                return;
-            }
-
-            UnmanagedBuffer oldBuffer = _buffer;
-            UnmanagedBuffer newBuffer = UnmanagedBuffer.Allocate(GetAlignedByteSize(capacity));
-            UnmanagedBuffer.Copy(oldBuffer, newBuffer, (uint)_decryptedLength * sizeof(char));
-            _buffer = newBuffer;
-            oldBuffer.Dispose();
+            return new char[capacity]; // we expect these to be small, so keep them in Gen0 instead of using the pinned heap
         }
 
         public void AppendChar(char c)
@@ -105,24 +75,21 @@ namespace System.Security
                 EnsureNotDisposed();
                 EnsureNotReadOnly();
 
-                Debug.Assert(_buffer != null);
-
-                SafeBuffer? bufferToRelease = null;
-
-                try
+                int newCapacity = checked(_secret.GetLength() + 1);
+                Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
+                fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
                 {
-                    UnprotectMemory();
-
-                    EnsureCapacity(_decryptedLength + 1);
-
-                    Span<char> span = AcquireSpan(ref bufferToRelease);
-                    span[_decryptedLength] = c;
-                    _decryptedLength++;
-                }
-                finally
-                {
-                    ProtectMemory();
-                    bufferToRelease?.DangerousRelease();
+                    try
+                    {
+                        int index = _secret.RevealInto(scratchBuffer);
+                        scratchBuffer[index] = c; // append
+                        scratchBuffer = scratchBuffer.Slice(0, index + 1); // because buffer may be oversized
+                        SwapSecretUnderLock(scratchBuffer);
+                    }
+                    finally
+                    {
+                        scratchBuffer.Clear();
+                    }
                 }
             }
         }
@@ -135,20 +102,7 @@ namespace System.Security
                 EnsureNotDisposed();
                 EnsureNotReadOnly();
 
-                Debug.Assert(_buffer != null);
-
-                _decryptedLength = 0;
-
-                SafeBuffer? bufferToRelease = null;
-                try
-                {
-                    Span<char> span = AcquireSpan(ref bufferToRelease);
-                    span.Clear();
-                }
-                finally
-                {
-                    bufferToRelease?.DangerousRelease();
-                }
+                _secret = new Secret<char>(ReadOnlySpan<char>.Empty);
             }
         }
 
@@ -166,11 +120,8 @@ namespace System.Security
         {
             lock (_methodLock)
             {
-                if (_buffer != null)
-                {
-                    _buffer.Dispose();
-                    _buffer = null;
-                }
+                _secret?.Dispose();
+                _secret = null;
             }
         }
 
@@ -178,34 +129,34 @@ namespace System.Security
         {
             lock (_methodLock)
             {
-                if (index < 0 || index > _decryptedLength)
+                EnsureNotDisposed();
+                EnsureNotReadOnly();
+
+                if ((uint)index >= (uint)Length)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_IndexString);
                 }
 
-                EnsureNotDisposed();
-                EnsureNotReadOnly();
-
-                Debug.Assert(_buffer != null);
-
-                SafeBuffer? bufferToRelease = null;
-
-                try
+                _secret.RevealAndUse((@this: this, index, c), static (span, state) =>
                 {
-                    UnprotectMemory();
-
-                    EnsureCapacity(_decryptedLength + 1);
-
-                    Span<char> span = AcquireSpan(ref bufferToRelease);
-                    span.Slice(index, _decryptedLength - index).CopyTo(span.Slice(index + 1));
-                    span[index] = c;
-                    _decryptedLength++;
-                }
-                finally
-                {
-                    ProtectMemory();
-                    bufferToRelease?.DangerousRelease();
-                }
+                    int newCapacity = checked(state.@this._secret!.GetLength() + 1);
+                    Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
+                    fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
+                    {
+                        try
+                        {
+                            span.Slice(0, state.index).CopyTo(scratchBuffer);
+                            scratchBuffer[state.index] = state.c;
+                            span.Slice(state.index).CopyTo(scratchBuffer.Slice(state.index + 1));
+                            scratchBuffer = scratchBuffer.Slice(span.Length + 1); // because buffer may be oversized
+                            state.@this.SwapSecretUnderLock(scratchBuffer);
+                        }
+                        finally
+                        {
+                            scratchBuffer.Clear();
+                        }
+                    }
+                });
             }
         }
 
@@ -225,31 +176,33 @@ namespace System.Security
         {
             lock (_methodLock)
             {
-                if (index < 0 || index >= _decryptedLength)
+                EnsureNotDisposed();
+                EnsureNotReadOnly();
+
+                if ((uint)index >= (uint)Length)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_IndexString);
                 }
 
-                EnsureNotDisposed();
-                EnsureNotReadOnly();
-
-                Debug.Assert(_buffer != null);
-
-                SafeBuffer? bufferToRelease = null;
-
-                try
+                _secret.RevealAndUse((@this: this, index), static (span, state) =>
                 {
-                    UnprotectMemory();
-
-                    Span<char> span = AcquireSpan(ref bufferToRelease);
-                    span.Slice(index + 1, _decryptedLength - (index + 1)).CopyTo(span.Slice(index));
-                    _decryptedLength--;
-                }
-                finally
-                {
-                    ProtectMemory();
-                    bufferToRelease?.DangerousRelease();
-                }
+                    int newCapacity = checked(state.@this._secret!.GetLength() - 1);
+                    Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
+                    fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
+                    {
+                        try
+                        {
+                            span.Slice(0, state.index).CopyTo(scratchBuffer);
+                            span.Slice(state.index + 1).CopyTo(scratchBuffer.Slice(state.index));
+                            scratchBuffer = scratchBuffer.Slice(span.Length - 1); // because buffer may be oversized
+                            state.@this.SwapSecretUnderLock(scratchBuffer);
+                        }
+                        finally
+                        {
+                            scratchBuffer.Clear();
+                        }
+                    }
+                });
             }
         }
 
@@ -257,93 +210,83 @@ namespace System.Security
         {
             lock (_methodLock)
             {
-                if (index < 0 || index >= _decryptedLength)
+                EnsureNotDisposed();
+                EnsureNotReadOnly();
+
+                if ((uint)index >= (uint)Length)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_IndexString);
                 }
 
-                EnsureNotDisposed();
-                EnsureNotReadOnly();
-
-                Debug.Assert(_buffer != null);
-
-                SafeBuffer? bufferToRelease = null;
-
-                try
+                int newCapacity = _secret.GetLength();
+                Span<char> scratchBuffer = ((uint)newCapacity <= MaxStackAlloc) ? stackalloc char[MaxStackAlloc] : AllocateArray(newCapacity); // sensitive data; don't use ArrayPool
+                fixed (char* pUnused = &MemoryMarshal.GetReference(scratchBuffer)) // prevent array from being moved in memory
                 {
-                    UnprotectMemory();
-
-                    Span<char> span = AcquireSpan(ref bufferToRelease);
-                    span[index] = c;
-                }
-                finally
-                {
-                    ProtectMemory();
-                    bufferToRelease?.DangerousRelease();
+                    try
+                    {
+                        _secret.RevealInto(scratchBuffer);
+                        scratchBuffer[index] = c;
+                        scratchBuffer = scratchBuffer.Slice(newCapacity); // because buffer may be oversized
+                        SwapSecretUnderLock(scratchBuffer);
+                    }
+                    finally
+                    {
+                        scratchBuffer.Clear();
+                    }
                 }
             }
         }
 
-        private unsafe Span<char> AcquireSpan(ref SafeBuffer? bufferToRelease)
+        // This method should be called under lock.
+        [MemberNotNull(nameof(_secret))]
+        private void EnsureNotDisposed()
         {
-            SafeBuffer buffer = _buffer!;
-
-            bool ignore = false;
-            buffer.DangerousAddRef(ref ignore);
-
-            bufferToRelease = buffer;
-
-            return new Span<char>((byte*)buffer.DangerousGetHandle(), (int)(buffer.ByteLength / 2));
+            Debug.Assert(Monitor.IsEntered(_methodLock), "Caller didn't take the lock before invoking this method.");
+            if (_secret is null)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
         }
 
+
+        // This method should be called under lock.
         private void EnsureNotReadOnly()
         {
+            Debug.Assert(Monitor.IsEntered(_methodLock), "Caller didn't take the lock before invoking this method.");
+
             if (_readOnly)
             {
                 throw new InvalidOperationException(SR.InvalidOperation_ReadOnly);
             }
         }
 
-        private void EnsureNotDisposed()
+        // Replaces the secret with a new object.
+        // This method should be called under lock.
+        private void SwapSecretUnderLock(ReadOnlySpan<char> newSecret)
         {
-            ObjectDisposedException.ThrowIf(_buffer == null, this);
+            Debug.Assert(Monitor.IsEntered(_methodLock), "Caller didn't take the lock before invoking this method.");
+
+            Secret<char> oldSecret = _secret!;
+            _secret = new Secret<char>(newSecret);
+            oldSecret.Dispose();
         }
 
-        internal unsafe IntPtr MarshalToBSTR()
+        internal IntPtr MarshalToBSTR()
         {
             lock (_methodLock)
             {
                 EnsureNotDisposed();
 
-                UnprotectMemory();
-
-                SafeBuffer? bufferToRelease = null;
                 IntPtr ptr = IntPtr.Zero;
-                int length = 0;
-                try
+                _secret.RevealAndUse((IntPtr)(&ptr), static (span, addrOfPtr) =>
                 {
-                    Span<char> span = AcquireSpan(ref bufferToRelease);
+                    IntPtr ptr = Marshal.AllocBSTR(span.Length); // will throw if allocation fails
+                    span.CopyTo(new Span<char>((void*)ptr, span.Length)); // will not fail
+                    *(IntPtr*)addrOfPtr = ptr;
+                });
 
-                    length = _decryptedLength;
-                    ptr = Marshal.AllocBSTR(length);
-                    span.Slice(0, length).CopyTo(new Span<char>((void*)ptr, length));
-
-                    IntPtr result = ptr;
-                    ptr = IntPtr.Zero;
-                    return result;
-                }
-                finally
-                {
-                    // If we failed for any reason, free the new buffer
-                    if (ptr != IntPtr.Zero)
-                    {
-                        new Span<char>((void*)ptr, length).Clear();
-                        Marshal.FreeBSTR(ptr);
-                    }
-
-                    ProtectMemory();
-                    bufferToRelease?.DangerousRelease();
-                }
+                Debug.Assert(ptr != IntPtr.Zero); // allocation should have succeeded
+                return ptr;
             }
         }
 
@@ -353,123 +296,53 @@ namespace System.Security
             {
                 EnsureNotDisposed();
 
-                UnprotectMemory();
+                delegate* managed<int, IntPtr> pfnAllocator = (globalAlloc) ? &Marshal.AllocHGlobal : &Marshal.AllocCoTaskMem;
+                delegate* managed<IntPtr, void> pfnDeallocator = (globalAlloc) ? &Marshal.FreeHGlobal : &Marshal.FreeCoTaskMem;
+                return (unicode) ? MarshalToUnicodeString(pfnAllocator) : MarshalToAnsiString(pfnAllocator, pfnDeallocator);
+            }
 
-                SafeBuffer? bufferToRelease = null;
+            IntPtr MarshalToAnsiString(delegate* managed<int, IntPtr> pfnAllocator, delegate* managed<IntPtr, void> pfnDeallocator)
+            {
                 IntPtr ptr = IntPtr.Zero;
-                int byteLength = 0;
-                try
+                _secret!.RevealAndUse((addrOfPtr: (IntPtr)(&ptr), pfnAllocator: (IntPtr)pfnAllocator, pfnDeallocator: (IntPtr)pfnDeallocator), static (span, state) =>
                 {
-                    Span<char> span = AcquireSpan(ref bufferToRelease).Slice(0, _decryptedLength);
+                    int byteCount = Marshal.GetAnsiStringByteCount(span); // throws on failure
+                    IntPtr ptr = ((delegate* managed<int, IntPtr>)state.pfnAllocator)(byteCount); // throws on OOM
+                    bool success = false;
 
-                    if (unicode)
+                    try
                     {
-                        byteLength = (span.Length + 1) * sizeof(char);
+                        Marshal.GetAnsiStringBytes(span, new Span<byte>((void*)ptr, byteCount)); // could fail
+                        success = true;
                     }
-                    else
+                    finally
                     {
-                        byteLength = Marshal.GetAnsiStringByteCount(span);
-                    }
-
-                    if (globalAlloc)
-                    {
-                        ptr = Marshal.AllocHGlobal(byteLength);
-                    }
-                    else
-                    {
-                        ptr = Marshal.AllocCoTaskMem(byteLength);
-                    }
-
-                    if (unicode)
-                    {
-                        Span<char> resultSpan = new Span<char>((void*)ptr, byteLength / sizeof(char));
-                        span.CopyTo(resultSpan);
-                        resultSpan[resultSpan.Length - 1] = '\0';
-                    }
-                    else
-                    {
-                        Marshal.GetAnsiStringBytes(span, new Span<byte>((void*)ptr, byteLength));
-                    }
-
-                    IntPtr result = ptr;
-                    ptr = IntPtr.Zero;
-                    return result;
-                }
-                finally
-                {
-                    // If we failed for any reason, free the new buffer
-                    if (ptr != IntPtr.Zero)
-                    {
-                        new Span<byte>((void*)ptr, byteLength).Clear();
-
-                        if (globalAlloc)
+                        if (!success)
                         {
-                            Marshal.FreeHGlobal(ptr);
-                        }
-                        else
-                        {
-                            Marshal.FreeCoTaskMem(ptr);
+                            Debug.Assert(ptr != IntPtr.Zero); // we know the allocator succeeded
+                            ((delegate* managed<IntPtr, void>)state.pfnDeallocator)(ptr);
                         }
                     }
 
-                    ProtectMemory();
-                    bufferToRelease?.DangerousRelease();
-                }
-            }
-        }
-
-        /// <summary>SafeBuffer for managing memory meant to be kept confidential.</summary>
-        private sealed class UnmanagedBuffer : SafeBuffer
-        {
-            // A local copy of byte length to be able to access it in ReleaseHandle without the risk of throwing exceptions
-            private int _byteLength;
-
-#pragma warning disable CA1419 // not intended for use with P/Invoke
-            private UnmanagedBuffer() : base(true) { }
-#pragma warning restore CA1419
-
-            public static UnmanagedBuffer Allocate(int byteLength)
-            {
-                Debug.Assert(byteLength >= 0);
-                UnmanagedBuffer buffer = new UnmanagedBuffer();
-                buffer.SetHandle(Marshal.AllocHGlobal(byteLength));
-                buffer.Initialize((ulong)byteLength);
-                buffer._byteLength = byteLength;
-                return buffer;
+                    *(IntPtr*)state.addrOfPtr = ptr;
+                });
+                Debug.Assert(ptr != IntPtr.Zero);
+                return ptr;
             }
 
-            internal static unsafe void Copy(UnmanagedBuffer source, UnmanagedBuffer destination, ulong bytesLength)
+            IntPtr MarshalToUnicodeString(delegate* managed<int, IntPtr> pfnAllocator)
             {
-                if (bytesLength == 0)
+                IntPtr ptr = IntPtr.Zero;
+                _secret!.RevealAndUse((addrOfPtr: (IntPtr)(&ptr), pfnAllocator: (IntPtr)pfnAllocator), static (span, state) =>
                 {
-                    return;
-                }
-
-                byte* srcPtr = null, dstPtr = null;
-                try
-                {
-                    source.AcquirePointer(ref srcPtr);
-                    destination.AcquirePointer(ref dstPtr);
-                    Buffer.MemoryCopy(srcPtr, dstPtr, destination.ByteLength, bytesLength);
-                }
-                finally
-                {
-                    if (dstPtr != null)
-                    {
-                        destination.ReleasePointer();
-                    }
-                    if (srcPtr != null)
-                    {
-                        source.ReleasePointer();
-                    }
-                }
-            }
-
-            protected override unsafe bool ReleaseHandle()
-            {
-                new Span<byte>((void*)handle, _byteLength).Clear();
-                Marshal.FreeHGlobal(handle);
-                return true;
+                    IntPtr ptr = ((delegate* managed<int, IntPtr>)state.pfnAllocator)(checked((span.Length + 1) * sizeof(char))); // will throw on OOM
+                    Span<char> dest = new Span<char>((void*)ptr, span.Length + 1); // remainder of this method will not fail
+                    span.CopyTo(dest);
+                    dest[dest.Length - 1] = '\0';
+                    *(IntPtr*)state.addrOfPtr = ptr;
+                });
+                Debug.Assert(ptr != IntPtr.Zero);
+                return ptr;
             }
         }
     }

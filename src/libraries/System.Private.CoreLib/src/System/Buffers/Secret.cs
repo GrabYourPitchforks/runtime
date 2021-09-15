@@ -16,36 +16,35 @@ namespace System.Buffers
         internal readonly SecretSafeHandle _secretHandle;
 
         public Secret(ReadOnlySpan<T> buffer)
+            : this(elementCount: (nuint)buffer.Length)
         {
-            // The 'checked' expression below should never fail (since otherwise we'd have an illegal span),
-            // but may as well leave it in since it's not hurting anything.
-
-            nuint expectedByteLength = checked((nuint)sizeof(T) * (uint)buffer.Length);
-            SecretSafeHandle secretHandle = SecretSafeHandle.Allocate(expectedByteLength);
-
             bool success = false;
             try
             {
-                secretHandle.DangerousAddRef(ref success);
-                secretHandle.DangerousGetRawData(out nuint actualByteLength, out void* pData);
-                Debug.Assert(expectedByteLength == actualByteLength);
+                _secretHandle.DangerousAddRef(ref success);
+                _secretHandle.DangerousGetRawData(out nuint totalByteLength, out void* pData);
 
                 // n.b. pData could reference an address misaligned for 'T', so we should fall back
                 // to a normal binary memmove rather than use ReadOnlySpan<T>.CopyTo.
                 Buffer.Memmove(
                     dest: ref *(byte*)pData,
                     src: ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(buffer)),
-                    len: expectedByteLength);
+                    len: totalByteLength);
             }
             finally
             {
                 if (success)
                 {
-                    secretHandle.DangerousRelease();
+                    _secretHandle.DangerousRelease();
                 }
             }
+        }
 
-            _secretHandle = secretHandle;
+        // Allocates memory for the secret data but does not populate it.
+        private Secret(nuint elementCount)
+        {
+            _secretHandle = SecretSafeHandle.Allocate(checked(elementCount * (nuint)sizeof(T)));
+            Debug.Assert((nuint)GetLength() == elementCount, "Bad length after allocation.");
         }
 
         // ctor which takes ownership of the handle
