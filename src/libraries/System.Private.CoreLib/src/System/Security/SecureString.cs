@@ -132,7 +132,7 @@ namespace System.Security
                 EnsureNotDisposed();
                 EnsureNotReadOnly();
 
-                if ((uint)index >= (uint)Length)
+                if ((uint)index > (uint)Length)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), SR.ArgumentOutOfRange_IndexString);
                 }
