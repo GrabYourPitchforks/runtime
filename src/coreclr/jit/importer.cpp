@@ -4329,6 +4329,21 @@ GenTree* Compiler::impIntrinsic(GenTree*                newobjThis,
                 }
                 if ((retType != TYP_INT) && (retType != TYP_LONG))
                 {
+                    // Exchange<T>(ref T, T) where T : class
+                    // We only special-case Exchange(..., nullptr),
+                    // which allows us to avoid the expensive call back into
+                    // the runtime and the card table update.
+                    assert(sig->sigInst.classInstCount == 1);
+                    if (!impStackTop().seTypeInfo.IsNullObjRef())
+                    {
+                        break;
+                    }
+
+                    GenTree* opN = impPopStack().val; // just confirmed to be nullptr
+                    GenTree* opX = impPopStack().val; // ref T (or ref object)
+                    opX = gtNewOperNode(GT_XCHG, genActualType(callType), opX, opN);
+                    opX->gtFlags |= GTF_GLOB_REF | GTF_ASG;
+                    retNode = opX;
                     break;
                 }
 

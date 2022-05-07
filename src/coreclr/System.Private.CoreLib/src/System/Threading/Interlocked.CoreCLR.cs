@@ -94,6 +94,7 @@ namespace System.Threading
         /// <returns>The original value of <paramref name="location1"/>.</returns>
         /// <exception cref="NullReferenceException">The address of location1 is a null pointer.</exception>
         /// <typeparam name="T">The type to be used for <paramref name="location1"/> and <paramref name="value"/>. This type must be a reference type.</typeparam>
+        [Intrinsic]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [return: NotNullIfNotNull("location1")]
         public static T Exchange<T>([NotNullIfNotNull("value")] ref T location1, T value) where T : class? =>

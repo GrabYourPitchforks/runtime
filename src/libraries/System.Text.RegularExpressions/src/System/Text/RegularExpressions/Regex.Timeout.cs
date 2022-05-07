@@ -22,7 +22,7 @@ namespace System.Text.RegularExpressions
         private const string DefaultMatchTimeout_ConfigKeyName = "REGEX_DEFAULT_MATCH_TIMEOUT";
 
         /// <summary>Number of ticks represented by <see cref="InfiniteMatchTimeout"/>.</summary>
-        private const long InfiniteMatchTimeoutTicks = -10_000; // InfiniteMatchTimeout.Ticks
+        internal const long InfiniteMatchTimeoutTicks = -10_000; // InfiniteMatchTimeout.Ticks
 
         // Historical note:
         // Regex.InifiniteMatchTimeout was created instead of Timeout.InfiniteTimeSpan because of:

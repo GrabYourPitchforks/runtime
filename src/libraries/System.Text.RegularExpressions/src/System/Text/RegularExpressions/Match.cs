@@ -66,14 +66,18 @@ namespace System.Text.RegularExpressions
         /// <summary>Returns an empty Match object.</summary>
         public static Match Empty { get; } = new Match(null, 1, string.Empty, 0, 0, 0);
 
-        internal void Reset(Regex regex, string? text, int textbeg, int textend, int textstart)
+        // Accepts the Runner directly rather than a bunch of different args to
+        // avoid stack-spilling args that would otherwise be copies of instance
+        // members on the runner object.
+        internal void Reset(RegexRunner runner)
         {
-            _regex = regex;
-            Text = text;
-            _textbeg = textbeg;
-            _textend = textend;
-            _textstart = textstart;
+            _regex = runner.runregex!;
+            Text = runner.runtext;
+            _textbeg = runner.runtextbeg;
+            _textend = runner.runtextend;
+            _textstart = runner.runtextstart;
 
+            // We expect this array to be small; use a naive loop.
             int[] matchcount = _matchcount;
             for (int i = 0; i < matchcount.Length; i++)
             {

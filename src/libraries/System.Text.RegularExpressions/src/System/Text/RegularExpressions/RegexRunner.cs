@@ -245,7 +245,7 @@ namespace System.Text.RegularExpressions
             }
             else
             {
-                runmatch.Reset(runregex!, runtext, runtextbeg, runtextend, runtextstart);
+                runmatch.Reset(this);
             }
 
             // Note we test runcrawl, because it is the last one to be allocated
@@ -289,9 +289,10 @@ namespace System.Text.RegularExpressions
 
         internal void InitializeTimeout(TimeSpan timeout)
         {
-            // Handle timeout argument
+            // Handle timeout argument; use const "infinite timeout"
+            // tick count to avoid static field lookup.
             _checkTimeout = false;
-            if (Regex.InfiniteMatchTimeout != timeout)
+            if (Regex.InfiniteMatchTimeoutTicks != timeout.Ticks)
             {
                 ConfigureTimeout(timeout);
 
@@ -427,11 +428,8 @@ namespace System.Text.RegularExpressions
         /// </summary>
         protected void DoubleCrawl()
         {
-            int[] newcrawl = new int[runcrawl!.Length * 2];
-
-            Array.Copy(runcrawl, 0, newcrawl, runcrawl.Length, runcrawl.Length);
-            runcrawlpos += runcrawl.Length;
-            runcrawl = newcrawl;
+            runcrawlpos += runcrawl!.Length;
+            Array.Resize(ref runcrawl, runcrawl.Length * 2);
         }
 
         /// <summary>
