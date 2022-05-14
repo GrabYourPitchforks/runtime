@@ -1535,7 +1535,7 @@ namespace System
         public static int FromHex(char digit)
         {
             int result = HexConverter.FromChar(digit);
-            if (result == 0xFF)
+            if (result < 0)
             {
                 throw new ArgumentException(null, nameof(digit));
             }

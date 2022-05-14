@@ -267,40 +267,45 @@ namespace System
             int i = 0;
             int j = 0;
             int byteLo = 0;
-            int byteHi = 0;
+            int byteHiLo = 0;
             while (j < bytes.Length)
             {
+                byteHiLo = FromChar(chars[i]) << 4;
                 byteLo = FromChar(chars[i + 1]);
-                byteHi = FromChar(chars[i]);
+                byteHiLo |= byteLo;
 
-                // byteHi hasn't been shifted to the high half yet, so the only way the bitwise or produces this pattern
-                // is if either byteHi or byteLo was not a hex character.
-                if ((byteLo | byteHi) == 0xFF)
+                // If either nibble results in -1 (invalid), their bitwise OR will also be negative,
+                // even after shifting.
+
+                if (byteHiLo < 0)
                     break;
 
-                bytes[j++] = (byte)((byteHi << 4) | byteLo);
+                bytes[j++] = (byte)byteHiLo;
                 i += 2;
             }
 
-            if (byteLo == 0xFF)
+            if (byteLo < 0)
                 i++;
 
             charsProcessed = i;
-            return (byteLo | byteHi) != 0xFF;
+            return byteHiLo >= 0;
         }
 
+        // Returns -1 on failure.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FromChar(int c)
         {
-            return c >= CharToHexLookup.Length ? 0xFF : CharToHexLookup[c];
+            return c >= CharToHexLookup.Length ? -1 : CharToHexLookup[c];
         }
 
+        // Returns -1 on failure.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FromUpperChar(int c)
         {
-            return c > 71 ? 0xFF : CharToHexLookup[c];
+            return c > 71 ? -1 : CharToHexLookup[c];
         }
 
+        // Returns -1 on failure.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FromLowerChar(int c)
         {
@@ -310,7 +315,7 @@ namespace System
             if ((uint)(c - 'a') <= 'f' - 'a')
                 return c - 'a' + 10;
 
-            return 0xFF;
+            return -1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -341,7 +346,7 @@ namespace System
                 return (long)(shift & mask) < 0 ? true : false;
             }
 
-            return FromChar(c) != 0xFF;
+            return FromChar(c) >= 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

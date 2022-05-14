@@ -404,7 +404,7 @@ namespace System.Numerics
                 partialDigitCount = DigitsPerBlock - remainder;
             }
 
-            bool isNegative = HexConverter.FromChar(number.digits[0]) >= 8;
+            bool isNegative = (uint)HexConverter.FromChar(number.digits[0]) >= 8;
             uint partialValue = (isNegative && partialDigitCount > 0) ? 0xFFFFFFFFu : 0;
 
             uint[]? arrayFromPool = null;
@@ -429,7 +429,7 @@ namespace System.Numerics
                         }
 
                         int hexValue = HexConverter.FromChar(digitChar);
-                        Debug.Assert(hexValue != 0xFF);
+                        Debug.Assert(hexValue >= 0);
 
                         partialValue = (partialValue << 4) | (uint)hexValue;
                         partialDigitCount++;

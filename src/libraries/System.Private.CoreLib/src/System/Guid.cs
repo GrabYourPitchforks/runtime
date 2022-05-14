@@ -759,7 +759,7 @@ namespace System
             {
                 char c = guidString[i];
                 int numValue = HexConverter.FromChar(c);
-                if (numValue == 0xFF)
+                if (numValue < 0)
                 {
                     if (processedDigits > 8) overflow = true;
                     result = 0;

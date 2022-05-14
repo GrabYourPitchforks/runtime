@@ -1912,14 +1912,13 @@ namespace System.Diagnostics
         }
         internal static byte HexByteFromChars(char char1, char char2)
         {
-            int hi = HexConverter.FromLowerChar(char1);
-            int lo = HexConverter.FromLowerChar(char2);
-            if ((hi | lo) == 0xFF)
+            int combined = (HexConverter.FromLowerChar(char1) << 4) | HexConverter.FromLowerChar(char2);
+            if (combined < 0)
             {
                 throw new ArgumentOutOfRangeException("idData");
             }
 
-            return (byte)((hi << 4) | lo);
+            return (byte)combined;
         }
 
         internal static bool IsLowerCaseHexAndNotAllZeros(ReadOnlySpan<char> idData)

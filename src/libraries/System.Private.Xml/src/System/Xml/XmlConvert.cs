@@ -304,7 +304,8 @@ namespace System.Xml
 
         private static int FromHex(char digit)
         {
-            return HexConverter.FromChar(digit);
+            int retVal = HexConverter.FromChar(digit);
+            return (retVal >= 0) ? retVal : 0xFF;
         }
 
         internal static byte[] FromBinHexString(string s)

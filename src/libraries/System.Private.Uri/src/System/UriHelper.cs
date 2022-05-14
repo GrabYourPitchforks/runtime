@@ -486,16 +486,14 @@ namespace System
         /// </summary>
         internal static char DecodeHexChars(int first, int second)
         {
-            int a = HexConverter.FromChar(first);
-            int b = HexConverter.FromChar(second);
-
-            if ((a | b) == 0xFF)
+            int combined = (HexConverter.FromChar(first) << 4) | HexConverter.FromChar(second);
+            if (combined < 0)
             {
                 // either a or b is 0xFF (invalid)
                 return Uri.c_DummyChar;
             }
 
-            return (char)((a << 4) | b);
+            return (char)combined;
         }
 
         internal const string RFC3986ReservedMarks = @";/?:@&=+$,#[]!'()*";

@@ -1199,11 +1199,11 @@ namespace System
                         goto DoneAtEnd;
                     num = value[index];
 
-                    uint numValue = (uint)HexConverter.FromChar(num);
-                    if (numValue == 0xFF)
+                    int numValue = HexConverter.FromChar(num);
+                    if (numValue < 0)
                         goto HasTrailingChars;
                     index++;
-                    answer = 16 * answer + numValue;
+                    answer = 16 * answer + (uint)numValue;
                 }
 
                 // If there's another digit, it's an overflow.
@@ -1535,11 +1535,11 @@ namespace System
                         goto DoneAtEnd;
                     num = value[index];
 
-                    uint numValue = (uint)HexConverter.FromChar(num);
-                    if (numValue == 0xFF)
+                    int numValue = HexConverter.FromChar(num);
+                    if (numValue < 0)
                         goto HasTrailingChars;
                     index++;
-                    answer = 16 * answer + numValue;
+                    answer = 16 * answer + (uint)numValue;
                 }
 
                 // If there's another digit, it's an overflow.

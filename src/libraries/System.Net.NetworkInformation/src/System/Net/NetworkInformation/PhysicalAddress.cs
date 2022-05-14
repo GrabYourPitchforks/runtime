@@ -182,7 +182,7 @@ namespace System.Net.NetworkInformation
             {
                 int character = address[i];
                 int tmp;
-                if ((tmp = HexConverter.FromChar(character)) == 0xFF)
+                if ((tmp = HexConverter.FromChar(character)) < 0)
                 {
                     if (delimiter == character && validCount == validSegmentLength)
                     {

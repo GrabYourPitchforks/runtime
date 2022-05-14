@@ -506,22 +506,22 @@ namespace System.Net
                 }
                 else if (ch == '%' && pos < count - 2)
                 {
-                    int h1 = HexConverter.FromChar(value[pos + 1]);
-                    int h2 = HexConverter.FromChar(value[pos + 2]);
+                    int combined = (HexConverter.FromChar(value[pos + 1]) << 4)
+                        | HexConverter.FromChar(value[pos + 2]);
 
-                    if ((h1 | h2) != 0xFF)
-                    {     // valid 2 hex chars
-                        byte b = (byte)((h1 << 4) | h2);
+                    if (combined >= 0)
+                    {
+                        // valid 2 hex chars
                         pos += 2;
 
                         // don't add as char
-                        helper.AddByte(b);
+                        helper.AddByte((byte)combined);
                         needsDecodingUnsafe = true;
                         continue;
                     }
                 }
 
-                if ((ch & 0xFF80) == 0)
+                if (char.IsAscii(ch))
                     helper.AddByte((byte)ch); // 7 bit have to go as bytes because of Unicode
                 else
                     helper.AddChar(ch);
@@ -564,12 +564,12 @@ namespace System.Net
                 }
                 else if (b == '%' && i < count - 2)
                 {
-                    int h1 = HexConverter.FromChar(bytes[pos + 1]);
-                    int h2 = HexConverter.FromChar(bytes[pos + 2]);
+                    int combined = (HexConverter.FromChar(bytes[pos + 1]) << 4)
+                        | HexConverter.FromChar(bytes[pos + 2]);
 
-                    if ((h1 | h2) != 0xFF)
+                    if (combined >= 0)
                     {     // valid 2 hex chars
-                        b = (byte)((h1 << 4) | h2);
+                        b = (byte)combined;
                         i += 2;
                     }
                 }
