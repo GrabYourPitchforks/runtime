@@ -3906,13 +3906,13 @@ namespace System
             // Get or create the cached factory. Creating the cache will fail if one
             // of our invariant checks fails; e.g., no appropriate ctor found.
 
-            if (GenericCache is not ActivatorCache cache)
+            if (GenericCache is not ObjectFactory factory)
             {
-                cache = new ActivatorCache(this);
+                factory = new ObjectFactory(this);
                 GenericCache = cache;
             }
 
-            if (!cache.CtorIsPublic && publicOnly)
+            if (!factory.CtorIsPublic && publicOnly)
             {
                 throw new MissingMethodException(SR.Format(SR.Arg_NoDefCTor, this));
             }
