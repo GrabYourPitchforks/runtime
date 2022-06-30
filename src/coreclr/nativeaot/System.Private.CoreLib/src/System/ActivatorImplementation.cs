@@ -14,6 +14,44 @@ namespace System
 {
     internal static class ActivatorImplementation
     {
+        public static Func<object> CreateFactory(
+           [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type type, bool nonPublic)
+        {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            type = type.UnderlyingSystemType;
+            CreateInstanceCheckType(type);
+
+            BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+            if (nonPublic)
+                bindingFlags |= BindingFlags.NonPublic;
+            ConstructorInfo? constructor = type.GetConstructor(bindingFlags, null, CallingConventions.Any, Array.Empty<Type>(), null);
+            if (constructor == null)
+            {
+                if (type.IsValueType)
+                {
+                    // In AOT scenarios, the type won't be unloaded,
+                    // so it's sufficient to capture just the RTH in
+                    // the lambda below.
+                    RuntimeTypeHandle typeHandle = type.TypeHandle;
+                    return () => RuntimeAugments.NewObject(typeHandle);
+                }
+
+                throw new MissingMethodException(SR.Arg_NoDefCTor);
+            }
+
+            [DebuggerGuidedStepThrough]
+            object Factory()
+            {
+                object result = constructor.Invoke(BindingFlags.DoNotWrapExceptions, null, Array.Empty<object>(), null);
+                System.Diagnostics.DebugAnnotations.PreviousCallContainsDebuggerStepInCode();
+                return result;
+            }
+            return Factory;
+        }
+
         [DebuggerGuidedStepThrough]
         public static object CreateInstance(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]

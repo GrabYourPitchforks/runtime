@@ -170,6 +170,13 @@ namespace System.Reflection.Runtime.General
             return NativeFormatRuntimeFieldInfo.GetRuntimeFieldInfo(fieldHandle, definingTypeInfo, contextTypeInfo, reflectedType);
         }
 
+        public sealed override Func<object> ActivatorCreateFactory(
+           [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type type, bool nonPublic)
+        {
+            return ActivatorImplementation.CreateFactory(type, nonPublic);
+        }
+
         [DebuggerHidden]
         [DebuggerStepThrough]
         public sealed override object ActivatorCreateInstance(

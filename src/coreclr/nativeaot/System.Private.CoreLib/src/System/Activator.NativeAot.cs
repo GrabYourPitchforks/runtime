@@ -105,6 +105,9 @@ namespace System
         // The constructor of this struct is used when there's no constructor
         struct StructWithNoConstructor { public StructWithNoConstructor() { } }
 
+        public static Func<object?> CreateFactory([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type type, bool nonPublic)
+           => ReflectionAugments.ReflectionCoreCallbacks.ActivatorCreateFactory(type, nonPublic);
+
         [DebuggerHidden]
         [DebuggerStepThrough]
         public static object? CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type type, bool nonPublic)

@@ -21,7 +21,11 @@ namespace System
         //
 
         public static Func<object?> CreateFactory([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] Type type) =>
-         CreateFactory(type, nonPublic: false);
+#pragma warning disable IL2067 // TODO: figure out how to make trimming happy
+#pragma warning disable IL2072 // TODO: figure out how to make trimming happy
+            CreateFactory(type, nonPublic: false);
+#pragma warning restore IL2072
+#pragma warning restore IL2067
 
         [DebuggerHidden]
         [DebuggerStepThrough]

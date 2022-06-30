@@ -21,6 +21,9 @@ namespace Internal.Reflection
                 isFlags: false);
         }
 
+        public override Func<object> ActivatorCreateFactory(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type type, bool nonPublic) => throw new NotSupportedException(SR.Reflection_Disabled);
         public override object ActivatorCreateInstance(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             Type type, bool nonPublic) => throw new NotSupportedException(SR.Reflection_Disabled);

@@ -133,6 +133,9 @@ namespace Internal.Reflection.Augments
         public abstract MethodInfo GetImplicitlyOverriddenBaseClassMethod(MethodInfo m);
         public abstract PropertyInfo GetImplicitlyOverriddenBaseClassProperty(PropertyInfo p);
 
+        public abstract Func<object> ActivatorCreateFactory(
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+            Type type, bool nonPublic);
         public abstract object ActivatorCreateInstance(
             [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
             Type type, bool nonPublic);
