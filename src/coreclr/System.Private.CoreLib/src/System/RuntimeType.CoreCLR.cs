@@ -3909,7 +3909,7 @@ namespace System
             if (GenericCache is not ObjectFactory factory)
             {
                 factory = new ObjectFactory(this);
-                GenericCache = cache;
+                GenericCache = factory;
             }
 
             if (!factory.CtorIsPublic && publicOnly)
@@ -3921,10 +3921,10 @@ namespace System
             // bubble up to the caller; the ctor invocation is within the try block so
             // that it can be wrapped in TIE if needed.
 
-            object? obj = cache.CreateUninitializedObject(this);
+            object? obj = factory.CreateUninitializedObject();
             try
             {
-                cache.CallConstructor(obj);
+                factory.CallConstructor(obj);
             }
             catch (Exception e) when (wrapExceptions)
             {
@@ -3939,21 +3939,21 @@ namespace System
         [DebuggerHidden]
         internal object? CreateInstanceOfT()
         {
-            if (GenericCache is not ActivatorCache cache)
+            if (GenericCache is not ObjectFactory factory)
             {
-                cache = new ActivatorCache(this);
-                GenericCache = cache;
+                factory = new ObjectFactory(this);
+                GenericCache = factory;
             }
 
-            if (!cache.CtorIsPublic)
+            if (!factory.CtorIsPublic)
             {
                 throw new MissingMethodException(SR.Format(SR.Arg_NoDefCTor, this));
             }
 
-            object? obj = cache.CreateUninitializedObject(this);
+            object? obj = factory.CreateUninitializedObject();
             try
             {
-                cache.CallConstructor(obj);
+                factory.CallConstructor(obj);
             }
             catch (Exception e)
             {
