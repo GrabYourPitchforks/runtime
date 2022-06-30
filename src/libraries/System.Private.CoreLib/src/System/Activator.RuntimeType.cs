@@ -16,6 +16,22 @@ namespace System
         // Note: CreateInstance returns null for Nullable<T>, e.g. CreateInstance(typeof(int?)) returns null.
         //
 
+        public static Func<object?> CreateFactory([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type type, bool nonPublic)
+        {
+            ArgumentNullException.ThrowIfNull(type);
+
+            if (type.UnderlyingSystemType is not RuntimeType rt)
+                throw new ArgumentException(SR.Arg_MustBeType, nameof(type));
+
+            ObjectFactory factory = new ObjectFactory(rt);
+            if (!nonPublic && !factory.CtorIsPublic)
+            {
+                // This is the same exception Activator.CreateInstance would have thrown.
+                throw new MissingMethodException(SR.Format(SR.Arg_NoDefCTor, rt));
+            }
+
+            return factory.GetInitializedObjectFactory();
+        }
         public static object? CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicConstructors | DynamicallyAccessedMemberTypes.PublicConstructors)] Type type, BindingFlags bindingAttr, Binder? binder, object?[]? args, CultureInfo? culture, object?[]? activationAttributes)
         {
             ArgumentNullException.ThrowIfNull(type);
@@ -133,7 +149,7 @@ namespace System
         }
 
         [System.Runtime.CompilerServices.Intrinsic]
-        public static T CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]T>()
+        public static T CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>()
         {
             return (T)((RuntimeType)typeof(T)).CreateInstanceOfT()!;
         }

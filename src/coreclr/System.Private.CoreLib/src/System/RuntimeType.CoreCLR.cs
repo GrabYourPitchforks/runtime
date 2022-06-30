@@ -3786,7 +3786,7 @@ namespace System
 
         #region Legacy Internal
 
-        private void CreateInstanceCheckThis()
+        internal void CreateInstanceCheckThis()
         {
             if (ContainsGenericParameters)
                 throw new ArgumentException(SR.Format(SR.Acc_CreateGenericEx, this));
