@@ -11,7 +11,7 @@ namespace System.Reflection
     /// A factory for object instances, used by <see cref="Activator.CreateInstance"/>,
     /// <see cref="RuntimeType.CreateInstanceDefaultCtor"/>, and related APIs.
     /// </summary>
-    internal sealed unsafe partial class ObjectFactory
+    internal sealed unsafe class ObjectFactory
     {
         // The managed calli to the newobj allocator, plus its first argument (MethodTable*).
         // In the case of the COM allocator, first arg is ComClassFactory*, not MethodTable*.
