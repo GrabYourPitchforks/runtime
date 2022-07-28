@@ -16,6 +16,7 @@ namespace System.SpanTests
 
             Assert.True(left == right);
             Assert.True(!(left != right));
+            Assert.True(MemoryExtensions.ReferenceEqual(left, right));
         }
 
         [Fact]
@@ -27,6 +28,7 @@ namespace System.SpanTests
 #pragma warning disable 1718 // Comparison made to same variable; did you mean to compare something else?
             Assert.True(left == left);
             Assert.True(!(left != left));
+            Assert.True(MemoryExtensions.ReferenceEqual(left, left));
 #pragma warning restore 1718
         }
 
@@ -39,6 +41,7 @@ namespace System.SpanTests
 
             Assert.False(left == right);
             Assert.False(!(left != right));
+            Assert.False(MemoryExtensions.ReferenceEqual(left, right));
         }
 
         [Fact]
@@ -50,6 +53,7 @@ namespace System.SpanTests
 
             Assert.False(left == right);
             Assert.False(!(left != right));
+            Assert.False(MemoryExtensions.ReferenceEqual(left, right));
         }
 
         [Fact]
@@ -65,6 +69,7 @@ namespace System.SpanTests
 
                     Assert.True(left == right);
                     Assert.True(!(left != right));
+                    Assert.True(MemoryExtensions.ReferenceEqual(left, right));
                 }
             }
         }
@@ -77,6 +82,7 @@ namespace System.SpanTests
 
             Assert.False(left == right);
             Assert.False(!(left != right));
+            Assert.False(MemoryExtensions.ReferenceEqual(left, right));
         }
 
         [Fact]
@@ -87,6 +93,7 @@ namespace System.SpanTests
 
             Assert.False(left == right);
             Assert.False(!(left != right));
+            Assert.False(MemoryExtensions.ReferenceEqual(left, right));
         }
 
         [Fact]
