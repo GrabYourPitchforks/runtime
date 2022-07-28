@@ -148,7 +148,6 @@ namespace System.Net
 
         internal IPAddress(ReadOnlySpan<ushort> numbers, uint scopeid)
         {
-            Debug.Assert(numbers != null);
             Debug.Assert(numbers.Length == NumberOfLabels);
 
             var arr = new ushort[NumberOfLabels];

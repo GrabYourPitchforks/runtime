@@ -115,9 +115,13 @@ namespace System.Security.Cryptography.Pkcs
             // The password is a null-terminated UTF-16BE version of the input.
             int passLen = checked((password.Length + 1) * 2);
 
-            // If password == default then the span represents the null string (as opposed to
+            // If password is nullptr then the span represents the null string (as opposed to
             // an empty string), and the P block should then have size 0 in the next step.
+#if NET7_0_OR_GREATER
+            if (password.ReferenceEqual(default))
+#else
             if (password == default)
+#endif
             {
                 passLen = 0;
             }

@@ -28,7 +28,7 @@ namespace Microsoft.Win32.SafeHandles
             //
             // Since that was already done in the base ctor call, we only need to do
             // work when s != default.
-            if (s != default)
+            if (!s.ReferenceEqual(default))
             {
                 int cch = checked(s.Length + 1);
                 int cb = checked(cch * sizeof(char));
