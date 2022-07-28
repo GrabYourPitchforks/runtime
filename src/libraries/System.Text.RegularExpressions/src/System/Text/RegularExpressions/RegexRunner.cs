@@ -91,14 +91,13 @@ namespace System.Text.RegularExpressions
             // what the original beginning was and can't do it by just using the lengths of text and runtext, since we can't guarantee that
             // the passed in beginning and length match the size of the original input. We instead use MemoryExtensions Overlaps to find the
             // offset in memory between them. We intentionally use s.Overlaps(text) since we want to get a positive value.
-            s.AsSpan().Overlaps(text, out int beginning);
-
+            //
             // The passed in span is sliced from runtextbeg to runtextend already, but in the precompiled scenario
             // we require to use the complete input and to use the full string instead. We first test to ensure that the
             // passed in span matches the original input by using the original runtextbeg. If that is not the case,
             // then it means the user is calling the new span-based APIs using CompiledToAssembly, so we throw NSE
             // so as to prevent a lot of unexpected allocations.
-            if (s == null || text != s.AsSpan(beginning, text.Length))
+            if (s == null || !s.AsSpan().Overlaps(text, out int beginning))
             {
                 // If we landed here then we are dealing with a CompiledToAssembly case where the new Span overloads are being called.
                 throw new NotSupportedException(SR.UsingSpanAPIsWithCompiledToAssembly);

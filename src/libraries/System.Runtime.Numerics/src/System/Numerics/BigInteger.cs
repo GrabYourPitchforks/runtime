@@ -2683,7 +2683,7 @@ namespace System.Numerics
                 BigIntegerCalculator.Multiply(left, NumericsHelpers.Abs(rightSign), bits);
                 result = new BigInteger(bits, (leftSign < 0) ^ (rightSign < 0));
             }
-            else if (left == right)
+            else if (left.ReferenceEqual(right))
             {
                 int size = left.Length + right.Length;
                 Span<uint> bits = ((uint)size <= BigIntegerCalculator.StackAllocThreshold
