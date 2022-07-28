@@ -1346,9 +1346,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ReferenceEqual<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> other)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
             return (span == other);
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>
@@ -1362,9 +1360,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ReferenceEqual<T>(this Span<T> span, ReadOnlySpan<T> other)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
             return (span == other);
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>
