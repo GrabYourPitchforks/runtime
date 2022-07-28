@@ -731,7 +731,7 @@ namespace System.IO
 
                                 break;
                             case Interop.Sys.NotifyEvents.IN_MOVED_TO:
-                                if (previousEventName != null)
+                                if (!previousEventName.ReferenceEqual(null))
                                 {
                                     // If the previous name from IN_MOVED_FROM is non-null, then this is a rename.
                                     watcher.NotifyRenameEventArgs(WatcherChangeTypes.Renamed, expandedName, previousEventName);
