@@ -97,7 +97,11 @@ namespace System.Text.RegularExpressions
             // passed in span matches the original input by using the original runtextbeg. If that is not the case,
             // then it means the user is calling the new span-based APIs using CompiledToAssembly, so we throw NSE
             // so as to prevent a lot of unexpected allocations.
-            if (s == null || !s.AsSpan().Overlaps(text, out int beginning))
+            //
+            // Since Overlaps returns false if either input is empty, we special-case an empty text span and treat it as if the
+            // caller had specified a zero-length span that perfectly matches the beginning of runtext.
+            int beginning = 0;
+            if (s == null || (!text.IsEmpty && !s.AsSpan().Overlaps(text, out beginning)))
             {
                 // If we landed here then we are dealing with a CompiledToAssembly case where the new Span overloads are being called.
                 throw new NotSupportedException(SR.UsingSpanAPIsWithCompiledToAssembly);
