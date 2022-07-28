@@ -1243,7 +1243,11 @@ namespace System.Text.Json
             if (TokenType == JsonTokenType.Null)
             {
                 // This is different than Length == 0, in that it tests true for null, but false for ""
+#if NET7_0_OR_GREATER
+                return utf8Text.ReferenceEqual(default);
+#else
                 return utf8Text == default;
+#endif
             }
 
             return TextEqualsHelper(utf8Text, isPropertyName: false, shouldUnescape: true);
@@ -1271,7 +1275,11 @@ namespace System.Text.Json
             if (TokenType == JsonTokenType.Null)
             {
                 // This is different than Length == 0, in that it tests true for null, but false for ""
+#if NET7_0_OR_GREATER
+                return text.ReferenceEqual(default);
+#else
                 return text == default;
+#endif
             }
 
             return TextEqualsHelper(text, isPropertyName: false);
