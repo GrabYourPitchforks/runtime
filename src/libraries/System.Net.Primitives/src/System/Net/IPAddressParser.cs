@@ -25,7 +25,7 @@ namespace System.Net
                 // we don't support/parse a port specification at the end of an IPv4 address.
                 Span<ushort> numbers = stackalloc ushort[IPAddressParserStatics.IPv6AddressShorts];
                 numbers.Clear();
-                if (Ipv6StringToAddress(ipSpan, numbers, IPAddressParserStatics.IPv6AddressShorts, out uint scope))
+                if (Ipv6StringToAddress(ipSpan, numbers, out uint scope))
                 {
                     return new IPAddress(numbers, scope);
                 }
@@ -193,10 +193,9 @@ namespace System.Net
             }
         }
 
-        public static unsafe bool Ipv6StringToAddress(ReadOnlySpan<char> ipSpan, Span<ushort> numbers, int numbersLength, out uint scope)
+        public static unsafe bool Ipv6StringToAddress(ReadOnlySpan<char> ipSpan, Span<ushort> numbers, out uint scope)
         {
-            Debug.Assert(numbers != null);
-            Debug.Assert(numbersLength >= IPAddressParserStatics.IPv6AddressShorts);
+            Debug.Assert(numbers.Length == IPAddressParserStatics.IPv6AddressShorts);
 
             int end = ipSpan.Length;
 

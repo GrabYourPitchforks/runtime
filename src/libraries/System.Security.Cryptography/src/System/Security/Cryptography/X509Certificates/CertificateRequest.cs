@@ -602,7 +602,7 @@ namespace System.Security.Cryptography.X509Certificates
 
             if (notAfter < notBefore)
                 throw new ArgumentException(SR.Cryptography_CertReq_DatesReversed);
-            if (serialNumber == null || serialNumber.Length < 1)
+            if (serialNumber.IsEmpty)
                 throw new ArgumentException(SR.Arg_EmptyOrNullArray, nameof(serialNumber));
 
             byte[] signatureAlgorithm = generator.GetSignatureAlgorithmIdentifier(HashAlgorithm);

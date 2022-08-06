@@ -416,7 +416,7 @@ namespace System.Globalization
         /// </exception>
         public int Compare(ReadOnlySpan<char> string1, ReadOnlySpan<char> string2, CompareOptions options = CompareOptions.None)
         {
-            if (string1 == string2) // referential equality + length
+            if (string1.ReferenceEqual(string2)) // referential equality + length
             {
                 CheckCompareOptionsForCompare(options);
                 return 0;

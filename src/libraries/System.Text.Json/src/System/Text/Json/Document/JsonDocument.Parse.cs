@@ -165,11 +165,7 @@ namespace System.Text.Json
 
         internal static JsonDocument ParseValue(ReadOnlySpan<byte> utf8Json, JsonDocumentOptions options)
         {
-            Debug.Assert(utf8Json != null);
-
-            byte[] owned = new byte[utf8Json.Length];
-            utf8Json.CopyTo(owned);
-
+            byte[] owned = utf8Json.ToArray();
             return ParseUnrented(owned.AsMemory(), options.GetReaderOptions());
         }
 

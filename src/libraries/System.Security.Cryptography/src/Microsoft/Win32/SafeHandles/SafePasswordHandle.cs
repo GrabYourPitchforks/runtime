@@ -28,7 +28,7 @@ namespace Microsoft.Win32.SafeHandles
             : base(ownsHandle: true)
         {
             // "".AsSpan() is not default, so this is compat for "null tries NULL first".
-            if (password != default)
+            if (!password.ReferenceEqual(default))
             {
                 int spanLen;
 

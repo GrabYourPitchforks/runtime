@@ -156,7 +156,7 @@ namespace System.Security.Cryptography
 
                 ReadOnlySpan<byte> derSignature = SignHash(hash, signDestination, signatureLength, key);
 
-                if (destination == signDestination)
+                if (destination.ReferenceEqual(signDestination))
                 {
                     bytesWritten = derSignature.Length;
                     return true;

@@ -57,7 +57,11 @@ namespace System.Text.RegularExpressions
                     // Default
                     _ => default
                 };
+#if NET7_0_OR_GREATER
+                return !equivalences.ReferenceEqual(default);
+#else
                 return equivalences != default;
+#endif
             }
             else
             {

@@ -2663,7 +2663,7 @@ namespace System.Data.SqlTypes
                 uint D1, ulDHigh, ulDSecond;
                 int iulRindex;
 
-                if (rgulU != rgulR)
+                if (!rgulU.ReferenceEqual(rgulR))
                     MpMove(rgulU, ciulU, rgulR, out ciulR);        // R = U
 
                 ciulQ = ciulU - ciulD + 1;

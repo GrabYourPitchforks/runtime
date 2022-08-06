@@ -1336,6 +1336,34 @@ namespace System
         }
 
         /// <summary>
+        /// Determines whether two spans reference the same block of memory.
+        /// </summary>
+        /// <param name="span">The first span to compare.</param>
+        /// <param name="other">The second span to compare.</param>
+        /// <returns>True if both <paramref name="span"/> and <paramref name="other"/>
+        /// reference the same block of memory; that is, they both reference the
+        /// same starting address and have the same length. False otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ReferenceEqual<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> other)
+        {
+            return (span == other);
+        }
+
+        /// <summary>
+        /// Determines whether two spans reference the same block of memory.
+        /// </summary>
+        /// <param name="span">The first span to compare.</param>
+        /// <param name="other">The second span to compare.</param>
+        /// <returns>True if both <paramref name="span"/> and <paramref name="other"/>
+        /// reference the same block of memory; that is, they both reference the
+        /// same starting address and have the same length. False otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ReferenceEqual<T>(this Span<T> span, ReadOnlySpan<T> other)
+        {
+            return (span == other);
+        }
+
+        /// <summary>
         /// Determines whether two sequences are equal by comparing the elements using IEquatable{T}.Equals(T).
         /// </summary>
         [Intrinsic] // Unrolled and vectorized for half-constant input
