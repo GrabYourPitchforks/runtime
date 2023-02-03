@@ -53,18 +53,17 @@ BOOL WINAPI DllMain(
 typedef struct _DOTNET_ALLOC_COOKIE
 {
     PVOID CookieValue;
-    union _Ancillary
+    union _Size
     {
-        SIZE_T Size;
-        LPVOID EncodedSize;
-    } Ancillary;
+        SIZE_T RawValue;
+        LPVOID EncodedValue;
+    } Size;
 } DOTNET_ALLOC_COOKIE;
 
-// Historically, the Windows memory allocator always returns a 16-byte aligned address,
-// so we will as well just in case somebody's taking a dependency on this.
-#define ROUND_SIZE_T_UP_TO_MULTIPLE_OF_16(c) (((c) + 15) & ~(SIZE_T)15)
-
-const SIZE_T DOTNET_ALLOC_HEADER_COOKIE_SIZE = ROUND_SIZE_T_UP_TO_MULTIPLE_OF_16(sizeof(DOTNET_ALLOC_COOKIE));
+// Historically, the Windows memory allocator always returns addresses aligned to some
+// particular boundary. We'll make that same guarantee here just in case somebody
+// depends on it.
+const SIZE_T DOTNET_ALLOC_HEADER_COOKIE_SIZE_WITH_PADDING = (sizeof(DOTNET_ALLOC_COOKIE) + MEMORY_ALLOCATION_ALIGNMENT - 1) & ~((SIZE_T)MEMORY_ALLOCATION_ALIGNMENT  - 1);
 const SIZE_T DOTNET_ALLOC_TRAILER_COOKIE_SIZE = sizeof(DOTNET_ALLOC_COOKIE);
 
 voidpf ZLIB_INTERNAL __cdecl zcalloc (opaque, items, size)
@@ -91,7 +90,7 @@ voidpf ZLIB_INTERNAL __cdecl zcalloc (opaque, items, size)
 
     // Make sure the actual allocation has enough room for our frontside & backside cookies.
     SIZE_T cbActualAllocationSize;
-    if (FAILED(SizeTAdd(cbRequested, DOTNET_ALLOC_HEADER_COOKIE_SIZE + DOTNET_ALLOC_TRAILER_COOKIE_SIZE, &cbActualAllocationSize))) { return NULL; }
+    if (FAILED(SizeTAdd(cbRequested, DOTNET_ALLOC_HEADER_COOKIE_SIZE_WITH_PADDING + DOTNET_ALLOC_TRAILER_COOKIE_SIZE, &cbActualAllocationSize))) { return NULL; }
 
     LPVOID pAlloced = HeapAlloc(s_allocHeap, dwFlags, cbActualAllocationSize);
     if (pAlloced == NULL) { return NULL; } // OOM
@@ -99,13 +98,13 @@ voidpf ZLIB_INTERNAL __cdecl zcalloc (opaque, items, size)
     // Now set the header & trailer cookies
     DOTNET_ALLOC_COOKIE* pHeaderCookie = (DOTNET_ALLOC_COOKIE*)pAlloced;
     pHeaderCookie->CookieValue = EncodePointer(&pHeaderCookie->CookieValue);
-    pHeaderCookie->Ancillary.Size = cbRequested;
+    pHeaderCookie->Size.RawValue = cbRequested;
 
-    LPBYTE pReturnToCaller = (LPBYTE)pHeaderCookie + DOTNET_ALLOC_HEADER_COOKIE_SIZE;
+    LPBYTE pReturnToCaller = (LPBYTE)pHeaderCookie + DOTNET_ALLOC_HEADER_COOKIE_SIZE_WITH_PADDING;
 
     UNALIGNED DOTNET_ALLOC_COOKIE* pTrailerCookie = (UNALIGNED DOTNET_ALLOC_COOKIE*)(pReturnToCaller + cbRequested);
     pTrailerCookie->CookieValue = EncodePointer(&pTrailerCookie->CookieValue);
-    pTrailerCookie->Ancillary.EncodedSize = EncodePointer((PVOID)cbRequested);
+    pTrailerCookie->Size.EncodedValue = EncodePointer((PVOID)cbRequested);
 
     return pReturnToCaller;
 }
@@ -127,19 +126,18 @@ void ZLIB_INTERNAL zcfree (opaque, ptr)
 
     // Check cookie at beginning and end
 
-    DOTNET_ALLOC_COOKIE* pHeaderCookie = (DOTNET_ALLOC_COOKIE*)((LPBYTE)ptr - DOTNET_ALLOC_HEADER_COOKIE_SIZE);
+    DOTNET_ALLOC_COOKIE* pHeaderCookie = (DOTNET_ALLOC_COOKIE*)((LPBYTE)ptr - DOTNET_ALLOC_HEADER_COOKIE_SIZE_WITH_PADDING);
     if (DecodePointer(pHeaderCookie->CookieValue) != &pHeaderCookie->CookieValue) { goto Fail; }
-    SIZE_T cbRequested = pHeaderCookie->Ancillary.Size;
+    SIZE_T cbRequested = pHeaderCookie->Size.RawValue;
 
     UNALIGNED DOTNET_ALLOC_COOKIE* pTrailerCookie = (UNALIGNED DOTNET_ALLOC_COOKIE*)((LPBYTE)ptr + cbRequested);
     if (DecodePointer(pTrailerCookie->CookieValue) != &pTrailerCookie->CookieValue) { goto Fail; }
-    if (DecodePointer(pTrailerCookie->Ancillary.EncodedSize) != (LPVOID)cbRequested) { goto Fail; }
+    if (DecodePointer(pTrailerCookie->Size.EncodedValue) != (LPVOID)cbRequested) { goto Fail; }
 
     // Checks passed - now trash the cookies and free memory
 
     DOTNET_ALLOC_COOKIE trashCookie = { 0 };
     trashCookie.CookieValue = (PVOID)(SIZE_T)0xDEADBEEF;
-    trashCookie.Ancillary.Size = 0;
 
     *pHeaderCookie = trashCookie;
     *pTrailerCookie = trashCookie;
