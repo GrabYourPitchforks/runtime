@@ -6,6 +6,7 @@
 #include <intsafe.h>
 #include "zutil.h"
 
+// This is the special heap we'll allocate from.
 HANDLE s_allocHeap = NULL;
 
 BOOL WINAPI DllMain(
@@ -19,10 +20,11 @@ BOOL WINAPI DllMain(
     switch (fdwReason)
     {
         case DLL_PROCESS_ATTACH:
+            // Attempt to create a new heap. If we can't, fall back to the standard process heap.
             s_allocHeap = HeapCreate(0, 0, 0);
             if (s_allocHeap != NULL)
             {
-                // Attempt to set the LFH flag. Since it's just an optimization, swallow failures.
+                // Attempt to set the LFH flag on our new heap. Since it's just an optimization, swallow failures.
                 // Ref: https://learn.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heapsetinformation
                 ULONG ulHeapInformation = 2; // LFH
                 HeapSetInformation(s_allocHeap, HeapCompatibilityInformation, &ulHeapInformation, sizeof(ulHeapInformation));
@@ -58,6 +60,8 @@ typedef struct _DOTNET_ALLOC_COOKIE
     } Ancillary;
 } DOTNET_ALLOC_COOKIE;
 
+// Historically, the Windows memory allocator always returns a 16-byte aligned address,
+// so we will as well just in case somebody's taking a dependency on this.
 #define ROUND_SIZE_T_UP_TO_MULTIPLE_OF_16(c) (((c) + 15) & ~(SIZE_T)15)
 
 const SIZE_T DOTNET_ALLOC_HEADER_COOKIE_SIZE = ROUND_SIZE_T_UP_TO_MULTIPLE_OF_16(sizeof(DOTNET_ALLOC_COOKIE));
@@ -85,7 +89,7 @@ voidpf ZLIB_INTERNAL __cdecl zcalloc (opaque, items, size)
         if (FAILED(SizeTMult(items, size, &cbRequested))) { return NULL; }
     }
 
-    // add 16 bytes to beginning and 2 pointers to the end to allow us to store cookies
+    // Make sure the actual allocation has enough room for our frontside & backside cookies.
     SIZE_T cbActualAllocationSize;
     if (FAILED(SizeTAdd(cbRequested, DOTNET_ALLOC_HEADER_COOKIE_SIZE + DOTNET_ALLOC_TRAILER_COOKIE_SIZE, &cbActualAllocationSize))) { return NULL; }
 
