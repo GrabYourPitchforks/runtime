@@ -66,7 +66,7 @@ typedef struct _DOTNET_ALLOC_COOKIE
 const SIZE_T DOTNET_ALLOC_HEADER_COOKIE_SIZE_WITH_PADDING = (sizeof(DOTNET_ALLOC_COOKIE) + MEMORY_ALLOCATION_ALIGNMENT - 1) & ~((SIZE_T)MEMORY_ALLOCATION_ALIGNMENT  - 1);
 const SIZE_T DOTNET_ALLOC_TRAILER_COOKIE_SIZE = sizeof(DOTNET_ALLOC_COOKIE);
 
-voidpf ZLIB_INTERNAL __cdecl zcalloc (opaque, items, size)
+voidpf ZLIB_INTERNAL zcalloc (opaque, items, size)
     voidpf opaque;
     unsigned items;
     unsigned size;
