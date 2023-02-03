@@ -109,8 +109,16 @@ voidpf ZLIB_INTERNAL __cdecl zcalloc (opaque, items, size)
     return pReturnToCaller;
 }
 
+FORCEINLINE
+void zcfree_trash_cookie(UNALIGNED DOTNET_ALLOC_COOKIE* pCookie)
+{
+    memset(pCookie, 0, sizeof(*pCookie));
+    pCookie->CookieValue = (PVOID)(SIZE_T)0xDEADBEEF;
+}
+
 // Marked noinline to keep it on the call stack during crash reports.
 DECLSPEC_NOINLINE
+DECLSPEC_NORETURN
 void zcfree_cookie_check_failed()
 {
     __fastfail(FAST_FAIL_HEAP_METADATA_CORRUPTION);
@@ -136,11 +144,8 @@ void ZLIB_INTERNAL zcfree (opaque, ptr)
 
     // Checks passed - now trash the cookies and free memory
 
-    DOTNET_ALLOC_COOKIE trashCookie = { 0 };
-    trashCookie.CookieValue = (PVOID)(SIZE_T)0xDEADBEEF;
-
-    *pHeaderCookie = trashCookie;
-    *pTrailerCookie = trashCookie;
+    zcfree_trash_cookie(pHeaderCookie);
+    zcfree_trash_cookie(pTrailerCookie);
 
     if (!HeapFree(s_allocHeap, 0, pHeaderCookie)) { goto Fail; }
     return;
