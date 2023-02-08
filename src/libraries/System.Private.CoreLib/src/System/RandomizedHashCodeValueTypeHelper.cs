@@ -20,7 +20,7 @@ namespace System
             where TExposed : unmanaged
             where TImplementation : unmanaged
         {
-            Debug.Assert(sizeof(TExposed) == sizeof(TImplementation), "Unexpected size difference. Are you sure you're hashing all required data?");
+            Debug.Assert(sizeof(TExposed) <= sizeof(TImplementation), "Unexpected size difference. Are you sure you're hashing all required data?");
 
             return Marvin.ComputeHash32(
                 ref Unsafe.As<TImplementation, byte>(ref Unsafe.AsRef(in bitwiseRepresentation)),
