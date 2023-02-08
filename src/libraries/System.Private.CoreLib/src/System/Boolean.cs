@@ -20,7 +20,7 @@ namespace System
 {
     [Serializable]
     [TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
-    public readonly struct Boolean : IComparable, IConvertible, IComparable<bool>, IEquatable<bool>
+    public readonly struct Boolean : IComparable, IConvertible, IComparable<bool>, IEquatable<bool>, IRandomizedHashCodeProducer
     {
         //
         // Member Variables
@@ -396,6 +396,24 @@ namespace System
         object IConvertible.ToType(Type type, IFormatProvider? provider)
         {
             return Convert.DefaultToType((IConvertible)this, type, provider);
+        }
+
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode()
+        {
+            return (m_value) ? RandomizedHashCodes.TrueHashCode : RandomizedHashCodes.FalseHashCode;
+        }
+
+        private static class RandomizedHashCodes
+        {
+            internal static readonly int TrueHashCode = GetRandomValue();
+            internal static readonly int FalseHashCode = GetRandomValue();
+
+            private static unsafe int GetRandomValue()
+            {
+                int value;
+                Interop.GetRandomBytes((byte*)&value, sizeof(int));
+                return value;
+            }
         }
     }
 }

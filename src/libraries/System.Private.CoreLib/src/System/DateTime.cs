@@ -53,7 +53,8 @@ namespace System
           IComparable<DateTime>,
           IEquatable<DateTime>,
           ISerializable,
-          ISpanParsable<DateTime>
+          ISpanParsable<DateTime>,
+          IRandomizedHashCodeProducer
     {
         // Number of 100ns ticks per time unit
         internal const int MicrosecondsPerMillisecond = 1000;
@@ -2067,5 +2068,12 @@ namespace System
 
         /// <inheritdoc cref="ISpanParsable{TSelf}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out TSelf)" />
         public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out DateTime result) => TryParse(s, provider, DateTimeStyles.None, out result);
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCodeChangeType<DateTime, long>(Ticks);
     }
 }

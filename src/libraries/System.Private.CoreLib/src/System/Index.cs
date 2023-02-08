@@ -15,7 +15,7 @@ namespace System
     /// int lastElement = someArray[^1]; // lastElement = 5
     /// </code>
     /// </remarks>
-    public readonly struct Index : IEquatable<Index>
+    public readonly struct Index : IEquatable<Index>, IRandomizedHashCodeProducer
     {
         private readonly int _value;
 
@@ -150,5 +150,12 @@ namespace System
             return '^' + Value.ToString();
 #endif
         }
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCodeChangeType<Index, int>(GetHashCode());
     }
 }

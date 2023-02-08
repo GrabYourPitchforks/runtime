@@ -22,7 +22,8 @@ namespace System
           IEquatable<byte>,
           IBinaryInteger<byte>,
           IMinMaxValue<byte>,
-          IUnsignedNumber<byte>
+          IUnsignedNumber<byte>,
+          IRandomizedHashCodeProducer
     {
         private readonly byte m_value; // Do not rename (binary serialization)
 
@@ -1196,5 +1197,12 @@ namespace System
 
         /// <inheritdoc cref="IUnaryPlusOperators{TSelf, TResult}.op_UnaryPlus(TSelf)" />
         static byte IUnaryPlusOperators<byte, byte>.operator +(byte value) => (byte)(+value);
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCode(this);
     }
 }

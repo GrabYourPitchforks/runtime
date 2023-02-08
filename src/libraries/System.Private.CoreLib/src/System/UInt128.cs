@@ -18,7 +18,8 @@ namespace System
     public readonly struct UInt128
         : IBinaryInteger<UInt128>,
           IMinMaxValue<UInt128>,
-          IUnsignedNumber<UInt128>
+          IUnsignedNumber<UInt128>,
+          IRandomizedHashCodeProducer
     {
         internal const int Size = 16;
 
@@ -2155,5 +2156,12 @@ namespace System
 
         /// <inheritdoc cref="IUnaryPlusOperators{TSelf, TResult}.op_UnaryPlus(TSelf)" />
         public static UInt128 operator +(UInt128 value) => value;
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCode(this);
     }
 }

@@ -34,7 +34,8 @@ namespace System
           ISpanFormattable,
           IBinaryInteger<char>,
           IMinMaxValue<char>,
-          IUnsignedNumber<char>
+          IUnsignedNumber<char>,
+          IRandomizedHashCodeProducer
     {
         //
         // Member Variables
@@ -2019,5 +2020,12 @@ namespace System
 
         /// <inheritdoc cref="IUnaryPlusOperators{TSelf, TResult}.op_UnaryPlus(TSelf)" />
         static char IUnaryPlusOperators<char, char>.operator +(char value) => (char)(+value);
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCode(this);
     }
 }

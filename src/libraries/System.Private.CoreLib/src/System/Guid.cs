@@ -25,7 +25,8 @@ namespace System
           IComparable,
           IComparable<Guid>,
           IEquatable<Guid>,
-          ISpanParsable<Guid>
+          ISpanParsable<Guid>,
+          IRandomizedHashCodeProducer
     {
         public static readonly Guid Empty;
 
@@ -1575,5 +1576,12 @@ namespace System
 
         /// <inheritdoc cref="ISpanParsable{TSelf}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out TSelf)" />
         public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Guid result) => TryParse(s, out result);
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCode(this);
     }
 }

@@ -17,7 +17,8 @@ namespace System
           IComparable<TimeOnly>,
           IEquatable<TimeOnly>,
           ISpanFormattable,
-          ISpanParsable<TimeOnly>
+          ISpanParsable<TimeOnly>,
+          IRandomizedHashCodeProducer
     {
         // represent the number of ticks map to the time of the day. 1 ticks = 100-nanosecond in time measurements.
         private readonly long _ticks;
@@ -1031,5 +1032,12 @@ namespace System
 
         /// <inheritdoc cref="ISpanParsable{TSelf}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out TSelf)" />
         public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out TimeOnly result) => TryParse(s, provider, DateTimeStyles.None, out result);
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCodeChangeType<TimeOnly, long>(_ticks);
     }
 }

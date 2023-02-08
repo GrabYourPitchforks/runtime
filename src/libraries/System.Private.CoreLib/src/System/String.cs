@@ -24,7 +24,7 @@ namespace System
     [Serializable]
     [NonVersionable] // This only applies to field layout
     [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
-    public sealed partial class String : IComparable, IEnumerable, IConvertible, IEnumerable<char>, IComparable<string?>, IEquatable<string?>, ICloneable
+    public sealed partial class String : IComparable, IEnumerable, IConvertible, IEnumerable<char>, IComparable<string?>, IEquatable<string?>, ICloneable, IRandomizedHashCodeProducer
     {
         /// <summary>Maximum length allowed for a string.</summary>
         /// <remarks>Keep in sync with AllocateString in gchelpers.cpp.</remarks>

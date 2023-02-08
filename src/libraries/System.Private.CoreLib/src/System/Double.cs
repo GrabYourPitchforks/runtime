@@ -32,7 +32,8 @@ namespace System
           IComparable<double>,
           IEquatable<double>,
           IBinaryFloatingPointIeee754<double>,
-          IMinMaxValue<double>
+          IMinMaxValue<double>,
+          IRandomizedHashCodeProducer
     {
         private readonly double m_value; // Do not rename (binary serialization)
 
@@ -326,7 +327,10 @@ namespace System
         // The hashcode for a double is the absolute value of the integer representation
         // of that double.
         [MethodImpl(MethodImplOptions.AggressiveInlining)] // 64-bit constants make the IL unusually large that makes the inliner to reject the method
-        public override int GetHashCode()
+        public override int GetHashCode() => GetHashCode64().GetHashCode();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] // 64-bit constants make the IL unusually large that makes the inliner to reject the method
+        private long GetHashCode64()
         {
             long bits = Unsafe.As<double, long>(ref Unsafe.AsRef(in m_value));
 
@@ -337,7 +341,7 @@ namespace System
                 bits &= 0x7FF0000000000000;
             }
 
-            return unchecked((int)bits) ^ ((int)(bits >> 32));
+            return bits;
         }
 
         public override string ToString()
@@ -2364,5 +2368,12 @@ namespace System
 
             return result;
         }
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCodeChangeType<double, long>(GetHashCode64());
     }
 }

@@ -32,7 +32,8 @@ namespace System
           IComparable<TimeSpan>,
           IEquatable<TimeSpan>,
           ISpanFormattable,
-          ISpanParsable<TimeSpan>
+          ISpanParsable<TimeSpan>,
+          IRandomizedHashCodeProducer
     {
         /// <summary>
         /// Represents the number of nanoseconds per tick. This field is constant.
@@ -633,5 +634,12 @@ namespace System
 
         /// <inheritdoc cref="IComparisonOperators{TSelf, TOther, TResult}.op_GreaterThanOrEqual(TSelf, TOther)" />
         public static bool operator >=(TimeSpan t1, TimeSpan t2) => t1._ticks >= t2._ticks;
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCodeChangeType<TimeSpan, long>(_ticks);
     }
 }

@@ -23,7 +23,8 @@ namespace System
           IEquatable<ushort>,
           IBinaryInteger<ushort>,
           IMinMaxValue<ushort>,
-          IUnsignedNumber<ushort>
+          IUnsignedNumber<ushort>,
+          IRandomizedHashCodeProducer
     {
         private readonly ushort m_value; // Do not rename (binary serialization)
 
@@ -1222,5 +1223,12 @@ namespace System
 
         /// <inheritdoc cref="IUnaryPlusOperators{TSelf, TResult}.op_UnaryPlus(TSelf)" />
         static ushort IUnaryPlusOperators<ushort, ushort>.operator +(ushort value) => (ushort)(+value);
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCode(this);
     }
 }

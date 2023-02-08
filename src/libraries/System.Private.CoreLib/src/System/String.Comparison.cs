@@ -1065,5 +1065,12 @@ namespace System
             int ct = (int)comparisonType;
             return (CompareOptions)((ct & -ct) << 28); // neg and shl
         }
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => GetHashCode();
     }
 }

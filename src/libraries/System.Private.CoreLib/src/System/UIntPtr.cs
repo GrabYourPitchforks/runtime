@@ -32,7 +32,8 @@ namespace System
           ISerializable,
           IBinaryInteger<nuint>,
           IMinMaxValue<nuint>,
-          IUnsignedNumber<nuint>
+          IUnsignedNumber<nuint>,
+          IRandomizedHashCodeProducer
     {
         private readonly nuint _value;
 
@@ -1204,5 +1205,12 @@ namespace System
 
         /// <inheritdoc cref="IUnaryPlusOperators{TSelf, TResult}.op_UnaryPlus(TSelf)" />
         static nuint IUnaryPlusOperators<nuint, nuint>.operator +(nuint value) => +value;
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCode(this);
     }
 }

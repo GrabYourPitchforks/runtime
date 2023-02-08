@@ -23,7 +23,8 @@ namespace System
           IComparable<Half>,
           IEquatable<Half>,
           IBinaryFloatingPointIeee754<Half>,
-          IMinMaxValue<Half>
+          IMinMaxValue<Half>,
+          IRandomizedHashCodeProducer
     {
         private const NumberStyles DefaultParseStyle = NumberStyles.Float | NumberStyles.AllowThousands;
 
@@ -2008,5 +2009,12 @@ namespace System
 
         /// <inheritdoc cref="IUnaryPlusOperators{TSelf, TResult}.op_UnaryPlus(TSelf)" />
         public static Half operator +(Half value) => value;
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCodeChangeType<Half, int>(GetHashCode());
     }
 }

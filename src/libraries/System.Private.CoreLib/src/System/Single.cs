@@ -31,7 +31,8 @@ namespace System
           IComparable<float>,
           IEquatable<float>,
           IBinaryFloatingPointIeee754<float>,
-          IMinMaxValue<float>
+          IMinMaxValue<float>,
+          IRandomizedHashCodeProducer
     {
         private readonly float m_value; // Do not rename (binary serialization)
 
@@ -2156,5 +2157,12 @@ namespace System
 
             return (float)result;
         }
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCodeChangeType<float, int>(GetHashCode());
     }
 }

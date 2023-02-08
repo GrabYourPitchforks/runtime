@@ -23,7 +23,8 @@ namespace System
           IEquatable<sbyte>,
           IBinaryInteger<sbyte>,
           IMinMaxValue<sbyte>,
-          ISignedNumber<sbyte>
+          ISignedNumber<sbyte>,
+          IRandomizedHashCodeProducer
     {
         private readonly sbyte m_value; // Do not rename (binary serialization)
 
@@ -1379,5 +1380,12 @@ namespace System
 
         /// <inheritdoc cref="IUnaryPlusOperators{TSelf, TResult}.op_UnaryPlus(TSelf)" />
         static sbyte IUnaryPlusOperators<sbyte, sbyte>.operator +(sbyte value) => (sbyte)(+value);
+
+        //
+        // IRandomizedHashCodeProducer
+        //
+
+        /// <inheritdoc cref="IRandomizedHashCodeProducer.GetRandomizedHashCode" />
+        int IRandomizedHashCodeProducer.GetRandomizedHashCode() => RandomizedHashCodeValueTypeHelper.GetRandomizedHashCode(this);
     }
 }
