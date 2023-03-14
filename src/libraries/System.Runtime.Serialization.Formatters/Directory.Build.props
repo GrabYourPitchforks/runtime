@@ -2,5 +2,7 @@
   <Import Project="..\Directory.Build.props" />
   <PropertyGroup>
     <StrongNameKeyId>Microsoft</StrongNameKeyId>
+    <!-- don't warn on usage of BinaryFormatter from the projects which test / implement it -->
+    <NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
   </PropertyGroup>
 </Project>
