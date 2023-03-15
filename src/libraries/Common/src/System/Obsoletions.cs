@@ -156,5 +156,8 @@ namespace System
 
         internal const string RsaEncryptDecryptValueMessage = "RSA.EncryptValue and DecryptValue are not supported and throw NotSupportedException. Use RSA.Encrypt and RSA.Decrypt instead.";
         internal const string RsaEncryptDecryptDiagId = "SYSLIB0048";
+
+        internal const string LegacyFormatterMessage = "Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.";
+        internal const string LegacyFormatterDiagId = "SYSLIB0049";
     }
 }

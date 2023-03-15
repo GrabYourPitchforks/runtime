@@ -72,6 +72,7 @@ namespace System.Runtime.Serialization
         [System.CLSCompliantAttribute(false)]
         public ulong ToUInt64(object value) { throw null; }
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public static partial class FormatterServices
     {
         public static void CheckTypeSecurity(System.Type t, System.Runtime.Serialization.Formatters.TypeFilterLevel securityLevel) { }
@@ -108,12 +109,14 @@ namespace System.Runtime.Serialization
         System.Runtime.Serialization.ISurrogateSelector? GetNextSelector();
         System.Runtime.Serialization.ISerializationSurrogate? GetSurrogate(System.Type type, System.Runtime.Serialization.StreamingContext context, out System.Runtime.Serialization.ISurrogateSelector selector);
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial class ObjectIDGenerator
     {
         public ObjectIDGenerator() { }
         public virtual long GetId(object obj, out bool firstTime) { throw null; }
         public virtual long HasId(object obj, out bool firstTime) { throw null; }
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial class ObjectManager
     {
         public ObjectManager(System.Runtime.Serialization.ISurrogateSelector? selector, System.Runtime.Serialization.StreamingContext context) { }
@@ -142,6 +145,7 @@ namespace System.Runtime.Serialization
         public virtual void BindToName(System.Type serializedType, out string? assemblyName, out string? typeName) { throw null; }
         public abstract System.Type? BindToType(string assemblyName, string typeName);
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public sealed partial class SerializationObjectManager
     {
         public SerializationObjectManager(System.Runtime.Serialization.StreamingContext context) { }
