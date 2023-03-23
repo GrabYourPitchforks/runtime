@@ -404,7 +404,7 @@ namespace System.Runtime.Serialization
 
         public object GetRealObject(IObjectReference obj, string id)
         {
-            object? realObj = SurrogateDataContract.GetRealObject(obj, this.GetStreamingContext());
+            object? realObj = obj.GetRealObject(this.GetStreamingContext());
             // If GetRealObject returns null, it indicates that the object could not resolve itself because
             // it is missing information. This may occur in a case where multiple IObjectReference instances
             // depend on each other. BinaryFormatter supports this by fixing up the references later. These
