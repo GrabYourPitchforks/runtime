@@ -13337,6 +13337,7 @@ namespace System.Runtime.Serialization
     }
     public partial interface ISerializable
     {
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context);
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false)]
