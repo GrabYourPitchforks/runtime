@@ -98,11 +98,13 @@ namespace System.Runtime.Serialization
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute("BinaryFormatter serialization is not trim compatible because the type of objects being processed cannot be statically discovered.")]
         void Serialize(System.IO.Stream serializationStream, object graph);
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial interface ISerializationSurrogate
     {
         void GetObjectData(object obj, System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context);
         object SetObjectData(object obj, System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context, System.Runtime.Serialization.ISurrogateSelector? selector);
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial interface ISurrogateSelector
     {
         void ChainSelector(System.Runtime.Serialization.ISurrogateSelector selector);
@@ -153,6 +155,7 @@ namespace System.Runtime.Serialization
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute("SerializationObjectManager is not trim compatible because the type of objects being managed cannot be statically discovered.")]
         public void RegisterObject(object obj) { }
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial class SurrogateSelector : System.Runtime.Serialization.ISurrogateSelector
     {
         public SurrogateSelector() { }
@@ -165,22 +168,26 @@ namespace System.Runtime.Serialization
 }
 namespace System.Runtime.Serialization.Formatters
 {
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public enum FormatterAssemblyStyle
     {
         Simple = 0,
         Full = 1,
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public enum FormatterTypeStyle
     {
         TypesWhenNeeded = 0,
         TypesAlways = 1,
         XsdString = 2,
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial interface IFieldInfo
     {
         string[]? FieldNames { get; set; }
         System.Type[]? FieldTypes { get; set; }
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public enum TypeFilterLevel
     {
         Low = 2,
