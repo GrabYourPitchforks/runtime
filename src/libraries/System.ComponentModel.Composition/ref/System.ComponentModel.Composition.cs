@@ -541,6 +541,10 @@ namespace System.ComponentModel.Composition.Primitives
         public ComposablePartException(string? message, System.ComponentModel.Composition.Primitives.ICompositionElement? element, System.Exception? innerException) { }
         public ComposablePartException(string? message, System.Exception? innerException) { }
         public System.ComponentModel.Composition.Primitives.ICompositionElement? Element { get { throw null; } }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public partial class ContractBasedImportDefinition : System.ComponentModel.Composition.Primitives.ImportDefinition

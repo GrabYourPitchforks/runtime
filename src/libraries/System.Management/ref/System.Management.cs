@@ -238,6 +238,10 @@ namespace System.Management
         public ManagementException(string message, System.Exception innerException) { }
         public System.Management.ManagementStatus ErrorCode { get { throw null; } }
         public System.Management.ManagementBaseObject ErrorInformation { get { throw null; } }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public partial class ManagementNamedValueCollection : System.Collections.Specialized.NameObjectCollectionBase

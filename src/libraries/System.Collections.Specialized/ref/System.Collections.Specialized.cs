@@ -116,6 +116,8 @@ namespace System.Collections.Specialized
         protected void BaseSet(int index, object? value) { }
         protected void BaseSet(string? name, object? value) { }
         public virtual System.Collections.IEnumerator GetEnumerator() { throw null; }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public virtual void OnDeserialization(object? sender) { }
         void System.Collections.ICollection.CopyTo(System.Array array, int index) { }
@@ -183,6 +185,8 @@ namespace System.Collections.Specialized
         public bool Contains(object key) { throw null; }
         public void CopyTo(System.Array array, int index) { }
         public virtual System.Collections.IDictionaryEnumerator GetEnumerator() { throw null; }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public virtual void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public void Insert(int index, object key, object? value) { }
         protected virtual void OnDeserialization(object? sender) { }

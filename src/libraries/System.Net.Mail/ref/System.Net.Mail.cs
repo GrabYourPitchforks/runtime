@@ -209,7 +209,7 @@ namespace System.Net.Mail
         SpecifiedPickupDirectory = 1,
         PickupDirectoryFromIis = 2,
     }
-    public partial class SmtpException : System.Exception, System.Runtime.Serialization.ISerializable
+    public partial class SmtpException : System.Exception
     {
         public SmtpException() { }
         public SmtpException(System.Net.Mail.SmtpStatusCode statusCode) { }
@@ -218,10 +218,12 @@ namespace System.Net.Mail
         public SmtpException(string? message) { }
         public SmtpException(string? message, System.Exception? innerException) { }
         public System.Net.Mail.SmtpStatusCode StatusCode { get { throw null; } set { } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
     }
-    public partial class SmtpFailedRecipientException : System.Net.Mail.SmtpException, System.Runtime.Serialization.ISerializable
+    public partial class SmtpFailedRecipientException : System.Net.Mail.SmtpException
     {
         public SmtpFailedRecipientException() { }
         public SmtpFailedRecipientException(System.Net.Mail.SmtpStatusCode statusCode, string? failedRecipient) { }
@@ -231,10 +233,12 @@ namespace System.Net.Mail
         public SmtpFailedRecipientException(string? message, System.Exception? innerException) { }
         public SmtpFailedRecipientException(string? message, string? failedRecipient, System.Exception? innerException) { }
         public string? FailedRecipient { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
     }
-    public partial class SmtpFailedRecipientsException : System.Net.Mail.SmtpFailedRecipientException, System.Runtime.Serialization.ISerializable
+    public partial class SmtpFailedRecipientsException : System.Net.Mail.SmtpFailedRecipientException
     {
         public SmtpFailedRecipientsException() { }
         protected SmtpFailedRecipientsException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -242,6 +246,8 @@ namespace System.Net.Mail
         public SmtpFailedRecipientsException(string? message, System.Exception? innerException) { }
         public SmtpFailedRecipientsException(string? message, System.Net.Mail.SmtpFailedRecipientException[] innerExceptions) { }
         public System.Net.Mail.SmtpFailedRecipientException[] InnerExceptions { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         void System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
     }

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.ComponentModel;
 using System.Security.Cryptography;
 
 #if !NETCOREAPP3_1_OR_GREATER
@@ -55,6 +56,10 @@ namespace Internal.Cryptography
                 HResult = hr;
             }
 
+#if NET8_0_OR_GREATER
+            [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+            [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
             public override void GetObjectData(SerializationInfo info, StreamingContext context)
             {
                 // This exception shouldn't be serialized since it's a private implementation

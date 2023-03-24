@@ -194,6 +194,8 @@ namespace System.Threading
         public static System.Threading.ExecutionContext? Capture() { throw null; }
         public System.Threading.ExecutionContext CreateCopy() { throw null; }
         public void Dispose() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public static bool IsFlowSuppressed() { throw null; }
         public static void Restore(System.Threading.ExecutionContext executionContext) { }

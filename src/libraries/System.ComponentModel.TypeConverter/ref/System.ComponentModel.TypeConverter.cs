@@ -727,6 +727,8 @@ namespace System.ComponentModel
         public LicenseException(System.Type? type, object? instance, string? message) { }
         public LicenseException(System.Type? type, object? instance, string? message, System.Exception? innerException) { }
         public System.Type? LicensedType { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public sealed partial class LicenseManager
@@ -1588,6 +1590,8 @@ namespace System.ComponentModel
         public WarningException(string? message, string? helpUrl, string? helpTopic) { }
         public string? HelpTopic { get { throw null; } }
         public string? HelpUrl { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
 }

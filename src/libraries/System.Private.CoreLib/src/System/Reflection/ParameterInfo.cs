@@ -55,6 +55,8 @@ namespace System.Reflection
 
         public virtual int MetadataToken => MetadataToken_ParamDef;
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public object GetRealObject(StreamingContext context)
         {
             throw new PlatformNotSupportedException();

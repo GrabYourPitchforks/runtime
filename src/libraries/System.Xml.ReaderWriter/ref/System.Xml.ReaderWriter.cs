@@ -479,6 +479,8 @@ namespace System.Xml
         public int LinePosition { get { throw null; } }
         public override string Message { get { throw null; } }
         public string? SourceUri { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public partial class XmlImplementation
@@ -1878,6 +1880,8 @@ namespace System.Xml.Schema
         public override string Message { get { throw null; } }
         public System.Xml.Schema.XmlSchemaObject? SourceSchemaObject { get { throw null; } }
         public string? SourceUri { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public abstract partial class XmlSchemaExternal : System.Xml.Schema.XmlSchemaObject
@@ -1986,6 +1990,8 @@ namespace System.Xml.Schema
         public XmlSchemaInferenceException(string message) { }
         public XmlSchemaInferenceException(string message, System.Exception? innerException) { }
         public XmlSchemaInferenceException(string message, System.Exception? innerException, int lineNumber, int linePosition) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public partial class XmlSchemaInfo : System.Xml.Schema.IXmlSchemaInfo
@@ -2327,6 +2333,8 @@ namespace System.Xml.Schema
         public XmlSchemaValidationException(string? message, System.Exception? innerException) { }
         public XmlSchemaValidationException(string? message, System.Exception? innerException, int lineNumber, int linePosition) { }
         public object? SourceObject { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         protected internal void SetSourceObject(object? sourceObject) { }
     }
@@ -2844,6 +2852,8 @@ namespace System.Xml.Xsl
         protected XsltCompileException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public XsltCompileException(string message) { }
         public XsltCompileException(string message, System.Exception innerException) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public abstract partial class XsltContext : System.Xml.XmlNamespaceManager
@@ -2866,6 +2876,8 @@ namespace System.Xml.Xsl
         public virtual int LinePosition { get { throw null; } }
         public override string Message { get { throw null; } }
         public virtual string? SourceUri { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     public abstract partial class XsltMessageEncounteredEventArgs : System.EventArgs
