@@ -11158,6 +11158,7 @@ namespace System.Reflection
         Static = 16,
         InitOnly = 32,
         Literal = 64,
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         NotSerialized = 128,
         HasFieldRVA = 256,
         SpecialName = 512,
@@ -11811,6 +11812,7 @@ namespace System.Reflection
         SpecialName = 1024,
         RTSpecialName = 2048,
         Import = 4096,
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         Serializable = 8192,
         WindowsRuntime = 16384,
         UnicodeClass = 65536,
