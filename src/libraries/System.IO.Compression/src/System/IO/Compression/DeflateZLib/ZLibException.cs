@@ -59,6 +59,9 @@ namespace System.IO.Compression
             _zlibErrorMessage = info.GetString("zlibErrorMessage");
         }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+#endif
         void ISerializable.GetObjectData(SerializationInfo si, StreamingContext context)
         {
             base.GetObjectData(si, context);
