@@ -11592,7 +11592,10 @@ namespace System.Reflection
         Reserved4 = 32768,
         ReservedMask = 61440,
     }
-    public partial class ParameterInfo : System.Reflection.ICustomAttributeProvider, System.Runtime.Serialization.IObjectReference
+    public partial class ParameterInfo : System.Reflection.ICustomAttributeProvider
+#pragma warning disable SYSLIB0049 // IObjectReference is obsolete
+        , System.Runtime.Serialization.IObjectReference
+#pragma warning restore SYSLIB0049
     {
         protected System.Reflection.ParameterAttributes AttrsImpl;
         protected System.Type? ClassImpl;
@@ -13307,6 +13310,7 @@ namespace System.Runtime.Serialization
         void OnDeserialization(object? sender);
     }
     [System.CLSCompliantAttribute(false)]
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial interface IFormatterConverter
     {
         object Convert(object value, System.Type type);
@@ -13327,10 +13331,12 @@ namespace System.Runtime.Serialization
         uint ToUInt32(object value);
         ulong ToUInt64(object value);
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial interface IObjectReference
     {
         object GetRealObject(System.Runtime.Serialization.StreamingContext context);
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial interface ISafeSerializationData
     {
         void CompleteDeserialization(object deserialized);
@@ -13366,6 +13372,7 @@ namespace System.Runtime.Serialization
         public OptionalFieldAttribute() { }
         public int VersionAdded { get { throw null; } set { } }
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public sealed partial class SafeSerializationEventArgs : System.EventArgs
     {
         internal SafeSerializationEventArgs() { }
@@ -13390,8 +13397,10 @@ namespace System.Runtime.Serialization
     public sealed partial class SerializationInfo
     {
         [System.CLSCompliantAttribute(false)]
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public SerializationInfo(System.Type type, System.Runtime.Serialization.IFormatterConverter converter) { }
         [System.CLSCompliantAttribute(false)]
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public SerializationInfo(System.Type type, System.Runtime.Serialization.IFormatterConverter converter, bool requireSameTokenInPartialTrust) { }
         public string AssemblyName { get { throw null; } set { } }
         public string FullTypeName { get { throw null; } set { } }
@@ -13457,14 +13466,18 @@ namespace System.Runtime.Serialization
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public StreamingContext(System.Runtime.Serialization.StreamingContextStates state) { throw null; }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public StreamingContext(System.Runtime.Serialization.StreamingContextStates state, object? additional) { throw null; }
         public object? Context { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public System.Runtime.Serialization.StreamingContextStates State { get { throw null; } }
         public override bool Equals([System.Diagnostics.CodeAnalysis.NotNullWhenAttribute(true)] object? obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
     [System.FlagsAttribute]
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public enum StreamingContextStates
     {
         CrossProcess = 1,

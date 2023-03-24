@@ -47,6 +47,7 @@ namespace System.Runtime.Serialization
         protected abstract void WriteUInt64(ulong val, string name);
         protected abstract void WriteValueType(object obj, string name, System.Type memberType);
     }
+    [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
     public partial class FormatterConverter : System.Runtime.Serialization.IFormatterConverter
     {
         public FormatterConverter() { }

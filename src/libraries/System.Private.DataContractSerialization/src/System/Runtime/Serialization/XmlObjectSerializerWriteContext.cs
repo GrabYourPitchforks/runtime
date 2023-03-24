@@ -505,7 +505,9 @@ namespace System.Runtime.Serialization
         [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void GetObjectData(ISerializable obj, SerializationInfo serInfo, StreamingContext context)
         {
+#pragma warning disable SYSLIB0049 // ISerializable.GetObjectData is obsolete
             obj.GetObjectData(serInfo, context);
+#pragma warning restore SYSLIB0049
         }
 
         [RequiresDynamicCode(DataContract.SerializerAOTWarning)]
