@@ -58,6 +58,7 @@ namespace System.Text.RegularExpressions
             MatchTimeout = new TimeSpan(info.GetInt64("timeoutTicks"));
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
