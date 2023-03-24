@@ -5839,6 +5839,7 @@ namespace System
         public virtual bool IsSecurityCritical { get { throw null; } }
         public virtual bool IsSecuritySafeCritical { get { throw null; } }
         public virtual bool IsSecurityTransparent { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public virtual bool IsSerializable { get { throw null; } }
         public virtual bool IsSignatureType { get { throw null; } }
         public bool IsSpecialName { get { throw null; } }
@@ -11178,6 +11179,7 @@ namespace System.Reflection
         public bool IsFamilyOrAssembly { get { throw null; } }
         public bool IsInitOnly { get { throw null; } }
         public bool IsLiteral { get { throw null; } }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0049", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         public bool IsNotSerialized { get { throw null; } }
         public bool IsPinvokeImpl { get { throw null; } }
         public bool IsPrivate { get { throw null; } }
