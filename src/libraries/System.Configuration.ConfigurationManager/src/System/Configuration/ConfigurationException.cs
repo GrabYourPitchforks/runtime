@@ -24,6 +24,10 @@ namespace System.Configuration
         private int _line;
 
         // Default ctor is required for serialization.
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected ConfigurationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

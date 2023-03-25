@@ -19,6 +19,9 @@ namespace System.Net.Http.HPack
         {
         }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+#endif
         private HuffmanDecodingException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

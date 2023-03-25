@@ -35,6 +35,9 @@ namespace System.Data.Odbc
             HResult = HResults.OdbcException;
         }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+#endif
         private OdbcException(SerializationInfo si, StreamingContext sc) : base(si, sc)
         {
             // Ignoring ODBC32.RETCODE

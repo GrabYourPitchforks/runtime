@@ -101,6 +101,10 @@ namespace System.Configuration
             coll.CopyTo(_errors, 0);
         }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected ConfigurationErrorsException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {

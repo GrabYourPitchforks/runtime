@@ -78,6 +78,8 @@ namespace System.Collections.Specialized
             Reset(capacity);
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected NameObjectCollectionBase(SerializationInfo info, StreamingContext context)
         {
             throw new PlatformNotSupportedException();

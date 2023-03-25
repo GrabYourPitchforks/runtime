@@ -47,6 +47,10 @@ namespace System.ComponentModel.Composition.Primitives
         /// <exception cref="InvalidCastException">
         ///     <paramref name="info"/> contains a value that cannot be cast to the correct type.
         /// </exception>
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected ComposablePartException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _element = (ICompositionElement?)info.GetValue("Element", typeof(ICompositionElement));

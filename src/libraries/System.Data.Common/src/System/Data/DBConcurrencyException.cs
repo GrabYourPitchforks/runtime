@@ -32,6 +32,7 @@ namespace System.Data
             _dataRows = dataRows;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         private DBConcurrencyException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

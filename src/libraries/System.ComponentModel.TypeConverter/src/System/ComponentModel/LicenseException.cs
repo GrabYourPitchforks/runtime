@@ -58,6 +58,8 @@ namespace System.ComponentModel
         /// <summary>
         /// Need this constructor since Exception implements ISerializable.
         /// </summary>
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected LicenseException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

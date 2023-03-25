@@ -39,6 +39,8 @@ namespace System
             _innerException = innerException;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected Exception(SerializationInfo info, StreamingContext context)
         {
             ArgumentNullException.ThrowIfNull(info);
