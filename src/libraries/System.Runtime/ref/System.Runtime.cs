@@ -94,6 +94,8 @@ namespace System
         public AggregateException() { }
         public AggregateException(System.Collections.Generic.IEnumerable<System.Exception> innerExceptions) { }
         public AggregateException(params System.Exception[] innerExceptions) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected AggregateException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public AggregateException(string? message) { }
         public AggregateException(string? message, System.Collections.Generic.IEnumerable<System.Exception> innerExceptions) { }
@@ -235,6 +237,8 @@ namespace System
     public partial class ApplicationException : System.Exception
     {
         public ApplicationException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ApplicationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ApplicationException(string? message) { }
         public ApplicationException(string? message, System.Exception? innerException) { }
@@ -3847,6 +3851,8 @@ namespace System
     public partial class InvalidTimeZoneException : System.Exception
     {
         public InvalidTimeZoneException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected InvalidTimeZoneException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public InvalidTimeZoneException(string? message) { }
         public InvalidTimeZoneException(string? message, System.Exception? innerException) { }
@@ -5276,6 +5282,8 @@ namespace System
     public partial class SystemException : System.Exception
     {
         public SystemException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected SystemException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SystemException(string? message) { }
         public SystemException(string? message, System.Exception? innerException) { }
@@ -5570,6 +5578,8 @@ namespace System
     public partial class TimeZoneNotFoundException : System.Exception
     {
         public TimeZoneNotFoundException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TimeZoneNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TimeZoneNotFoundException(string? message) { }
         public TimeZoneNotFoundException(string? message, System.Exception? innerException) { }

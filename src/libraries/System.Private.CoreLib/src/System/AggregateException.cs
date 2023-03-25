@@ -184,6 +184,8 @@ namespace System
         /// contains contextual information about the source or destination. </param>
         /// <exception cref="System.ArgumentNullException">The <paramref name="info"/> argument is null.</exception>
         /// <exception cref="System.Runtime.Serialization.SerializationException">The exception could not be deserialized correctly.</exception>
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected AggregateException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {

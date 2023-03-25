@@ -24,6 +24,7 @@ namespace System.Runtime.CompilerServices
             _wrappedException = thrownObject;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         private RuntimeWrappedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

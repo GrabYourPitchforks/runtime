@@ -282,6 +282,8 @@ namespace System.Threading
     public partial class LockRecursionException : System.Exception
     {
         public LockRecursionException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected LockRecursionException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public LockRecursionException(string? message) { }
         public LockRecursionException(string? message, System.Exception? innerException) { }

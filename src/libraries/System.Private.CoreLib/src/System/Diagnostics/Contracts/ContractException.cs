@@ -35,6 +35,7 @@ namespace System.Diagnostics.Contracts
             _condition = condition;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         private ContractException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
