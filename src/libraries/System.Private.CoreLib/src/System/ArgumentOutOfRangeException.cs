@@ -59,6 +59,8 @@ namespace System
             HResult = HResults.COR_E_ARGUMENTOUTOFRANGE;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected ArgumentOutOfRangeException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

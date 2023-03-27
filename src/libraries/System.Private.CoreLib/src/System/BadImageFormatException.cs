@@ -54,6 +54,8 @@ namespace System
             _fileName = fileName;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected BadImageFormatException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

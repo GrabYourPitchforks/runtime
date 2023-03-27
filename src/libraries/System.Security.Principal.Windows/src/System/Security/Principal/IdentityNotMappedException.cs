@@ -33,6 +33,7 @@ namespace System.Security.Principal
             _unmappedIdentities = unmappedIdentities;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         private IdentityNotMappedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

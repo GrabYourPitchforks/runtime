@@ -30,6 +30,8 @@ namespace System.Net.Mail
             _innerExceptions = smtpException == null ? Array.Empty<SmtpFailedRecipientException>() : new SmtpFailedRecipientException[] { smtpException };
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected SmtpFailedRecipientsException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _innerExceptions = (SmtpFailedRecipientException[])info.GetValue("innerExceptions", typeof(SmtpFailedRecipientException[]))!;

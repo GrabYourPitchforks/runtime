@@ -28,6 +28,7 @@ namespace System.Runtime.CompilerServices
             UnmatchedValue = unmatchedValue;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         private SwitchExpressionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

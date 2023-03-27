@@ -229,6 +229,8 @@ namespace System.Security.Claims
             SafeAddClaims(other._instanceClaims);
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected ClaimsIdentity(SerializationInfo info, StreamingContext context)
         {
             throw new PlatformNotSupportedException();

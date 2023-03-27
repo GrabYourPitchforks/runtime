@@ -24,6 +24,8 @@ namespace System.Net.Mail
 
         public SmtpFailedRecipientException(string? message, Exception? innerException) : base(message, innerException) { }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected SmtpFailedRecipientException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _failedRecipient = info.GetString("failedRecipient");

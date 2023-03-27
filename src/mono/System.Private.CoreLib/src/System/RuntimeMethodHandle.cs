@@ -9,7 +9,6 @@ using System.Text;
 
 namespace System
 {
-    [Serializable]
     public struct RuntimeMethodHandle : IEquatable<RuntimeMethodHandle>, ISerializable
     {
         private readonly IntPtr value;
@@ -17,11 +16,6 @@ namespace System
         internal RuntimeMethodHandle(IntPtr v)
         {
             value = v;
-        }
-
-        private RuntimeMethodHandle(SerializationInfo info, StreamingContext context)
-        {
-            throw new PlatformNotSupportedException();
         }
 
         public IntPtr Value => value;

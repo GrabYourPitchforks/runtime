@@ -26,6 +26,7 @@ namespace System.Xml.Xsl.XPath
             : base(resId, args)
         { } // queryString will be set later
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         internal XPathCompileException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

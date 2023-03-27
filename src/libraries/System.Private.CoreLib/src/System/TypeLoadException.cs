@@ -39,6 +39,8 @@ namespace System
 
         public string TypeName => _className ?? string.Empty;
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected TypeLoadException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _className = info.GetString("TypeLoadClassName");

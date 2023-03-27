@@ -52,6 +52,8 @@ namespace System
             Create(target, trackResurrection);
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected WeakReference(SerializationInfo info, StreamingContext context)
         {
             ArgumentNullException.ThrowIfNull(info);

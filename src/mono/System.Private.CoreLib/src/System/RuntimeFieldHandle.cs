@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 
 namespace System
 {
-    [Serializable]
     public struct RuntimeFieldHandle : IEquatable<RuntimeFieldHandle>, ISerializable
     {
         private readonly IntPtr value;
@@ -16,11 +15,6 @@ namespace System
         internal RuntimeFieldHandle(IntPtr v)
         {
             value = v;
-        }
-
-        private RuntimeFieldHandle(SerializationInfo info, StreamingContext context)
-        {
-            throw new PlatformNotSupportedException();
         }
 
         [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]

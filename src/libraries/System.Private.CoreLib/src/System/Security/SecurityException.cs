@@ -51,6 +51,8 @@ namespace System.Security
             PermissionState = state;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected SecurityException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

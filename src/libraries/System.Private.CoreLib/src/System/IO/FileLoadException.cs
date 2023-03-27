@@ -68,6 +68,8 @@ namespace System.IO
             return s;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected FileLoadException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

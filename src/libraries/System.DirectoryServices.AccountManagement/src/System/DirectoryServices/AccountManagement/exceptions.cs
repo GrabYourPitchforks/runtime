@@ -23,6 +23,10 @@ namespace System.DirectoryServices.AccountManagement
                     base(message, innerException)
         { }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected PrincipalException(SerializationInfo info, StreamingContext context) :
                     base(info, context)
         {
@@ -41,6 +45,10 @@ namespace System.DirectoryServices.AccountManagement
                 base(message, innerException)
         { }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected MultipleMatchesException(SerializationInfo info, StreamingContext context) :
                     base(info, context)
         {
@@ -59,8 +67,11 @@ namespace System.DirectoryServices.AccountManagement
                 base(message, innerException)
         { }
 
-        protected NoMatchingPrincipalException(SerializationInfo info, StreamingContext context) :
-                    base(info, context)
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
+        protected NoMatchingPrincipalException(SerializationInfo info, StreamingContext context)
         {
             throw new PlatformNotSupportedException();
         }
@@ -78,6 +89,10 @@ namespace System.DirectoryServices.AccountManagement
             base(message, innerException)
         { }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected PasswordException(SerializationInfo info, StreamingContext context) :
                     base(info, context)
         {
@@ -96,6 +111,10 @@ namespace System.DirectoryServices.AccountManagement
             base(message, innerException)
         { }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected PrincipalExistsException(SerializationInfo info, StreamingContext context) :
                     base(info, context)
         {
@@ -131,6 +150,10 @@ namespace System.DirectoryServices.AccountManagement
             _serverName = serverName;
         }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected PrincipalServerDownException(SerializationInfo info, StreamingContext context) :
                     base(info, context)
         {
@@ -173,6 +196,10 @@ namespace System.DirectoryServices.AccountManagement
             _errorCode = errorCode;
         }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected PrincipalOperationException(SerializationInfo info, StreamingContext context) :
                     base(info, context)
         {

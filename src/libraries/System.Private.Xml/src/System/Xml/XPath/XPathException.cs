@@ -23,6 +23,8 @@ namespace System.Xml.XPath
         // message == null for created V2 exceptions; the exception message is stored in Exception._message
         private readonly string? _message;
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected XPathException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _res = (string)info.GetValue("res", typeof(string))!;

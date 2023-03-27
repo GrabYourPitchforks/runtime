@@ -52,6 +52,8 @@ namespace System
             HResult = HResults.COR_E_NOTFINITENUMBER;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected NotFiniteNumberException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _offendingNumber = info.GetDouble("OffendingNumber"); // Do not rename (binary serialization)

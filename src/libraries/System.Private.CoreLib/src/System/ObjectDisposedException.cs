@@ -41,6 +41,8 @@ namespace System
             HResult = HResults.COR_E_OBJECTDISPOSED;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected ObjectDisposedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

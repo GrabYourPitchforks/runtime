@@ -31,6 +31,7 @@ namespace System.Security.AccessControl
             _privilegeName = privilege;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         private PrivilegeNotHeldException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _privilegeName = info.GetString(nameof(PrivilegeName));

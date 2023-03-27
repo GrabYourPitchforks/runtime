@@ -24,6 +24,8 @@ namespace System.Xml.Xsl
         // message == null for created V2 exceptions; the exception message is stored in Exception._message
         private readonly string? _message;
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected XsltException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _res = (string)info.GetValue("res", typeof(string))!;
@@ -152,6 +154,8 @@ namespace System.Xml.Xsl
     [System.Runtime.CompilerServices.TypeForwardedFrom("System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public class XsltCompileException : XsltException
     {
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected XsltCompileException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

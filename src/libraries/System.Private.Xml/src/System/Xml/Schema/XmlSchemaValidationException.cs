@@ -17,6 +17,8 @@ namespace System.Xml.Schema
     {
         private object? _sourceNodeObject;
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected XmlSchemaValidationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

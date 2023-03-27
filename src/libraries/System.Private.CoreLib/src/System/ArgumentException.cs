@@ -63,6 +63,8 @@ namespace System
             HResult = HResults.COR_E_ARGUMENT;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected ArgumentException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

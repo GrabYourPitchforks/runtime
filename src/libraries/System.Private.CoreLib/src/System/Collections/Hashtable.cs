@@ -362,6 +362,8 @@ namespace System.Collections
                 Add(e.Key, e.Value);
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected Hashtable(SerializationInfo info, StreamingContext context)
         {
             // We can't do anything with the keys and values until the entire graph has been deserialized
@@ -1253,11 +1255,6 @@ namespace System.Collections
             internal SyncHashtable(Hashtable table) : base(false)
             {
                 _table = table;
-            }
-
-            internal SyncHashtable(SerializationInfo info, StreamingContext context) : base(info, context)
-            {
-                throw new PlatformNotSupportedException();
             }
 
             [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]

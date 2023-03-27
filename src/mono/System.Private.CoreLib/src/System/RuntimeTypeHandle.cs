@@ -40,7 +40,6 @@ using System.Threading;
 
 namespace System
 {
-    [Serializable]
     public struct RuntimeTypeHandle : IEquatable<RuntimeTypeHandle>, ISerializable
     {
         private readonly IntPtr value;
@@ -53,11 +52,6 @@ namespace System
         internal RuntimeTypeHandle(RuntimeType type)
             : this(type._impl.value)
         {
-        }
-
-        private RuntimeTypeHandle(SerializationInfo info, StreamingContext context)
-        {
-            throw new PlatformNotSupportedException();
         }
 
         public IntPtr Value

@@ -130,6 +130,8 @@ namespace System.Collections.Generic
             }
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected HashSet(SerializationInfo info, StreamingContext context)
         {
             // We can't do anything with the keys and values until the entire graph has been

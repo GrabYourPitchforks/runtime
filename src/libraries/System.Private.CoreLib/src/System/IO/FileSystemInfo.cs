@@ -21,6 +21,8 @@ namespace System.IO
         private string? _linkTarget;
         private bool _linkTargetIsValid;
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected FileSystemInfo(SerializationInfo info, StreamingContext context)
         {
             throw new PlatformNotSupportedException();

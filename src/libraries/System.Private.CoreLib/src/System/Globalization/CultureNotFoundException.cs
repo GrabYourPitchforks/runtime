@@ -57,6 +57,8 @@ namespace System.Globalization
             _invalidCultureId = invalidCultureId;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected CultureNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

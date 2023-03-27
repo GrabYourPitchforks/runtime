@@ -168,6 +168,8 @@ namespace System.Security.Cryptography.X509Certificates
         {
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected X509Certificate2(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

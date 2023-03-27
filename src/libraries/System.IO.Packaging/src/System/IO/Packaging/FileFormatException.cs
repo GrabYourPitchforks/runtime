@@ -113,6 +113,10 @@ namespace System.IO
             _sourceUri = sourceUri;
         }
 
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected FileFormatException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             string? sourceUriString = info.GetString("SourceUri");

@@ -57,6 +57,8 @@ namespace System.ComponentModel
             NativeErrorCode = Marshal.GetLastPInvokeError();
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected Win32Exception(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             NativeErrorCode = info.GetInt32(nameof(NativeErrorCode));

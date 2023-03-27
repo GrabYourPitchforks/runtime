@@ -25,6 +25,7 @@ namespace System.Reflection
             HResult = HResults.COR_E_REFLECTIONTYPELOAD;
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         private ReflectionTypeLoadException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

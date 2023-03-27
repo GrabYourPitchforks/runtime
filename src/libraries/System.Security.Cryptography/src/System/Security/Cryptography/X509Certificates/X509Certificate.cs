@@ -208,6 +208,8 @@ namespace System.Security.Cryptography.X509Certificates
         }
 
 #pragma warning disable SYSLIB0026
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public X509Certificate(SerializationInfo info, StreamingContext context) : this()
 #pragma warning restore SYSLIB0026
         {

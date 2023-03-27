@@ -28,6 +28,8 @@ namespace System.Xml.Schema
         // message == null for V2 or higher exceptions; the exception message is stored on the base class (Exception._message)
         private readonly string? _message;
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected XmlSchemaException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             _res = (string?)info.GetValue("res", typeof(string));

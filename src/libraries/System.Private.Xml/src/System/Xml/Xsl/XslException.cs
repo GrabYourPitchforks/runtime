@@ -17,6 +17,8 @@ namespace System.Xml.Xsl
             : base(CreateMessage(res, args), inner)
         { }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public XslTransformException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
@@ -111,6 +113,7 @@ namespace System.Xml.Xsl
             SetSourceLineInfo(lineInfo);
         }
 
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
         internal XslLoadException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

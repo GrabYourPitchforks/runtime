@@ -85,6 +85,10 @@ namespace System.Text.Json
         /// <exception cref="ArgumentNullException">
         /// Thrown when <paramref name="info"/> is <see langword="null" />.
         /// </exception>
+#if NET8_0_OR_GREATER
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         protected JsonException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             LineNumber = (long?)info.GetValue("LineNumber", typeof(long?));
