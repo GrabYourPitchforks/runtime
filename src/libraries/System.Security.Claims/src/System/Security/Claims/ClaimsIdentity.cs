@@ -245,6 +245,8 @@ namespace System.Security.Claims
         /// The <see cref="SerializationInfo"/> to read from.
         /// </param>
         /// <exception cref="ArgumentNullException">Thrown is the <paramref name="info"/> is null.</exception>
+        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected ClaimsIdentity(SerializationInfo info)
         {
             throw new PlatformNotSupportedException();
