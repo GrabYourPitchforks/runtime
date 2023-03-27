@@ -46,6 +46,8 @@ namespace System
     public partial class AccessViolationException : System.SystemException
     {
         public AccessViolationException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected AccessViolationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public AccessViolationException(string? message) { }
         public AccessViolationException(string? message, System.Exception? innerException) { }
@@ -230,6 +232,8 @@ namespace System
     public partial class AppDomainUnloadedException : System.SystemException
     {
         public AppDomainUnloadedException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected AppDomainUnloadedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public AppDomainUnloadedException(string? message) { }
         public AppDomainUnloadedException(string? message, System.Exception? innerException) { }
@@ -275,6 +279,8 @@ namespace System
     public partial class ArgumentException : System.SystemException
     {
         public ArgumentException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ArgumentException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ArgumentException(string? message) { }
         public ArgumentException(string? message, System.Exception? innerException) { }
@@ -290,6 +296,8 @@ namespace System
     public partial class ArgumentNullException : System.ArgumentException
     {
         public ArgumentNullException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ArgumentNullException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ArgumentNullException(string? paramName) { }
         public ArgumentNullException(string? message, System.Exception? innerException) { }
@@ -301,6 +309,8 @@ namespace System
     public partial class ArgumentOutOfRangeException : System.ArgumentException
     {
         public ArgumentOutOfRangeException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ArgumentOutOfRangeException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ArgumentOutOfRangeException(string? paramName) { }
         public ArgumentOutOfRangeException(string? message, System.Exception? innerException) { }
@@ -322,6 +332,8 @@ namespace System
     public partial class ArithmeticException : System.SystemException
     {
         public ArithmeticException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ArithmeticException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ArithmeticException(string? message) { }
         public ArithmeticException(string? message, System.Exception? innerException) { }
@@ -503,6 +515,8 @@ namespace System
     public partial class ArrayTypeMismatchException : System.SystemException
     {
         public ArrayTypeMismatchException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ArrayTypeMismatchException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ArrayTypeMismatchException(string? message) { }
         public ArrayTypeMismatchException(string? message, System.Exception? innerException) { }
@@ -587,6 +601,8 @@ namespace System
     public partial class BadImageFormatException : System.SystemException
     {
         public BadImageFormatException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected BadImageFormatException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public BadImageFormatException(string? message) { }
         public BadImageFormatException(string? message, System.Exception? inner) { }
@@ -871,6 +887,8 @@ namespace System
     public partial class CannotUnloadAppDomainException : System.SystemException
     {
         public CannotUnloadAppDomainException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected CannotUnloadAppDomainException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public CannotUnloadAppDomainException(string? message) { }
         public CannotUnloadAppDomainException(string? message, System.Exception? innerException) { }
@@ -1071,6 +1089,8 @@ namespace System
     public partial class ContextMarshalException : System.SystemException
     {
         public ContextMarshalException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ContextMarshalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ContextMarshalException(string? message) { }
         public ContextMarshalException(string? message, System.Exception? inner) { }
@@ -2146,6 +2166,8 @@ namespace System
     public partial class DivideByZeroException : System.ArithmeticException
     {
         public DivideByZeroException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected DivideByZeroException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public DivideByZeroException(string? message) { }
         public DivideByZeroException(string? message, System.Exception? innerException) { }
@@ -2344,6 +2366,8 @@ namespace System
     public partial class DuplicateWaitObjectException : System.ArgumentException
     {
         public DuplicateWaitObjectException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected DuplicateWaitObjectException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public DuplicateWaitObjectException(string? parameterName) { }
         public DuplicateWaitObjectException(string? message, System.Exception? innerException) { }
@@ -2352,6 +2376,8 @@ namespace System
     public partial class EntryPointNotFoundException : System.TypeLoadException
     {
         public EntryPointNotFoundException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected EntryPointNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public EntryPointNotFoundException(string? message) { }
         public EntryPointNotFoundException(string? message, System.Exception? inner) { }
@@ -2590,6 +2616,8 @@ namespace System
     public partial class FormatException : System.SystemException
     {
         public FormatException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected FormatException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public FormatException(string? message) { }
         public FormatException(string? message, System.Exception? innerException) { }
@@ -3830,6 +3858,8 @@ namespace System
     public partial class InvalidCastException : System.SystemException
     {
         public InvalidCastException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected InvalidCastException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public InvalidCastException(string? message) { }
         public InvalidCastException(string? message, System.Exception? innerException) { }
@@ -3838,6 +3868,8 @@ namespace System
     public partial class InvalidOperationException : System.SystemException
     {
         public InvalidOperationException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected InvalidOperationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public InvalidOperationException(string? message) { }
         public InvalidOperationException(string? message, System.Exception? innerException) { }
@@ -4134,6 +4166,8 @@ namespace System
     public partial class MemberAccessException : System.SystemException
     {
         public MemberAccessException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected MemberAccessException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MemberAccessException(string? message) { }
         public MemberAccessException(string? message, System.Exception? inner) { }
@@ -4167,6 +4201,8 @@ namespace System
     public partial class MethodAccessException : System.MemberAccessException
     {
         public MethodAccessException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected MethodAccessException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MethodAccessException(string? message) { }
         public MethodAccessException(string? message, System.Exception? inner) { }
@@ -4182,6 +4218,8 @@ namespace System
     public partial class MissingFieldException : System.MissingMemberException
     {
         public MissingFieldException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected MissingFieldException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MissingFieldException(string? message) { }
         public MissingFieldException(string? message, System.Exception? inner) { }
@@ -4194,6 +4232,8 @@ namespace System
         protected string? MemberName;
         protected byte[]? Signature;
         public MissingMemberException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected MissingMemberException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MissingMemberException(string? message) { }
         public MissingMemberException(string? message, System.Exception? inner) { }
@@ -4206,6 +4246,8 @@ namespace System
     public partial class MissingMethodException : System.MissingMemberException
     {
         public MissingMethodException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected MissingMethodException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MissingMethodException(string? message) { }
         public MissingMethodException(string? message, System.Exception? inner) { }
@@ -4280,6 +4322,8 @@ namespace System
     {
         public NotFiniteNumberException() { }
         public NotFiniteNumberException(double offendingNumber) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected NotFiniteNumberException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public NotFiniteNumberException(string? message) { }
         public NotFiniteNumberException(string? message, double offendingNumber) { }
@@ -4293,6 +4337,8 @@ namespace System
     public partial class NotImplementedException : System.SystemException
     {
         public NotImplementedException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected NotImplementedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public NotImplementedException(string? message) { }
         public NotImplementedException(string? message, System.Exception? inner) { }
@@ -4300,6 +4346,8 @@ namespace System
     public partial class NotSupportedException : System.SystemException
     {
         public NotSupportedException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected NotSupportedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public NotSupportedException(string? message) { }
         public NotSupportedException(string? message, System.Exception? innerException) { }
@@ -4329,6 +4377,8 @@ namespace System
     public partial class NullReferenceException : System.SystemException
     {
         public NullReferenceException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected NullReferenceException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public NullReferenceException(string? message) { }
         public NullReferenceException(string? message, System.Exception? innerException) { }
@@ -4347,6 +4397,8 @@ namespace System
     }
     public partial class ObjectDisposedException : System.InvalidOperationException
     {
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ObjectDisposedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ObjectDisposedException(string? objectName) { }
         public ObjectDisposedException(string? message, System.Exception? innerException) { }
@@ -4409,6 +4461,8 @@ namespace System
     public partial class OperationCanceledException : System.SystemException
     {
         public OperationCanceledException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected OperationCanceledException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public OperationCanceledException(string? message) { }
         public OperationCanceledException(string? message, System.Exception? innerException) { }
@@ -4420,6 +4474,8 @@ namespace System
     public partial class OutOfMemoryException : System.SystemException
     {
         public OutOfMemoryException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected OutOfMemoryException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public OutOfMemoryException(string? message) { }
         public OutOfMemoryException(string? message, System.Exception? innerException) { }
@@ -4427,6 +4483,8 @@ namespace System
     public partial class OverflowException : System.ArithmeticException
     {
         public OverflowException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected OverflowException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public OverflowException(string? message) { }
         public OverflowException(string? message, System.Exception? innerException) { }
@@ -4455,6 +4513,8 @@ namespace System
     public partial class PlatformNotSupportedException : System.NotSupportedException
     {
         public PlatformNotSupportedException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected PlatformNotSupportedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public PlatformNotSupportedException(string? message) { }
         public PlatformNotSupportedException(string? message, System.Exception? inner) { }
@@ -4508,6 +4568,8 @@ namespace System
     public partial class RankException : System.SystemException
     {
         public RankException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected RankException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public RankException(string? message) { }
         public RankException(string? message, System.Exception? innerException) { }
@@ -5377,6 +5439,8 @@ namespace System
     public partial class TimeoutException : System.SystemException
     {
         public TimeoutException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TimeoutException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TimeoutException(string? message) { }
         public TimeoutException(string? message, System.Exception? innerException) { }
@@ -6111,6 +6175,8 @@ namespace System
     public partial class TypeAccessException : System.TypeLoadException
     {
         public TypeAccessException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TypeAccessException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TypeAccessException(string? message) { }
         public TypeAccessException(string? message, System.Exception? inner) { }
@@ -6160,6 +6226,8 @@ namespace System
     public partial class TypeLoadException : System.SystemException
     {
         public TypeLoadException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TypeLoadException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TypeLoadException(string? message) { }
         public TypeLoadException(string? message, System.Exception? inner) { }
@@ -6172,6 +6240,8 @@ namespace System
     public partial class TypeUnloadedException : System.SystemException
     {
         public TypeUnloadedException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TypeUnloadedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TypeUnloadedException(string? message) { }
         public TypeUnloadedException(string? message, System.Exception? innerException) { }
@@ -6899,6 +6969,8 @@ namespace System
     public partial class UnauthorizedAccessException : System.SystemException
     {
         public UnauthorizedAccessException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected UnauthorizedAccessException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public UnauthorizedAccessException(string? message) { }
         public UnauthorizedAccessException(string? message, System.Exception? inner) { }
@@ -7139,6 +7211,8 @@ namespace System
     {
         public WeakReference(object? target) { }
         public WeakReference(object? target, bool trackResurrection) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected WeakReference(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public virtual bool IsAlive { get { throw null; } }
         public virtual object? Target { get { throw null; } set { } }
@@ -7404,6 +7478,8 @@ namespace System.Collections
         public Hashtable(int capacity, float loadFactor, System.Collections.IEqualityComparer? equalityComparer) { }
         [System.ObsoleteAttribute("This constructor has been deprecated. Use Hashtable(int, float, IEqualityComparer) instead.")]
         public Hashtable(int capacity, float loadFactor, System.Collections.IHashCodeProvider? hcp, System.Collections.IComparer? comparer) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected Hashtable(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         [System.ObsoleteAttribute("Hashtable.comparer has been deprecated. Use the KeyComparer properties instead.")]
         protected System.Collections.IComparer? comparer { get { throw null; } set { } }
@@ -7609,6 +7685,8 @@ namespace System.Collections.Generic
     public partial class KeyNotFoundException : System.SystemException
     {
         public KeyNotFoundException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected KeyNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public KeyNotFoundException(string? message) { }
         public KeyNotFoundException(string? message, System.Exception? innerException) { }
@@ -8503,6 +8581,8 @@ namespace System.Globalization
     public partial class CultureNotFoundException : System.ArgumentException
     {
         public CultureNotFoundException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected CultureNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public CultureNotFoundException(string? message) { }
         public CultureNotFoundException(string? message, System.Exception? innerException) { }
@@ -9381,6 +9461,8 @@ namespace System.IO
     public partial class DirectoryNotFoundException : System.IO.IOException
     {
         public DirectoryNotFoundException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected DirectoryNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public DirectoryNotFoundException(string? message) { }
         public DirectoryNotFoundException(string? message, System.Exception? innerException) { }
@@ -9388,6 +9470,8 @@ namespace System.IO
     public partial class EndOfStreamException : System.IO.IOException
     {
         public EndOfStreamException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected EndOfStreamException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public EndOfStreamException(string? message) { }
         public EndOfStreamException(string? message, System.Exception? innerException) { }
@@ -9565,6 +9649,8 @@ namespace System.IO
     public partial class FileLoadException : System.IO.IOException
     {
         public FileLoadException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected FileLoadException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public FileLoadException(string? message) { }
         public FileLoadException(string? message, System.Exception? inner) { }
@@ -9590,6 +9676,8 @@ namespace System.IO
     public partial class FileNotFoundException : System.IO.IOException
     {
         public FileNotFoundException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected FileNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public FileNotFoundException(string? message) { }
         public FileNotFoundException(string? message, System.Exception? innerException) { }
@@ -9708,6 +9796,8 @@ namespace System.IO
         protected string FullPath;
         protected string OriginalPath;
         protected FileSystemInfo() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected FileSystemInfo(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public System.IO.FileAttributes Attributes { get { throw null; } set { } }
         public System.DateTime CreationTime { get { throw null; } set { } }
@@ -9745,6 +9835,8 @@ namespace System.IO
     public partial class IOException : System.SystemException
     {
         public IOException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected IOException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public IOException(string? message) { }
         public IOException(string? message, System.Exception? innerException) { }
@@ -9861,6 +9953,8 @@ namespace System.IO
     public partial class PathTooLongException : System.IO.IOException
     {
         public PathTooLongException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected PathTooLongException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public PathTooLongException(string? message) { }
         public PathTooLongException(string? message, System.Exception? innerException) { }
@@ -11116,6 +11210,8 @@ namespace System.Reflection
     public partial class CustomAttributeFormatException : System.FormatException
     {
         public CustomAttributeFormatException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected CustomAttributeFormatException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public CustomAttributeFormatException(string? message) { }
         public CustomAttributeFormatException(string? message, System.Exception? inner) { }
@@ -11316,6 +11412,8 @@ namespace System.Reflection
     public partial class InvalidFilterCriteriaException : System.ApplicationException
     {
         public InvalidFilterCriteriaException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected InvalidFilterCriteriaException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public InvalidFilterCriteriaException(string? message) { }
         public InvalidFilterCriteriaException(string? message, System.Exception? inner) { }
@@ -11837,6 +11935,8 @@ namespace System.Reflection
     {
         public StrongNameKeyPair(byte[] keyPairArray) { }
         public StrongNameKeyPair(System.IO.FileStream keyPairFile) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected StrongNameKeyPair(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public StrongNameKeyPair(string keyPairContainer) { }
         public byte[] PublicKey { get { throw null; } }
@@ -11846,6 +11946,8 @@ namespace System.Reflection
     public partial class TargetException : System.ApplicationException
     {
         public TargetException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TargetException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TargetException(string? message) { }
         public TargetException(string? message, System.Exception? inner) { }
@@ -12022,6 +12124,8 @@ namespace System.Resources
     public partial class MissingManifestResourceException : System.SystemException
     {
         public MissingManifestResourceException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected MissingManifestResourceException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MissingManifestResourceException(string? message) { }
         public MissingManifestResourceException(string? message, System.Exception? inner) { }
@@ -12029,6 +12133,8 @@ namespace System.Resources
     public partial class MissingSatelliteAssemblyException : System.SystemException
     {
         public MissingSatelliteAssemblyException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected MissingSatelliteAssemblyException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public MissingSatelliteAssemblyException(string? message) { }
         public MissingSatelliteAssemblyException(string? message, System.Exception? inner) { }
@@ -13083,6 +13189,8 @@ namespace System.Runtime.InteropServices
     public partial class ExternalException : System.SystemException
     {
         public ExternalException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ExternalException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ExternalException(string? message) { }
         public ExternalException(string? message, System.Exception? inner) { }
@@ -13472,6 +13580,8 @@ namespace System.Runtime.Serialization
     public partial class SerializationException : System.SystemException
     {
         public SerializationException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected SerializationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SerializationException(string? message) { }
         public SerializationException(string? message, System.Exception? innerException) { }
@@ -13811,6 +13921,8 @@ namespace System.Security
     public partial class SecurityException : System.SystemException
     {
         public SecurityException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected SecurityException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SecurityException(string? message) { }
         public SecurityException(string? message, System.Exception? inner) { }
@@ -13873,6 +13985,8 @@ namespace System.Security
     public partial class VerificationException : System.SystemException
     {
         public VerificationException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected VerificationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public VerificationException(string? message) { }
         public VerificationException(string? message, System.Exception? innerException) { }
@@ -13884,6 +13998,8 @@ namespace System.Security.Cryptography
     {
         public CryptographicException() { }
         public CryptographicException(int hr) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected CryptographicException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public CryptographicException(string? message) { }
         public CryptographicException(string? message, System.Exception? inner) { }
@@ -14808,6 +14924,8 @@ namespace System.Threading.Tasks
     public partial class TaskCanceledException : System.OperationCanceledException
     {
         public TaskCanceledException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TaskCanceledException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TaskCanceledException(string? message) { }
         public TaskCanceledException(string? message, System.Exception? innerException) { }
@@ -15034,6 +15152,8 @@ namespace System.Threading.Tasks
     {
         public TaskSchedulerException() { }
         public TaskSchedulerException(System.Exception? innerException) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected TaskSchedulerException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TaskSchedulerException(string? message) { }
         public TaskSchedulerException(string? message, System.Exception? innerException) { }
@@ -15274,6 +15394,8 @@ namespace System
         public static readonly string UriSchemeTelnet;
         public static readonly string UriSchemeWs;
         public static readonly string UriSchemeWss;
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected Uri(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         public Uri([System.Diagnostics.CodeAnalysis.StringSyntaxAttribute("Uri")] string uriString) { }
         [System.ObsoleteAttribute("This constructor has been deprecated; the dontEscape parameter is always false. Use Uri(string) instead.")]
@@ -15420,6 +15542,8 @@ namespace System
     public partial class UriFormatException : System.FormatException, System.Runtime.Serialization.ISerializable
     {
         public UriFormatException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected UriFormatException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         public UriFormatException(string? textString) { }
         public UriFormatException(string? textString, System.Exception? e) { }
