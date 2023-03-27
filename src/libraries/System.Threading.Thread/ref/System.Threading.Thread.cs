@@ -163,6 +163,8 @@ namespace System.Threading
     public partial class ThreadInterruptedException : System.SystemException
     {
         public ThreadInterruptedException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ThreadInterruptedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ThreadInterruptedException(string? message) { }
         public ThreadInterruptedException(string? message, System.Exception? innerException) { }
@@ -197,6 +199,8 @@ namespace System.Threading
     public partial class ThreadStateException : System.SystemException
     {
         public ThreadStateException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected ThreadStateException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ThreadStateException(string? message) { }
         public ThreadStateException(string? message, System.Exception? innerException) { }

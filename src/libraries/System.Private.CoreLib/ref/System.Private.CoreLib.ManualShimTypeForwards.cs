@@ -91,6 +91,8 @@ namespace System.Collections.Generic
     }
     public partial class NonRandomizedStringEqualityComparer : System.Collections.Generic.IEqualityComparer<string?>, System.Runtime.Serialization.ISerializable
     {
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected NonRandomizedStringEqualityComparer(System.Runtime.Serialization.SerializationInfo information, System.Runtime.Serialization.StreamingContext context) { }
         public virtual bool Equals(string? x, string? y) { throw null; }
         public virtual int GetHashCode(string? obj) { throw null; }
