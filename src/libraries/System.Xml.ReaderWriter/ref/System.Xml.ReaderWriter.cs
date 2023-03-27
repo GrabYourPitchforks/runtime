@@ -471,6 +471,8 @@ namespace System.Xml
     public partial class XmlException : System.SystemException
     {
         public XmlException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected XmlException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public XmlException(string? message) { }
         public XmlException(string? message, System.Exception? innerException) { }
@@ -1871,6 +1873,8 @@ namespace System.Xml.Schema
     public partial class XmlSchemaException : System.SystemException
     {
         public XmlSchemaException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected XmlSchemaException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public XmlSchemaException(string? message) { }
         public XmlSchemaException(string? message, System.Exception? innerException) { }
@@ -1986,6 +1990,8 @@ namespace System.Xml.Schema
     public partial class XmlSchemaInferenceException : System.Xml.Schema.XmlSchemaException
     {
         public XmlSchemaInferenceException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected XmlSchemaInferenceException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public XmlSchemaInferenceException(string message) { }
         public XmlSchemaInferenceException(string message, System.Exception? innerException) { }
@@ -2849,6 +2855,8 @@ namespace System.Xml.Xsl
     {
         public XsltCompileException() { }
         public XsltCompileException(System.Exception inner, string sourceUri, int lineNumber, int linePosition) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected XsltCompileException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public XsltCompileException(string message) { }
         public XsltCompileException(string message, System.Exception innerException) { }
@@ -2869,6 +2877,8 @@ namespace System.Xml.Xsl
     public partial class XsltException : System.SystemException
     {
         public XsltException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected XsltException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public XsltException(string message) { }
         public XsltException(string message, System.Exception? innerException) { }
