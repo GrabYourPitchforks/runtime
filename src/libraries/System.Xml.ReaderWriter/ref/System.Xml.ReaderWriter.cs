@@ -2334,6 +2334,8 @@ namespace System.Xml.Schema
     public partial class XmlSchemaValidationException : System.Xml.Schema.XmlSchemaException
     {
         public XmlSchemaValidationException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected XmlSchemaValidationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public XmlSchemaValidationException(string? message) { }
         public XmlSchemaValidationException(string? message, System.Exception? innerException) { }

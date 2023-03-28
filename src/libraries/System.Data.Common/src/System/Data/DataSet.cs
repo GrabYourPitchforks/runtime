@@ -220,8 +220,6 @@ namespace System.Data
         // 'instance' method that consumes SerializationInfo
         [RequiresDynamicCode(RequiresDynamicCodeMessage)]
         [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-        [Obsolete(Obsoletions.LegacyFormatterImplMessage, DiagnosticId = Obsoletions.LegacyFormatterImplDiagId, UrlFormat = Obsoletions.SharedUrlFormat)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         protected void GetSerializationData(SerializationInfo info, StreamingContext context)
         {
             // mainly for typed DS

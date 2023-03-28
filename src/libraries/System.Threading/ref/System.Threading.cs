@@ -38,9 +38,9 @@ namespace System.Threading
     public partial class BarrierPostPhaseException : System.Exception
     {
         public BarrierPostPhaseException() { }
+        public BarrierPostPhaseException(System.Exception? innerException) { }
         [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        public BarrierPostPhaseException(System.Exception? innerException) { }
         protected BarrierPostPhaseException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public BarrierPostPhaseException(string? message) { }
         public BarrierPostPhaseException(string? message, System.Exception? innerException) { }
