@@ -44,11 +44,7 @@ namespace Internal.Cryptography
         [Serializable]
         private sealed class WindowsCryptographicException : CryptographicException
         {
-            private WindowsCryptographicException(SerializationInfo info, StreamingContext context)
-            {
-                Debug.Fail("This should never be called; we swap the active type during serialization.");
-                throw new NotImplementedException();
-            }
+            // No need for a serialization ctor: we swap the active type during serialization.
 
             public WindowsCryptographicException(int hr, string message)
                 : base(message)

@@ -24,16 +24,12 @@ namespace System.Text.RegularExpressions
         /// <summary>Gets the zero-based character offset in the regular expression pattern where the parse error occurs.</summary>
         public int Offset { get; }
 
+        // No need for a serialization ctor: we swap the active type during serialization.
+
         internal RegexParseException(RegexParseError error, int offset, string message) : base(message)
         {
             Error = error;
             Offset = offset;
-        }
-
-        private RegexParseException(SerializationInfo info, StreamingContext context)
-        {
-            // It means someone modified the payload.
-            throw new NotImplementedException();
         }
 
 #if NET8_0_OR_GREATER
