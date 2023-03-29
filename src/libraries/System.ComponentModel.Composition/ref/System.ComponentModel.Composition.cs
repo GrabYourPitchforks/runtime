@@ -55,6 +55,10 @@ namespace System.ComponentModel.Composition
     public partial class CompositionContractMismatchException : System.Exception
     {
         public CompositionContractMismatchException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected CompositionContractMismatchException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public CompositionContractMismatchException(string? message) { }
         public CompositionContractMismatchException(string? message, System.Exception? innerException) { }
@@ -141,6 +145,10 @@ namespace System.ComponentModel.Composition
     public partial class ImportCardinalityMismatchException : System.Exception
     {
         public ImportCardinalityMismatchException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ImportCardinalityMismatchException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ImportCardinalityMismatchException(string? message) { }
         public ImportCardinalityMismatchException(string? message, System.Exception? innerException) { }
@@ -535,6 +543,10 @@ namespace System.ComponentModel.Composition.Primitives
     public partial class ComposablePartException : System.Exception
     {
         public ComposablePartException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ComposablePartException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ComposablePartException(string? message) { }
         public ComposablePartException(string? message, System.ComponentModel.Composition.Primitives.ICompositionElement? element) { }

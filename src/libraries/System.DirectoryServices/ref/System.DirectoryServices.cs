@@ -255,6 +255,10 @@ namespace System.DirectoryServices
     public partial class DirectoryServicesCOMException : System.Runtime.InteropServices.COMException, System.Runtime.Serialization.ISerializable
     {
         public DirectoryServicesCOMException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected DirectoryServicesCOMException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public DirectoryServicesCOMException(string? message) { }
         public DirectoryServicesCOMException(string? message, System.Exception? inner) { }
@@ -535,6 +539,10 @@ namespace System.DirectoryServices.ActiveDirectory
     public partial class ActiveDirectoryObjectExistsException : System.Exception
     {
         public ActiveDirectoryObjectExistsException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ActiveDirectoryObjectExistsException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ActiveDirectoryObjectExistsException(string? message) { }
         public ActiveDirectoryObjectExistsException(string? message, System.Exception? inner) { }
@@ -542,6 +550,10 @@ namespace System.DirectoryServices.ActiveDirectory
     public partial class ActiveDirectoryObjectNotFoundException : System.Exception, System.Runtime.Serialization.ISerializable
     {
         public ActiveDirectoryObjectNotFoundException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ActiveDirectoryObjectNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ActiveDirectoryObjectNotFoundException(string? message) { }
         public ActiveDirectoryObjectNotFoundException(string? message, System.Exception? inner) { }
@@ -557,6 +569,10 @@ namespace System.DirectoryServices.ActiveDirectory
     public partial class ActiveDirectoryOperationException : System.Exception, System.Runtime.Serialization.ISerializable
     {
         public ActiveDirectoryOperationException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ActiveDirectoryOperationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ActiveDirectoryOperationException(string? message) { }
         public ActiveDirectoryOperationException(string? message, System.Exception? inner) { }
@@ -727,6 +743,10 @@ namespace System.DirectoryServices.ActiveDirectory
     public partial class ActiveDirectoryServerDownException : System.Exception, System.Runtime.Serialization.ISerializable
     {
         public ActiveDirectoryServerDownException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ActiveDirectoryServerDownException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ActiveDirectoryServerDownException(string? message) { }
         public ActiveDirectoryServerDownException(string? message, System.Exception? inner) { }
@@ -1291,6 +1311,10 @@ namespace System.DirectoryServices.ActiveDirectory
     public partial class ForestTrustCollisionException : System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException, System.Runtime.Serialization.ISerializable
     {
         public ForestTrustCollisionException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ForestTrustCollisionException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ForestTrustCollisionException(string? message) { }
         public ForestTrustCollisionException(string? message, System.Exception? inner) { }
@@ -1679,6 +1703,10 @@ namespace System.DirectoryServices.ActiveDirectory
     public partial class SyncFromAllServersOperationException : System.DirectoryServices.ActiveDirectory.ActiveDirectoryOperationException, System.Runtime.Serialization.ISerializable
     {
         public SyncFromAllServersOperationException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected SyncFromAllServersOperationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SyncFromAllServersOperationException(string? message) { }
         public SyncFromAllServersOperationException(string? message, System.Exception? inner) { }

@@ -676,6 +676,10 @@ namespace System.Security
     public partial class HostProtectionException : System.SystemException
     {
         public HostProtectionException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected HostProtectionException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public HostProtectionException(string message) { }
         public HostProtectionException(string message, System.Exception e) { }
@@ -2127,6 +2131,10 @@ namespace System.Security.Policy
     public partial class PolicyException : System.SystemException
     {
         public PolicyException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected PolicyException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public PolicyException(string message) { }
         public PolicyException(string message, System.Exception exception) { }

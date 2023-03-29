@@ -268,6 +268,10 @@ namespace System.Configuration
     public partial class ConfigurationErrorsException : System.Configuration.ConfigurationException
     {
         public ConfigurationErrorsException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ConfigurationErrorsException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ConfigurationErrorsException(string message) { }
         public ConfigurationErrorsException(string message, System.Exception inner) { }
@@ -296,6 +300,10 @@ namespace System.Configuration
     {
         [System.ObsoleteAttribute("ConfigurationException has been deprecated. Use System.Configuration.ConfigurationErrorsException instead.")]
         public ConfigurationException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ConfigurationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         [System.ObsoleteAttribute("ConfigurationException has been deprecated. Use System.Configuration.ConfigurationErrorsException instead.")]
         public ConfigurationException(string message) { }
@@ -1166,6 +1174,10 @@ namespace System.Configuration
     public partial class SettingsPropertyIsReadOnlyException : System.Exception
     {
         public SettingsPropertyIsReadOnlyException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected SettingsPropertyIsReadOnlyException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SettingsPropertyIsReadOnlyException(string message) { }
         public SettingsPropertyIsReadOnlyException(string message, System.Exception innerException) { }
@@ -1173,6 +1185,10 @@ namespace System.Configuration
     public partial class SettingsPropertyNotFoundException : System.Exception
     {
         public SettingsPropertyNotFoundException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected SettingsPropertyNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SettingsPropertyNotFoundException(string message) { }
         public SettingsPropertyNotFoundException(string message, System.Exception innerException) { }
@@ -1206,6 +1222,10 @@ namespace System.Configuration
     public partial class SettingsPropertyWrongTypeException : System.Exception
     {
         public SettingsPropertyWrongTypeException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected SettingsPropertyWrongTypeException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SettingsPropertyWrongTypeException(string message) { }
         public SettingsPropertyWrongTypeException(string message, System.Exception innerException) { }
@@ -1591,6 +1611,10 @@ namespace System.Configuration.Provider
     public partial class ProviderException : System.Exception
     {
         public ProviderException() { }
+#if NET8_0_OR_GREATER
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
         protected ProviderException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public ProviderException(string message) { }
         public ProviderException(string message, System.Exception innerException) { }

@@ -214,6 +214,8 @@ namespace System.Net.Mail
         public SmtpException() { }
         public SmtpException(System.Net.Mail.SmtpStatusCode statusCode) { }
         public SmtpException(System.Net.Mail.SmtpStatusCode statusCode, string? message) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected SmtpException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) { }
         public SmtpException(string? message) { }
         public SmtpException(string? message, System.Exception? innerException) { }
@@ -227,6 +229,8 @@ namespace System.Net.Mail
         public SmtpFailedRecipientException() { }
         public SmtpFailedRecipientException(System.Net.Mail.SmtpStatusCode statusCode, string? failedRecipient) { }
         public SmtpFailedRecipientException(System.Net.Mail.SmtpStatusCode statusCode, string? failedRecipient, string? serverResponse) { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected SmtpFailedRecipientException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SmtpFailedRecipientException(string? message) { }
         public SmtpFailedRecipientException(string? message, System.Exception? innerException) { }
@@ -239,6 +243,8 @@ namespace System.Net.Mail
     public partial class SmtpFailedRecipientsException : System.Net.Mail.SmtpFailedRecipientException
     {
         public SmtpFailedRecipientsException() { }
+        [System.ObsoleteAttribute("Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.", DiagnosticId = "SYSLIB0050", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         protected SmtpFailedRecipientsException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SmtpFailedRecipientsException(string? message) { }
         public SmtpFailedRecipientsException(string? message, System.Exception? innerException) { }
