@@ -386,7 +386,7 @@ namespace System.Collections.Generic
                     Entry[]? entries = _entries;
                     uint collisionCount = 0;
 
-                    // ValueType: Devirtualize with EqualityComparer<TValue>.Default intrinsic
+                    // ValueType: Devirtualize with EqualityComparer<TKey>.Default intrinsic
                     i--; // Value in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
                     do
                     {
@@ -506,7 +506,7 @@ namespace System.Collections.Generic
             if (typeof(TKey).IsValueType && // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
                 comparer == null)
             {
-                // ValueType: Devirtualize with EqualityComparer<TValue>.Default intrinsic
+                // ValueType: Devirtualize with EqualityComparer<TKey>.Default intrinsic
                 while (true)
                 {
                     // Should be a while loop https://github.com/dotnet/runtime/issues/9422
@@ -661,7 +661,7 @@ namespace System.Collections.Generic
                 if (typeof(TKey).IsValueType && // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
                     comparer == null)
                 {
-                    // ValueType: Devirtualize with EqualityComparer<TValue>.Default intrinsic
+                    // ValueType: Devirtualize with EqualityComparer<TKey>.Default intrinsic
                     while (true)
                     {
                         // Should be a while loop https://github.com/dotnet/runtime/issues/9422
