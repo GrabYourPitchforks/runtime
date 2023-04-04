@@ -158,9 +158,9 @@ namespace System
         internal const string RsaEncryptDecryptDiagId = "SYSLIB0048";
 
         internal const string LegacyFormatterMessage = "Legacy formatter-based serialization is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.";
-        internal const string LegacyFormatterDiagId = "SYSLIB0049";
+        internal const string LegacyFormatterDiagId = "SYSLIB0050";
 
         internal const string LegacyFormatterImplMessage = "Legacy formatter-based serialization (IMPL) is obsolete and should not be used. See https://aka.ms/binaryformatter for more information.";
-        internal const string LegacyFormatterImplDiagId = "SYSLIB0050";
+        internal const string LegacyFormatterImplDiagId = "SYSLIB0051";
     }
 }
